@@ -35,13 +35,40 @@ const FrequencyVisualizerSkeleton = () => (
 interface FrequencyLabProps {
   featuredFrequencies: any[]
   totalFrequencies: number
+  playingFrequency?: string | null
+  onFrequencySelect?: (frequencyId: string) => void
 }
 
-export default function FrequencyLab({ featuredFrequencies, totalFrequencies }: FrequencyLabProps) {
+export default function FrequencyLab({ featuredFrequencies, totalFrequencies, playingFrequency, onFrequencySelect }: FrequencyLabProps) {
   const [activeFrequency, setActiveFrequency] = useState(0)
   const { ref: sectionRef, isVisible, hasBeenVisible } = useIntersectionObserver({
     threshold: 0.2
   })
+
+  // Find the currently playing frequency index to sync visual state
+  const playingIndex = playingFrequency 
+    ? featuredFrequencies.findIndex(freq => freq.id === playingFrequency)
+    : -1
+
+  const handleFrequencyActivate = (index: number) => {
+    const frequency = featuredFrequencies[index]
+    setActiveFrequency(index)
+    
+    // Observability: Track frequency lab interactions
+    console.log('[FrequencyLab] Frequency activated:', {
+      index,
+      frequencyId: frequency.id,
+      name: frequency.name,
+      hz: frequency.hz_value,
+      wasPlaying: playingFrequency,
+      timestamp: new Date().toISOString()
+    })
+    
+    // If we have a frequency selection handler, use it for audio playback
+    if (onFrequencySelect && frequency) {
+      onFrequencySelect(frequency.id)
+    }
+  }
 
   return (
     <section id="frequencies" ref={sectionRef} className="py-48 bg-gradient-to-br from-gray-50 to-blue-50">
@@ -72,8 +99,9 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies }: 
               <Suspense key={frequency.id} fallback={<FrequencyVisualizerSkeleton />}>
                 <LazyFrequencyVisualizer
                   frequency={frequency}
-                  isActive={activeFrequency === index && isVisible}
-                  onActivate={() => setActiveFrequency(index)}
+                  isActive={(activeFrequency === index && isVisible) || (playingIndex === index)}
+                  isPlaying={playingFrequency === frequency.id}
+                  onActivate={() => handleFrequencyActivate(index)}
                 />
               </Suspense>
             ))}

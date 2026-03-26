@@ -36,10 +36,19 @@ export default function CalmFrequencyApp() {
     const frequency = frequencies.find(f => f.id === frequencyId)
     if (!frequency || !audioEngine) return
 
+    console.log('[AudioEngine] Play request:', {
+      frequencyId,
+      currentlyPlaying: playingFrequency,
+      frequency: frequency.name,
+      hz: frequency.hz_value,
+      timestamp: new Date().toISOString()
+    })
+
     if (playingFrequency === frequencyId) {
       // Stop current audio
       audioEngine.stop()
       setPlayingFrequency(null)
+      console.log('[AudioEngine] Stopped audio')
     } else {
       // Stop any other playing audio
       audioEngine.stop()
@@ -48,10 +57,11 @@ export default function CalmFrequencyApp() {
       const success = await audioEngine.play(frequency.hz_value, volume / 100)
       if (success) {
         setPlayingFrequency(frequencyId)
+        console.log('[AudioEngine] Successfully started audio')
       } else {
         // Fallback: still show playing state even if audio fails
         setPlayingFrequency(frequencyId)
-        console.warn('Audio playback failed, but continuing with visual state')
+        console.warn('[AudioEngine] Audio playback failed, but continuing with visual state')
       }
     }
   }
@@ -214,6 +224,8 @@ export default function CalmFrequencyApp() {
       <FrequencyLab 
         featuredFrequencies={featuredFrequencies}
         totalFrequencies={frequencies.length}
+        playingFrequency={playingFrequency}
+        onFrequencySelect={handlePlay}
       />
 
       {/* Benefits Section */}

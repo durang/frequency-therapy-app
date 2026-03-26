@@ -68,6 +68,10 @@
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
+  
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
@@ -83,6 +87,17 @@
   50% { 
     box-shadow: 0 0 40px rgba(147, 51, 234, 0.6);
     transform: scale(1.02);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.01);
+    opacity: 0.95;
   }
 }
 
