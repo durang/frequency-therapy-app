@@ -56,7 +56,7 @@ export default function RegisterPage() {
 
       if (error) {
         toast.error(error.message)
-      } else if (data.user) {
+      } else if (data?.user) {
         toast.success('Account created! Please check your email to verify your account.')
         router.push('/auth/verify-email')
       }

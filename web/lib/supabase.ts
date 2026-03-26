@@ -1,189 +1,239 @@
-// Development-safe Supabase client with fallbacks
+import { createClient } from '@supabase/supabase-js'
 
-const isDevelopment = process.env.NEXT_PUBLIC_DEV_MODE === 'true'
+// Supabase configuration
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Mock Supabase for development when no real connection is available
-const createMockSupabase = () => ({
-  auth: {
-    signUp: async (credentials: any) => ({
-      data: { user: { id: '1', email: credentials.email } },
-      error: null
-    }),
-    signInWithPassword: async (credentials: any) => ({
-      data: { user: { id: '1', email: credentials.email } },
-      error: null
-    }),
-    signOut: async () => ({ error: null }),
-    getUser: async () => ({
-      data: { user: { id: '1', email: 'demo@freqtherapy.app' } }
-    })
-  },
-  from: (table: string) => ({
-    select: (fields: string) => ({
-      eq: (field: string, value: any) => ({
-        single: async () => ({
-          data: { id: '1', name: 'Demo Data' },
-          error: null
-        })
-      }),
-      order: (field: string, options?: any) => ({
-        limit: (limit: number) => ({
-          select: async () => ({
-            data: [],
-            error: null
-          })
-        })
-      })
-    }),
-    insert: (data: any) => ({
-      select: async () => ({
-        data: [{ id: '1', ...data }],
-        error: null
-      })
-    }),
-    update: (data: any) => ({
-      eq: (field: string, value: any) => ({
-        select: async () => ({
-          data: [{ id: '1', ...data }],
-          error: null
-        })
-      })
-    }),
-    upsert: (data: any) => ({
-      select: async () => ({
-        data: [{ id: '1', ...data }],
-        error: null
-      })
-    })
-  })
-})
-
-// Try to create real Supabase client, fallback to mock if it fails
-let supabase: any
-
-try {
-  if (isDevelopment && (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder'))) {
-    console.log('🔧 Using mock Supabase for development')
-    supabase = createMockSupabase()
-  } else {
-    const { createClient } = require('@supabase/supabase-js')
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    supabase = createClient(supabaseUrl, supabaseAnonKey)
-  }
-} catch (error) {
-  console.log('🔧 Falling back to mock Supabase due to error:', error)
-  supabase = createMockSupabase()
+// Validate required environment variables
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing required Supabase environment variables')
 }
 
-// Auth helpers with safe fallbacks
+if (supabaseUrl.includes('placeholder') || supabaseAnonKey.includes('placeholder')) {
+  throw new Error('Supabase environment variables contain placeholder values')
+}
+
+// Create Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+})
+
+// Connection status logging
+console.log('🔗 Supabase client initialized:', {
+  url: supabaseUrl,
+  keyLength: supabaseAnonKey.length,
+  timestamp: new Date().toISOString()
+})
+
+// Magic Link Authentication
+export const signInWithMagicLink = async (email: string) => {
+  try {
+    console.log('📧 Attempting magic link sign in for:', email)
+    
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+      }
+    })
+
+    if (error) {
+      console.error('❌ Magic link sign in failed:', error)
+      return { data: null, error }
+    }
+
+    console.log('✅ Magic link sent successfully to:', email)
+    return { data, error: null }
+  } catch (error) {
+    console.error('❌ Magic link sign in error:', error)
+    return { 
+      data: null, 
+      error: { message: 'Failed to send magic link' } 
+    }
+  }
+}
+
+// Traditional Auth helpers (updated for real Supabase)
 export const signUp = async (email: string, password: string) => {
   try {
+    console.log('👤 Sign up attempt for:', email)
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window?.location?.origin || 'http://localhost:3000'}/auth/callback`
+        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
       }
     })
+
+    if (error) {
+      console.error('❌ Sign up failed:', error)
+    } else {
+      console.log('✅ Sign up successful for:', email)
+    }
+
     return { data, error }
   } catch (error) {
+    console.error('❌ Sign up error:', error)
     return { 
-      data: { user: { id: 'demo', email } }, 
-      error: null 
+      data: null, 
+      error: { message: 'Failed to create account' } 
     }
   }
 }
 
 export const signIn = async (email: string, password: string) => {
   try {
+    console.log('🔑 Sign in attempt for:', email)
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
+
+    if (error) {
+      console.error('❌ Sign in failed:', error)
+    } else {
+      console.log('✅ Sign in successful for:', email)
+    }
+
     return { data, error }
   } catch (error) {
+    console.error('❌ Sign in error:', error)
     return { 
-      data: { user: { id: 'demo', email } }, 
-      error: null 
+      data: null, 
+      error: { message: 'Failed to sign in' } 
     }
   }
 }
 
 export const signOut = async () => {
   try {
+    console.log('👋 Sign out attempt')
+    
     const { error } = await supabase.auth.signOut()
+    
+    if (error) {
+      console.error('❌ Sign out failed:', error)
+    } else {
+      console.log('✅ Sign out successful')
+    }
+
     return { error }
   } catch (error) {
-    return { error: null }
+    console.error('❌ Sign out error:', error)
+    return { error: { message: 'Failed to sign out' } }
   }
 }
 
 export const getCurrentUser = async () => {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error) {
+      console.error('❌ Get user failed:', error)
+      return null
+    }
+
     return user
   } catch (error) {
-    return { id: 'demo', email: 'demo@freqtherapy.app' }
+    console.error('❌ Get user error:', error)
+    return null
   }
 }
 
-// Database helpers with safe fallbacks
+// Session management
+export const getSession = async () => {
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession()
+    
+    if (error) {
+      console.error('❌ Get session failed:', error)
+      return null
+    }
+
+    return session
+  } catch (error) {
+    console.error('❌ Get session error:', error)
+    return null
+  }
+}
+
+// Auth state listener
+export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
+  return supabase.auth.onAuthStateChange(callback)
+}
+
+// Database helpers with error handling
 export const getUserProfile = async (userId: string) => {
   try {
+    console.log('👤 Fetching user profile for:', userId)
+    
     const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
       .eq('user_id', userId)
       .single()
     
+    if (error && error.code !== 'PGRST116') { // PGRST116 = not found
+      console.error('❌ Get user profile failed:', error)
+    }
+
     return { data, error }
   } catch (error) {
-    return { 
-      data: { 
-        id: '1', 
-        user_id: userId, 
-        full_name: 'Demo User',
-        created_at: new Date().toISOString()
-      }, 
-      error: null 
-    }
+    console.error('❌ Get user profile error:', error)
+    return { data: null, error }
   }
 }
 
 export const updateUserProfile = async (userId: string, updates: any) => {
   try {
+    console.log('📝 Updating user profile for:', userId)
+    
     const { data, error } = await supabase
       .from('user_profiles')
       .upsert({ user_id: userId, ...updates })
       .select()
     
+    if (error) {
+      console.error('❌ Update user profile failed:', error)
+    } else {
+      console.log('✅ User profile updated successfully')
+    }
+
     return { data, error }
   } catch (error) {
-    return { 
-      data: [{ id: '1', user_id: userId, ...updates }], 
-      error: null 
-    }
+    console.error('❌ Update user profile error:', error)
+    return { data: null, error }
   }
 }
 
 export const getFrequencies = async (tier: 'free' | 'basic' | 'pro' | 'clinical' = 'free') => {
-  // Always return our static frequency data for now
-  const { frequencies } = await import('./frequencies')
-  const { getFrequenciesByTier } = await import('./frequencies')
+  // For now, return static frequency data but log the attempt
+  console.log('🎵 Fetching frequencies for tier:', tier)
   
   try {
+    const { frequencies } = await import('./frequencies')
+    const { getFrequenciesByTier } = await import('./frequencies')
+    
     return { 
       data: getFrequenciesByTier(tier), 
       error: null 
     }
   } catch (error) {
-    return { data: frequencies.slice(0, 2), error: null }
+    console.error('❌ Get frequencies error:', error)
+    return { data: [], error }
   }
 }
 
 export const getUserSessions = async (userId: string, limit = 50) => {
   try {
+    console.log('📊 Fetching user sessions for:', userId)
+    
     const { data, error } = await supabase
       .from('therapy_sessions')
       .select(`
@@ -199,75 +249,58 @@ export const getUserSessions = async (userId: string, limit = 50) => {
       .order('created_at', { ascending: false })
       .limit(limit)
     
+    if (error) {
+      console.error('❌ Get user sessions failed:', error)
+    }
+
     return { data, error }
   } catch (error) {
-    // Return mock session data
-    return { 
-      data: [
-        {
-          id: '1',
-          user_id: userId,
-          frequency_hz: 528,
-          duration_minutes: 20,
-          created_at: new Date().toISOString(),
-          frequencies: {
-            name: 'DNA Repair',
-            hz_value: 528,
-            category: 'dna_repair',
-            color: '#9333ea'
-          }
-        }
-      ], 
-      error: null 
-    }
+    console.error('❌ Get user sessions error:', error)
+    return { data: null, error }
   }
 }
 
 export const createSession = async (sessionData: any) => {
   try {
+    console.log('📝 Creating therapy session')
+    
     const { data, error } = await supabase
       .from('therapy_sessions')
       .insert(sessionData)
       .select()
     
+    if (error) {
+      console.error('❌ Create session failed:', error)
+    } else {
+      console.log('✅ Session created successfully')
+    }
+
     return { data, error }
   } catch (error) {
-    return { 
-      data: [{ id: Date.now().toString(), ...sessionData }], 
-      error: null 
-    }
+    console.error('❌ Create session error:', error)
+    return { data: null, error }
   }
 }
 
 export const updateSession = async (sessionId: string, updates: any) => {
   try {
+    console.log('📝 Updating session:', sessionId)
+    
     const { data, error } = await supabase
       .from('therapy_sessions')
       .update(updates)
       .eq('id', sessionId)
       .select()
     
+    if (error) {
+      console.error('❌ Update session failed:', error)
+    } else {
+      console.log('✅ Session updated successfully')
+    }
+
     return { data, error }
   } catch (error) {
-    return { 
-      data: [{ id: sessionId, ...updates }], 
-      error: null 
-    }
+    console.error('❌ Update session error:', error)
+    return { data: null, error }
   }
 }
-
-// Helper functions
-function getTierAccess(tier: string): string[] {
-  switch (tier) {
-    case 'clinical':
-      return ['free', 'basic', 'pro', 'clinical']
-    case 'pro':
-      return ['free', 'basic', 'pro']
-    case 'basic':
-      return ['free', 'basic']
-    default:
-      return ['free']
-  }
-}
-
-export { supabase }
