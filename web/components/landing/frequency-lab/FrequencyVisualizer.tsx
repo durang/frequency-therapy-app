@@ -170,6 +170,7 @@ const FrequencyVisualizer = memo(({ frequency, isActive, isPlaying, onActivate }
               ? 'bg-blue-600 hover:bg-blue-700' 
               : 'hover:bg-blue-50'
           }`}
+          aria-label={`Play ${frequency.name} frequency at ${frequency.hz_value} Hz`}
         >
           {isPlaying ? (
             <span className="flex items-center">

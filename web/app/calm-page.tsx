@@ -9,6 +9,8 @@ import { calmDesignSystem } from '@/lib/calmDesignSystem'
 import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
 import MedicalDisclaimer from '@/components/ui/MedicalDisclaimer'
 import { useDisclaimerRequired, medicalCompliance } from '@/lib/disclaimerState'
+import { FrequencySafetyValidator } from '@/lib/medicalSafety'
+import { UserHealthProfileManager } from '@/lib/userHealthProfile'
 import { 
   Play, 
   Pause,
@@ -71,13 +73,82 @@ export default function CalmFrequencyApp() {
     const frequency = frequencies.find(f => f.id === frequencyId)
     if (!frequency || !audioEngine) return
 
+    // Validate frequency safety
+    const frequencyInput = {
+      hz_value: frequency.hz_value,
+      duration_minutes: frequency.duration_minutes,
+      tier: frequency.tier,
+      volume: volume / 100
+    }
+
+    const safetyValidation = FrequencySafetyValidator.validateFrequency(frequencyInput)
+    if (!safetyValidation.isValid) {
+      console.error('[Safety] Frequency validation failed:', safetyValidation.errors)
+      alert(`Safety Error: ${safetyValidation.errors?.join(', ')}`)
+      return
+    }
+
+    // Check user health profile for contraindications
+    const userProfile = UserHealthProfileManager.getProfile()
+    const contraindications = FrequencySafetyValidator.checkContraindications(
+      safetyValidation.frequency!,
+      userProfile
+    )
+
+    if (contraindications.isContraindicated) {
+      console.warn('[Safety] Frequency contraindicated:', contraindications.warnings)
+      const warningMessage = [
+        'This frequency may not be safe for your health profile:',
+        ...contraindications.warnings,
+        '',
+        'Please consult with a healthcare provider before using this frequency.'
+      ].join('\n')
+      
+      alert(warningMessage)
+      return
+    }
+
+    // Show warnings for supervision required
+    if (contraindications.requiresSupervision) {
+      const supervisionWarning = [
+        'Medical supervision recommended:',
+        ...contraindications.warnings,
+        '',
+        'Do you want to continue? (This frequency may require medical oversight)'
+      ].join('\n')
+      
+      const userConsent = confirm(supervisionWarning)
+      if (!userConsent) {
+        console.log('[Safety] User declined supervised frequency')
+        return
+      }
+    }
+
+    // Show safety warnings if any
+    if (contraindications.warnings.length > 0 && !contraindications.isContraindicated) {
+      const generalWarnings = [
+        'Safety Notice:',
+        ...contraindications.warnings,
+        '',
+        'Please monitor yourself carefully during the session. Click OK to continue.'
+      ].join('\n')
+      
+      const userAcknowledged = confirm(generalWarnings)
+      if (!userAcknowledged) {
+        console.log('[Safety] User declined frequency with warnings')
+        return
+      }
+    }
+
     console.log('[AudioEngine] Play request:', {
       frequencyId,
       currentlyPlaying: playingFrequency,
       frequency: frequency.name,
       hz: frequency.hz_value,
       timestamp: new Date().toISOString(),
-      complianceValid: true
+      complianceValid: true,
+      safetyChecked: true,
+      contraindications: contraindications.warnings.length > 0 ? contraindications.warnings : 'none'
     })
 
     if (playingFrequency === frequencyId) {
@@ -94,6 +165,17 @@ export default function CalmFrequencyApp() {
       if (success) {
         setPlayingFrequency(frequencyId)
         console.log('[AudioEngine] Successfully started audio')
+        
+        // Log safety validation for compliance tracking
+        console.log('[Medical Compliance] Frequency session started:', {
+          action: 'frequency_started',
+          frequencyId,
+          hz: frequency.hz_value,
+          tier: frequency.tier,
+          safetyWarnings: contraindications.warnings.length,
+          requiresSupervision: contraindications.requiresSupervision,
+          timestamp: new Date().toISOString()
+        })
       } else {
         // Fallback: still show playing state even if audio fails
         setPlayingFrequency(frequencyId)
