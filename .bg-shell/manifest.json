@@ -1,16 +1,16 @@
 [
   {
-    "id": "70471c75",
-    "label": "NextJS Dev Server",
+    "id": "64cf8729",
+    "label": "Next.js Dev Server",
     "command": "cd web && npm run dev",
     "cwd": "/Users/sergioduran/clawd/projects/frequency-therapy-app",
-    "ownerSessionFile": "/Users/sergioduran/.gsd/sessions/--Users-sergioduran-clawd-projects-frequency-therapy-app--/2026-03-26T22-55-51-108Z_dbcf2827-864f-49a9-94be-bcc2173eab6b.jsonl",
+    "ownerSessionFile": "/Users/sergioduran/.gsd/sessions/--Users-sergioduran-clawd-projects-frequency-therapy-app--/2026-03-26T23-07-33-414Z_bb2aef4e-91a9-4420-b03c-6ba2168c6da9.jsonl",
     "persistAcrossSessions": false,
-    "startedAt": 1774566204201,
+    "startedAt": 1774566634861,
     "processType": "server",
     "group": null,
     "readyPattern": null,
     "readyPort": 3000,
-    "pid": 82370
+    "pid": 83175
   }
 ]

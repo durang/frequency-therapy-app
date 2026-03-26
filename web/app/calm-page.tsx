@@ -303,7 +303,17 @@ export default function CalmFrequencyApp() {
           </div>
         </header>
 
-        {/* Hero Section with Parallax */}
+        {/* Hero Section with Enhanced Animations */}
+        <HeroAnimations
+          playingFrequency={playingFrequency}
+          onFrequencySelect={handlePlay}
+          isMuted={isMuted}
+          volume={volume}
+          onMuteToggle={handleMuteToggle}
+          onVolumeChange={handleVolumeChange}
+          isReadyToStart={isFullyReady}
+          complianceProgress={explicitMedicalProgress}
+        />
         <motion.section 
           ref={heroRef as any}
           className="relative py-20 md:py-28 overflow-hidden"
@@ -688,3 +698,5 @@ export default function CalmFrequencyApp() {
     </>
   )
 }
+
+import HeroAnimations from '@/components/landing/HeroAnimations'
