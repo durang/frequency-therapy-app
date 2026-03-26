@@ -1,32 +1,43 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent } from '@/components/ui/card'
 
-function AuthCallbackContent() {
+export default function AuthSuccess() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
-  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<'checking' | 'success' | 'error'>('checking')
+  const [message, setMessage] = useState('Verifying authentication...')
+  
+  // Get any error from redirect
+  const error = searchParams.get('error')
+  const errorMessage = searchParams.get('message')
 
   useEffect(() => {
-    const handleAuthCallback = async () => {
+    const checkAuth = async () => {
       try {
-        // Handle the auth callback from Supabase
-        const { data, error } = await supabase.auth.getSession()
-
         if (error) {
-          console.error('Auth callback error:', error)
           setStatus('error')
-          setMessage('Authentication failed. Please try again.')
+          setMessage(errorMessage || 'Authentication failed')
           setTimeout(() => router.push('/auth/login'), 3000)
           return
         }
 
-        if (data.session) {
-          console.log('✅ Authentication successful')
+        // Check if we have an active session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+
+        if (sessionError) {
+          console.error('Session check error:', sessionError)
+          setStatus('error')
+          setMessage('Failed to verify authentication. Please try again.')
+          setTimeout(() => router.push('/auth/login'), 3000)
+          return
+        }
+
+        if (session) {
+          console.log('✅ Authentication successful for user:', session.user.email)
           setStatus('success')
           setMessage('Authentication successful! Redirecting to dashboard...')
           
@@ -34,23 +45,23 @@ function AuthCallbackContent() {
           setTimeout(() => router.push('/dashboard'), 2000)
         } else {
           setStatus('error')
-          setMessage('No session found. Please try signing in again.')
+          setMessage('No active session found. Please try signing in again.')
           setTimeout(() => router.push('/auth/login'), 3000)
         }
       } catch (error) {
-        console.error('Unexpected auth callback error:', error)
+        console.error('Auth verification error:', error)
         setStatus('error')
         setMessage('An unexpected error occurred. Please try again.')
         setTimeout(() => router.push('/auth/login'), 3000)
       }
     }
 
-    handleAuthCallback()
-  }, [router])
+    checkAuth()
+  }, [router, error, errorMessage])
 
   const getStatusIcon = () => {
     switch (status) {
-      case 'loading':
+      case 'checking':
         return '⏳'
       case 'success':
         return '✅'
@@ -79,7 +90,7 @@ function AuthCallbackContent() {
           <div className="text-6xl mb-4">{getStatusIcon()}</div>
           
           <h1 className="text-2xl font-bold text-slate-900">
-            {status === 'loading' && 'Authenticating...'}
+            {status === 'checking' && 'Authenticating...'}
             {status === 'success' && 'Welcome back!'}
             {status === 'error' && 'Authentication Error'}
           </h1>
@@ -88,7 +99,7 @@ function AuthCallbackContent() {
             {message}
           </p>
           
-          {status === 'loading' && (
+          {(status === 'checking' || status === 'success') && (
             <div className="flex justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600"></div>
             </div>
@@ -96,25 +107,5 @@ function AuthCallbackContent() {
         </CardContent>
       </Card>
     </div>
-  )
-}
-
-export default function AuthCallback() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4">
-        <Card className="w-full max-w-md p-8 text-center">
-          <CardContent className="space-y-6">
-            <div className="text-6xl mb-4">⏳</div>
-            <h1 className="text-2xl font-bold text-slate-900">Loading...</h1>
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600"></div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    }>
-      <AuthCallbackContent />
-    </Suspense>
   )
 }
