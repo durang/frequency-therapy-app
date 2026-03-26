@@ -7,6 +7,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { frequencies } from '@/lib/frequencies'
 import { calmDesignSystem } from '@/lib/calmDesignSystem'
 import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
+import MedicalDisclaimer from '@/components/ui/MedicalDisclaimer'
+import { useDisclaimerRequired, medicalCompliance } from '@/lib/disclaimerState'
 import { 
   Play, 
   Pause,
@@ -31,8 +33,41 @@ export default function CalmFrequencyApp() {
   const [isMuted, setIsMuted] = useState(false)
   const [volume, setVolume] = useState(75)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  
+  // Medical disclaimer state
+  const { isRequired: isDisclaimerRequired, acceptDisclaimer, resetDisclaimer } = useDisclaimerRequired()
+
+  const handleDisclaimerAccept = () => {
+    acceptDisclaimer()
+    
+    // Log compliance acceptance
+    console.log('[Medical Compliance]', {
+      action: 'disclaimer_accepted',
+      timestamp: new Date().toISOString(),
+      metadata: medicalCompliance.getComplianceMetadata()
+    })
+  }
+
+  const handleDisclaimerDecline = () => {
+    // Reset disclaimer state and redirect or show message
+    console.log('[Medical Compliance] User declined medical disclaimer')
+    
+    // In a real app, you might redirect to a "declined" page or show an info message
+    // For now, we'll just reset the disclaimer state
+    resetDisclaimer()
+    
+    alert('You must accept the medical disclaimer to use frequency therapy features. You can return to this page anytime to review and accept.')
+  }
 
   const handlePlay = async (frequencyId: string) => {
+    // Check medical compliance before allowing frequency therapy
+    const sessionValid = medicalCompliance.validateSession()
+    if (!sessionValid.valid) {
+      console.warn('[Medical Compliance] Session invalid:', sessionValid.reason)
+      resetDisclaimer() // Force disclaimer to show again
+      return
+    }
+
     const frequency = frequencies.find(f => f.id === frequencyId)
     if (!frequency || !audioEngine) return
 
@@ -41,7 +76,8 @@ export default function CalmFrequencyApp() {
       currentlyPlaying: playingFrequency,
       frequency: frequency.name,
       hz: frequency.hz_value,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      complianceValid: true
     })
 
     if (playingFrequency === frequencyId) {
@@ -103,7 +139,15 @@ export default function CalmFrequencyApp() {
   const featuredFrequencies = frequencies.slice(0, 6)
 
   return (
-    <div className="min-h-screen animated-bg neural-pattern">
+    <>
+      {/* Medical Disclaimer Modal */}
+      <MedicalDisclaimer
+        isVisible={isDisclaimerRequired}
+        onAccept={handleDisclaimerAccept}
+        onDecline={handleDisclaimerDecline}
+      />
+      
+      <div className="min-h-screen animated-bg neural-pattern">
       {/* Header */}
       <header className="sticky top-0 z-50 glass-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -337,5 +381,6 @@ export default function CalmFrequencyApp() {
         </div>
       </footer>
     </div>
+  </>
   )
 }

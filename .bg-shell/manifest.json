@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "1ee7529d",
+    "label": "next-dev",
+    "command": "cd web && npm run dev",
+    "cwd": "/Users/sergioduran/clawd/projects/frequency-therapy-app",
+    "ownerSessionFile": "/Users/sergioduran/.gsd/sessions/--Users-sergioduran-clawd-projects-frequency-therapy-app--/2026-03-26T20-06-14-423Z_69bb8b61-4877-4872-90ac-a7e89b1f69f5.jsonl",
+    "persistAcrossSessions": false,
+    "startedAt": 1774555816092,
+    "processType": "server",
+    "group": null,
+    "readyPattern": null,
+    "readyPort": 3000,
+    "pid": 64173
+  }
+]

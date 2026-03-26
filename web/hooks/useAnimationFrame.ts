@@ -16,23 +16,27 @@ export const useAnimationFrame = (
       callback(deltaTime)
     }
     previousTimeRef.current = time
-    requestRef.current = requestAnimationFrame(animate)
+    
+    // Fallback for environments without requestAnimationFrame
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestRef.current = requestAnimationFrame(animate)
+    }
   }
 
   useEffect(() => {
     shouldStopRef.current = false
     
-    if (isActive) {
+    if (isActive && typeof requestAnimationFrame !== 'undefined') {
       requestRef.current = requestAnimationFrame(animate)
     } else {
-      if (requestRef.current) {
+      if (requestRef.current && typeof cancelAnimationFrame !== 'undefined') {
         cancelAnimationFrame(requestRef.current)
       }
     }
 
     return () => {
       shouldStopRef.current = true
-      if (requestRef.current) {
+      if (requestRef.current && typeof cancelAnimationFrame !== 'undefined') {
         cancelAnimationFrame(requestRef.current)
       }
     }
@@ -41,7 +45,7 @@ export const useAnimationFrame = (
   return {
     stop: () => {
       shouldStopRef.current = true
-      if (requestRef.current) {
+      if (requestRef.current && typeof cancelAnimationFrame !== 'undefined') {
         cancelAnimationFrame(requestRef.current)
       }
     }
