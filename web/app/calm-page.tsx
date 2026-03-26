@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { frequencies } from '@/lib/frequencies'
 import { calmDesignSystem } from '@/lib/calmDesignSystem'
+import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
 import { 
   Play, 
   Pause,
@@ -24,176 +25,6 @@ import {
   Menu,
   X
 } from 'lucide-react'
-
-// Calm-style frequency card component
-const FrequencyCard = ({ frequency, isPlaying, onPlay }: { 
-  frequency: any, 
-  isPlaying: boolean, 
-  onPlay: (id: string) => void 
-}) => {
-  const [duration, setDuration] = useState(frequency.duration_minutes || 10)
-  
-  return (
-    <Card className={`frequency-card rounded-3xl overflow-hidden border-0 ${isPlaying ? 'playing' : ''}`}>
-      <CardContent className="p-0 relative">
-        {/* Animated gradient background */}
-        <div 
-          className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-          style={{
-            background: frequency.category === 'sleep' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-                       frequency.category === 'focus' ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' :
-                       frequency.category === 'meditation' ? 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' :
-                       frequency.category === 'energy' ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' :
-                       'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
-          }}
-        />
-        
-        {/* Content */}
-        <div className="relative p-8">
-          {/* Header with floating icon */}
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
-                {frequency.name}
-              </h3>
-              <p className="text-sm text-blue-600 font-semibold">
-                {frequency.hz_value} Hz • {frequency.category}
-              </p>
-            </div>
-            
-            {/* Category icon with pulse animation */}
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg ${isPlaying ? 'animate-pulse' : ''} float-animation`}>
-              {frequency.category === 'sleep' && <Moon className="w-7 h-7 text-white" />}
-              {frequency.category === 'focus' && <Brain className="w-7 h-7 text-white" />}
-              {frequency.category === 'meditation' && <Sparkles className="w-7 h-7 text-white" />}
-              {frequency.category === 'energy' && <Waves className="w-7 h-7 text-white" />}
-              {!['sleep', 'focus', 'meditation', 'energy'].includes(frequency.category) && <Heart className="w-7 h-7 text-white" />}
-            </div>
-          </div>
-          
-          {/* Description */}
-          <p className="text-gray-700 text-sm mb-6 leading-relaxed">
-            {frequency.description?.substring(0, 120)}...
-          </p>
-          
-          {/* Duration control */}
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-sm text-gray-600">Duración:</span>
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => setDuration(Math.max(5, duration - 5))}
-                className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-sm font-semibold transition-colors"
-              >
-                −
-              </button>
-              <span className="text-sm font-semibold min-w-[4rem] text-center">
-                {duration} min
-              </span>
-              <button 
-                onClick={() => setDuration(Math.min(60, duration + 5))}
-                className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-sm font-semibold transition-colors"
-              >
-                +
-              </button>
-            </div>
-          </div>
-          
-          {/* Play button with glow effect */}
-          <button
-            onClick={() => onPlay(frequency.id)}
-            className={`w-full py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center space-x-3 ${
-              isPlaying 
-                ? 'bg-gray-600 hover:bg-gray-700 text-white shadow-lg' 
-                : 'btn-primary-glow text-white'
-            }`}
-          >
-            {isPlaying ? (
-              <>
-                <Pause className="w-6 h-6" />
-                <span>Pausar</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-6 h-6" />
-                <span>Reproducir</span>
-              </>
-            )}
-          </button>
-          
-          {/* Benefits */}
-          <div className="mt-6 space-y-2">
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Beneficios</p>
-            <div className="space-y-1">
-              {frequency.benefits?.slice(0, 3).map((benefit: string, index: number) => (
-                <div key={index} className="flex items-start space-x-2">
-                  <CheckCircle className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span className="text-xs text-gray-600">{benefit}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Audio visualizer component
-const SimpleVisualizer = ({ isPlaying }: { isPlaying: boolean }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
-
-  useEffect(() => {
-    if (!canvasRef.current || !isPlaying) return
-
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')!
-    canvas.width = 300
-    canvas.height = 150
-
-    let time = 0
-    
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
-      // Simple wave pattern
-      ctx.beginPath()
-      ctx.strokeStyle = '#3b82f6'
-      ctx.lineWidth = 3
-      
-      for (let x = 0; x < canvas.width; x++) {
-        const y = canvas.height / 2 + Math.sin((x * 0.02) + (time * 0.05)) * 30
-        if (x === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      
-      ctx.stroke()
-      time += 1
-      animationRef.current = requestAnimationFrame(animate)
-    }
-
-    animate()
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-    }
-  }, [isPlaying])
-
-  return (
-    <div className="relative w-full h-32 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl overflow-hidden flex items-center justify-center">
-      {isPlaying ? (
-        <canvas ref={canvasRef} className="w-full h-full" />
-      ) : (
-        <div className="text-center text-gray-500">
-          <Headphones className="w-8 h-8 mx-auto mb-2" />
-          <p className="text-sm">Selecciona una frecuencia para comenzar</p>
-        </div>
-      )}
-    </div>
-  )
-}
 
 export default function CalmFrequencyApp() {
   const [playingFrequency, setPlayingFrequency] = useState<string | null>(null)
@@ -379,40 +210,11 @@ export default function CalmFrequencyApp() {
         </div>
       </section>
 
-      {/* Frequency Cards */}
-      <section className="py-16 bg-gradient-to-br from-white/60 to-blue-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Frecuencias Destacadas
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Cada frecuencia está diseñada para objetivos específicos de bienestar y respaldada por investigación científica.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredFrequencies.map((frequency) => (
-              <FrequencyCard
-                key={frequency.id}
-                frequency={frequency}
-                isPlaying={playingFrequency === frequency.id}
-                onPlay={handlePlay}
-              />
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link 
-              href="/library" 
-              className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
-            >
-              <span>Ver Biblioteca Completa</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Frequency Laboratory */}
+      <FrequencyLab 
+        featuredFrequencies={featuredFrequencies}
+        totalFrequencies={frequencies.length}
+      />
 
       {/* Benefits Section */}
       <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50/50">
