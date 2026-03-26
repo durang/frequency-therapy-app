@@ -961,7 +961,7 @@ export const getFrequencyStats = () => {
     clinical: getFrequenciesByTier('clinical').length
   }
 
-  const categories = [...new Set(frequencies.map(f => f.category))]
+  const categories = Array.from(new Set(frequencies.map(f => f.category)))
   const totalResearch = frequencies.reduce((sum, f) => sum + (f.research_citations?.length || 0), 0)
   const totalTrials = frequencies.reduce((sum, f) => sum + (f.clinical_trials?.length || 0), 0)
   const totalParticipants = frequencies.reduce((sum, f) => 

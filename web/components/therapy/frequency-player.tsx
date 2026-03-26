@@ -127,7 +127,6 @@ export default function FrequencyPlayer({ frequencyId = '1', demo = false }: Fre
         {/* Frequency Info */}
         <Card variant="quantum" glow className="mb-8">
           <CardHeader className="text-center">
-            <div className="text-6xl mb-4">{selectedFrequency.icon}</div>
             <CardTitle className="text-3xl mb-2">{selectedFrequency.name}</CardTitle>
             <p className="text-xl text-slate-600 mb-2">{selectedFrequency.hz_value} Hz</p>
             <p className="text-slate-600 max-w-md mx-auto">{selectedFrequency.description}</p>
@@ -217,10 +216,10 @@ export default function FrequencyPlayer({ frequencyId = '1', demo = false }: Fre
             <div className="mt-6 p-4 bg-slate-50 rounded-lg">
               <h4 className="font-semibold mb-2">Scientific Basis</h4>
               <ul className="space-y-1">
-                {selectedFrequency.scientific_basis.map((basis, index) => (
+                {selectedFrequency.research_citations?.slice(0, 3).map((citation, index) => (
                   <li key={index} className="text-sm text-slate-600 flex items-start space-x-2">
                     <span className="text-green-500 font-bold">•</span>
-                    <span>{basis}</span>
+                    <span>{citation}</span>
                   </li>
                 ))}
               </ul>
@@ -235,14 +234,13 @@ export default function FrequencyPlayer({ frequencyId = '1', demo = false }: Fre
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {frequencies.filter(f => f.tier_required === 'free' && f.id !== frequencyId).map((freq) => (
+              {frequencies.filter(f => f.tier === 'free' && f.id !== frequencyId).map((freq) => (
                 <Button
                   key={freq.id}
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-quantum-50"
                   onClick={() => window.location.href = `/therapy?frequency=${freq.id}`}
                 >
-                  <div className="text-2xl">{freq.icon}</div>
                   <div className="text-xs text-center">
                     <div className="font-medium">{freq.name}</div>
                     <div className="text-slate-500">{freq.hz_value} Hz</div>

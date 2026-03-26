@@ -3,11 +3,11 @@
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   ArrowRight,
   Brain,
   Shield,
-  Certificate,
+  Award,
   Stethoscope,
   Volume2,
   Microscope
@@ -28,24 +28,24 @@ interface HeroSectionProps {
 const OptimizedNeuralParticles = ({ isActive }: { isActive: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const particlesRef = useRef<any[]>([])
-  
+
   const animate = () => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext('2d')
     if (!canvas || !ctx || !isActive) return
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
+
     // Optimized particle rendering - fewer particles, better performance
     particlesRef.current.forEach((particle, i) => {
       particle.x += particle.vx
       particle.y += particle.vy
       particle.pulse += 0.02
-      
+
       // Efficient boundary checking
       if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
       if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
-      
+
       // Optimized rendering with opacity batching
       const pulseSize = particle.size + Math.sin(particle.pulse) * 0.5
       ctx.globalAlpha = particle.opacity
@@ -53,7 +53,7 @@ const OptimizedNeuralParticles = ({ isActive }: { isActive: boolean }) => {
       ctx.beginPath()
       ctx.arc(particle.x, particle.y, pulseSize, 0, Math.PI * 2)
       ctx.fill()
-      
+
       // Connection rendering with distance optimization
       if (i % 3 === 0) { // Only render connections for every 3rd particle
         particlesRef.current.slice(i + 1, i + 4).forEach(other => {
@@ -71,7 +71,7 @@ const OptimizedNeuralParticles = ({ isActive }: { isActive: boolean }) => {
         })
       }
     })
-    
+
     ctx.globalAlpha = 1
   }
 
@@ -79,7 +79,7 @@ const OptimizedNeuralParticles = ({ isActive }: { isActive: boolean }) => {
 
   useEffect(() => {
     if (!isActive) return
-    
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -122,13 +122,13 @@ export default function HeroSection({
   })
 
   return (
-    <section 
-      ref={heroRef} 
+    <section
+      ref={heroRef}
       className="relative pt-32 pb-48 overflow-hidden bg-gradient-to-br from-blue-50/30 via-indigo-50/30 to-purple-50/30"
     >
       {/* Only render particles when section is visible */}
       {isVisible && <OptimizedNeuralParticles isActive={isVisible} />}
-      
+
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         {/* Medical Authority Header */}
         <div className="text-center mb-12">
@@ -194,28 +194,26 @@ export default function HeroSection({
 
           {/* Medical-grade CTA */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-xl px-12 py-5 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 font-semibold"
-              asChild
-            >
-              <Link href="/auth/register">
+            <Link href="/auth/register">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-xl px-12 py-5 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 font-semibold"
+              >
                 <Stethoscope className="w-6 h-6 mr-3" />
                 Begin Clinical Protocol
                 <ArrowRight className="w-6 h-6 ml-3" />
-              </Link>
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="text-xl px-12 py-5 rounded-2xl border-2 border-blue-200 hover:bg-blue-50 font-semibold"
-              asChild
-            >
-              <Link href="/therapy?demo=true">
+              </Button>
+            </Link>
+            <Link href="/therapy?demo=true">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-xl px-12 py-5 rounded-2xl border-2 border-blue-200 hover:bg-blue-50 font-semibold"
+              >
                 <Volume2 className="w-6 h-6 mr-3" />
                 Experience Live Demo
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
 
           {/* Medical Authorities Trust Section */}

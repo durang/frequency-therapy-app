@@ -52,21 +52,49 @@ export interface Frequency {
   hz_value: number
   category: FrequencyCategory
   description: string
-  scientific_basis: string[]
-  color: string
-  icon: string
+  scientific_backing: string
   benefits: string[]
-  optimal_duration: number
-  tier_required: 'free' | 'basic' | 'pro' | 'clinical'
+  best_for: string[]
+  tier: 'free' | 'basic' | 'pro' | 'clinical'
+  duration_minutes: number
+  research_citations?: string[]
+  clinical_trials?: {
+    title: string
+    participants: number
+    duration_weeks: number
+    results: string
+    institution: string
+  }[]
+  mechanism?: string
+  contraindications?: string[]
+  dosage?: string
 }
 
 export type FrequencyCategory = 
   | 'dna_repair' 
+  | 'anxiety_relief'
+  | 'cognitive_enhancement'
+  | 'sleep_optimization'
+  | 'grounding'
+  | 'pain_management'
+  | 'cardiovascular'
+  | 'neurotransmitter_optimization'
+  | 'mood_enhancement'
+  | 'relaxation'
+  | 'neural_repair'
+  | 'anti_aging'
+  | 'immune_enhancement'
+  | 'hormonal_balance'
+  | 'cellular_energy'
+  | 'regenerative_medicine'
+  | 'epigenetic_therapy'
+  | 'quantum_medicine'
+  | 'vascular_health'
+  | 'metabolic_enhancement'
   | 'sleep' 
   | 'focus' 
   | 'meditation' 
   | 'energy' 
-  | 'relaxation'
   | 'healing'
   | 'creativity'
 

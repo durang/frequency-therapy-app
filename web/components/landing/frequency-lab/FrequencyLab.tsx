@@ -4,7 +4,7 @@ import { useState, useRef, lazy, Suspense } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { frequencies } from '@/lib/frequencies'
-import { ChevronRight, Waves, Volume2, Play, Microscope, Certificate } from 'lucide-react'
+import { ChevronRight, Waves, Volume2, Play, Microscope, Award } from 'lucide-react'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 import { useAnimationFrame } from '@/hooks/useAnimationFrame'
 
@@ -113,16 +113,15 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies }: 
             </div>
             
             <div className="text-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4"
-                asChild
-              >
-                <Link href="/frequencies">
+              <Link href="/frequencies">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4"
+                >
                   Explore Complete Database ({totalFrequencies} Frequencies)
                   <ChevronRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </div>
         )}

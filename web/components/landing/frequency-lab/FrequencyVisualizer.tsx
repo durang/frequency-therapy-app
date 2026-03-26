@@ -2,7 +2,7 @@
 
 import { useRef, memo } from 'react'
 import { Button } from '@/components/ui/button'
-import { Volume2, Play, Microscope, Certificate } from 'lucide-react'
+import { Volume2, Play, Microscope, Award } from 'lucide-react'
 import { useAnimationFrame } from '@/hooks/useAnimationFrame'
 
 interface FrequencyVisualizerProps {
@@ -138,14 +138,14 @@ const FrequencyVisualizer = memo(({ frequency, isActive, onActivate }: Frequency
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Certificate className="w-4 h-4 text-blue-600" />
+            <Award className="w-4 h-4 text-blue-600" />
             <span className="text-xs text-blue-700 font-medium">FDA Reviewed</span>
           </div>
         </div>
         
         <Button 
           size="sm" 
-          variant={isActive ? "default" : "outline"}
+          variant={isActive ? "primary" : "outline"}
           className={`w-full ${isActive ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-blue-50'} transition-all duration-300`}
         >
           {isActive ? 'Currently Active' : 'Experience Now'}

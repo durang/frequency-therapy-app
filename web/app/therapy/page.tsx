@@ -28,7 +28,7 @@ function TherapyContent() {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2">
                 <ChevronLeft className="w-4 h-4" />
                 Back to Dashboard
               </Button>
@@ -182,9 +182,9 @@ function TherapyContent() {
                   </p>
                   <Link href="/pricing">
                     <Button 
-                      variant="secondary"
+                      variant="outline"
                       size="sm"
-                      className="bg-white text-quantum-primary hover:bg-gray-50"
+                      className="bg-white text-blue-600 hover:bg-gray-50"
                     >
                       Upgrade Now
                     </Button>

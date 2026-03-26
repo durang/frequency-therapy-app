@@ -186,7 +186,14 @@ export function generateMedicalMetadata(): Metadata {
       'clinical-efficacy': '94.7% efficacy rate in controlled trials',
       'safety-profile': 'Contraindicated for epilepsy, pacemakers, pregnancy',
       'medical-supervision': 'Clinical protocols require medical supervision',
-      'hipaa-compliance': 'Healthcare data protected per HIPAA guidelines'
+      'hipaa-compliance': 'Healthcare data protected per HIPAA guidelines',
+      'theme-color': '#2563eb',
+      'color-scheme': 'light dark',
+      'mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'default',
+      'msapplication-TileColor': '#2563eb',
+      'msapplication-TileImage': '/ms-icon-medical-144x144.png'
     },
 
     // Open Graph for social sharing
@@ -264,27 +271,7 @@ export function generateMedicalMetadata(): Metadata {
     },
 
     // Manifest
-    manifest: '/manifest-medical.json',
-
-    // Accessibility
-    other: {
-      ...{
-        'medical-disclaimer': 'This platform is for wellness and research purposes. Not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare provider.',
-        'fda-status': 'Not evaluated by FDA as medical device',
-        'research-backing': '47 peer-reviewed clinical studies',
-        'clinical-efficacy': '94.7% efficacy rate in controlled trials',
-        'safety-profile': 'Contraindicated for epilepsy, pacemakers, pregnancy',
-        'medical-supervision': 'Clinical protocols require medical supervision',
-        'hipaa-compliance': 'Healthcare data protected per HIPAA guidelines'
-      },
-      'theme-color': '#2563eb',
-      'color-scheme': 'light dark',
-      'mobile-web-app-capable': 'yes',
-      'apple-mobile-web-app-capable': 'yes',
-      'apple-mobile-web-app-status-bar-style': 'default',
-      'msapplication-TileColor': '#2563eb',
-      'msapplication-TileImage': '/ms-icon-medical-144x144.png'
-    }
+    manifest: '/manifest-medical.json'
   }
 }
 

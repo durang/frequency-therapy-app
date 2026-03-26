@@ -107,7 +107,7 @@ export default function AdvancedFrequencyPlayer({
       newConfig.binauralBeat!.carrierLeft = currentFrequency.hz_value
       newConfig.binauralBeat!.carrierRight = currentFrequency.hz_value + newConfig.binauralBeat!.beatFrequency
       setAudioConfig(newConfig)
-      setTimeRemaining(currentFrequency.duration_minutes * 60)
+      setTimeRemaining((currentFrequency?.duration_minutes || 20) * 60)
     }
   }, [currentFrequencyId])
 
@@ -127,7 +127,8 @@ export default function AdvancedFrequencyPlayer({
         frequencyId: currentFrequencyId,
         preSessionMood: moodBefore || 5,
         environment: {
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          timeOfDay: new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening',
+          dayOfWeek: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()]
         }
       })
 
@@ -182,7 +183,7 @@ export default function AdvancedFrequencyPlayer({
 
     // Reset for next session
     setSessionStarted(false)
-    setTimeRemaining(currentFrequency?.duration_minutes * 60 || 1200)
+    setTimeRemaining((currentFrequency?.duration_minutes || 20) * 60)
     sessionIdRef.current = null
   }
 
@@ -272,7 +273,7 @@ export default function AdvancedFrequencyPlayer({
   }
 
   const progress = currentFrequency 
-    ? ((currentFrequency.duration_minutes * 60 - timeRemaining) / (currentFrequency.duration_minutes * 60)) * 100
+    ? (((currentFrequency.duration_minutes || 20) * 60 - timeRemaining) / ((currentFrequency.duration_minutes || 20) * 60)) * 100
     : 0
 
   if (!currentFrequency) {
@@ -409,7 +410,7 @@ export default function AdvancedFrequencyPlayer({
           {/* Settings Toggle */}
           <div className="flex justify-center">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
               className="text-gray-600"

@@ -502,7 +502,7 @@ export class AdvancedAnalytics {
     // First Input Delay
     new PerformanceObserver((entryList) => {
       const firstEntry = entryList.getEntries()[0]
-      this.webVitals.fid = firstEntry.processingStart - firstEntry.startTime
+      this.webVitals.fid = (firstEntry as any).processingStart - firstEntry.startTime
       this.trackEvent('web_vital', { metric: 'fid', value: this.webVitals.fid })
     }).observe({ entryTypes: ['first-input'] })
 

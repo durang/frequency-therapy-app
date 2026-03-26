@@ -167,7 +167,7 @@ export const updateUserProfile = async (userId: string, updates: any) => {
   }
 }
 
-export const getFrequencies = async (tier: string = 'free') => {
+export const getFrequencies = async (tier: 'free' | 'basic' | 'pro' | 'clinical' = 'free') => {
   // Always return our static frequency data for now
   const { frequencies } = await import('./frequencies')
   const { getFrequenciesByTier } = await import('./frequencies')

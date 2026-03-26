@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { audioEngine } from '@/lib/real-audio-engine'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { frequencies } from '@/lib/frequencies'
@@ -33,40 +34,40 @@ const FrequencyCard = ({ frequency, isPlaying, onPlay }: {
   const [duration, setDuration] = useState(frequency.duration_minutes || 10)
   
   return (
-    <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm border-0">
-      <CardContent className="p-0">
-        {/* Background gradient based on frequency category */}
+    <Card className={`frequency-card rounded-3xl overflow-hidden border-0 ${isPlaying ? 'playing' : ''}`}>
+      <CardContent className="p-0 relative">
+        {/* Animated gradient background */}
         <div 
-          className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500"
+          className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500"
           style={{
-            background: frequency.category === 'sleep' ? calmDesignSystem.gradients.sleep :
-                       frequency.category === 'focus' ? calmDesignSystem.gradients.focus :
-                       frequency.category === 'meditation' ? calmDesignSystem.gradients.meditation :
-                       frequency.category === 'energy' ? calmDesignSystem.gradients.energy :
-                       calmDesignSystem.gradients.healing
+            background: frequency.category === 'sleep' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+                       frequency.category === 'focus' ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' :
+                       frequency.category === 'meditation' ? 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' :
+                       frequency.category === 'energy' ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' :
+                       'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
           }}
         />
         
         {/* Content */}
         <div className="relative p-8">
-          {/* Header */}
+          {/* Header with floating icon */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
                 {frequency.name}
               </h3>
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm text-blue-600 font-semibold">
                 {frequency.hz_value} Hz • {frequency.category}
               </p>
             </div>
             
-            {/* Category icon */}
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-              {frequency.category === 'sleep' && <Moon className="w-6 h-6 text-white" />}
-              {frequency.category === 'focus' && <Brain className="w-6 h-6 text-white" />}
-              {frequency.category === 'meditation' && <Sparkles className="w-6 h-6 text-white" />}
-              {frequency.category === 'energy' && <Waves className="w-6 h-6 text-white" />}
-              {!['sleep', 'focus', 'meditation', 'energy'].includes(frequency.category) && <Heart className="w-6 h-6 text-white" />}
+            {/* Category icon with pulse animation */}
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg ${isPlaying ? 'animate-pulse' : ''} float-animation`}>
+              {frequency.category === 'sleep' && <Moon className="w-7 h-7 text-white" />}
+              {frequency.category === 'focus' && <Brain className="w-7 h-7 text-white" />}
+              {frequency.category === 'meditation' && <Sparkles className="w-7 h-7 text-white" />}
+              {frequency.category === 'energy' && <Waves className="w-7 h-7 text-white" />}
+              {!['sleep', 'focus', 'meditation', 'energy'].includes(frequency.category) && <Heart className="w-7 h-7 text-white" />}
             </div>
           </div>
           
@@ -97,23 +98,23 @@ const FrequencyCard = ({ frequency, isPlaying, onPlay }: {
             </div>
           </div>
           
-          {/* Play button */}
+          {/* Play button with glow effect */}
           <button
             onClick={() => onPlay(frequency.id)}
-            className={`w-full py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
+            className={`w-full py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center space-x-3 ${
               isPlaying 
-                ? 'bg-gray-600 hover:bg-gray-700 text-white' 
-                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25'
+                ? 'bg-gray-600 hover:bg-gray-700 text-white shadow-lg' 
+                : 'btn-primary-glow text-white'
             }`}
           >
             {isPlaying ? (
               <>
-                <Pause className="w-5 h-5" />
+                <Pause className="w-6 h-6" />
                 <span>Pausar</span>
               </>
             ) : (
               <>
-                <Play className="w-5 h-5" />
+                <Play className="w-6 h-6" />
                 <span>Reproducir</span>
               </>
             )}
@@ -200,47 +201,100 @@ export default function CalmFrequencyApp() {
   const [volume, setVolume] = useState(75)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const handlePlay = (frequencyId: string) => {
-    setPlayingFrequency(playingFrequency === frequencyId ? null : frequencyId)
+  const handlePlay = async (frequencyId: string) => {
+    const frequency = frequencies.find(f => f.id === frequencyId)
+    if (!frequency || !audioEngine) return
+
+    if (playingFrequency === frequencyId) {
+      // Stop current audio
+      audioEngine.stop()
+      setPlayingFrequency(null)
+    } else {
+      // Stop any other playing audio
+      audioEngine.stop()
+      
+      // Start new audio
+      const success = await audioEngine.play(frequency.hz_value, volume / 100)
+      if (success) {
+        setPlayingFrequency(frequencyId)
+      } else {
+        // Fallback: still show playing state even if audio fails
+        setPlayingFrequency(frequencyId)
+        console.warn('Audio playback failed, but continuing with visual state')
+      }
+    }
   }
+
+  // Handle volume changes
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseInt(e.target.value)
+    setVolume(newVolume)
+    // Update real-time volume if audio is playing
+    if (audioEngine) {
+      audioEngine.setVolume(newVolume / 100)
+    }
+  }
+
+  // Handle mute/unmute
+  const handleMuteToggle = () => {
+    setIsMuted(!isMuted)
+    if (audioEngine) {
+      if (!isMuted) {
+        // Muting
+        audioEngine.setVolume(0)
+      } else {
+        // Unmuting
+        audioEngine.setVolume(volume / 100)
+      }
+    }
+  }
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      if (audioEngine) {
+        audioEngine.stop()
+      }
+    }
+  }, [])
 
   // Featured frequencies (first 6)
   const featuredFrequencies = frequencies.slice(0, 6)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/30">
+    <div className="min-h-screen animated-bg neural-pattern">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-blue-100/50">
+      <header className="sticky top-0 z-50 glass-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center">
-                <Waves className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 float-animation">
+                <Waves className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">FreqHeal</h1>
-                <p className="text-sm text-blue-600">Terapia de Frecuencias</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">FreqHeal</h1>
+                <p className="text-sm text-blue-600 font-medium">Terapia de Frecuencias</p>
               </div>
             </div>
             
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="#frequencies" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Frecuencias
               </Link>
-              <Link href="#library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Biblioteca
               </Link>
-              <Link href="#profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Mi Perfil
               </Link>
-              <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-2xl font-semibold shadow-lg shadow-blue-500/25 transition-all duration-300">
+              <button className="btn-primary-glow text-white px-8 py-3 rounded-2xl font-semibold transition-all duration-300">
                 Premium
               </button>
             </nav>
 
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700"
+              className="md:hidden p-2 text-gray-700 hover:bg-white/20 rounded-lg transition-colors"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -249,27 +303,56 @@ export default function CalmFrequencyApp() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto mb-16">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+      <section className="relative py-20 md:py-28 overflow-hidden">
+        {/* Floating particles */}
+        <div className="particles">
+          <div className="particle float-animation" style={{left: '10%', top: '20%'}}></div>
+          <div className="particle float-animation" style={{left: '80%', top: '40%'}}></div>
+          <div className="particle float-animation" style={{left: '30%', top: '60%'}}></div>
+          <div className="particle float-animation" style={{left: '70%', top: '80%'}}></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto mb-20">
+            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
               Encuentra tu
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"> equilibrio</span>
+              <span className="hero-gradient block mt-2"> equilibrio</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light">
               Terapia de frecuencias científicamente respaldada para reducir el estrés, 
               mejorar el sueño y aumentar tu bienestar mental.
             </p>
             
-            {/* Current playing visualizer */}
-            <div className="max-w-md mx-auto mb-8">
-              <SimpleVisualizer isPlaying={playingFrequency !== null} />
+            {/* Audio Visualizer with playing state */}
+            <div className="max-w-lg mx-auto mb-12">
+              <div className={`glass-card p-8 rounded-3xl ${playingFrequency ? 'playing' : ''}`}>
+                <div className="flex items-center justify-center mb-6">
+                  <div className={`audio-wave ${playingFrequency ? 'active' : ''}`}>
+                    <div className="freq-bar h-6"></div>
+                    <div className="freq-bar h-8"></div>
+                    <div className="freq-bar h-4"></div>
+                    <div className="freq-bar h-10"></div>
+                    <div className="freq-bar h-6"></div>
+                    <div className="freq-bar h-8"></div>
+                    <div className="freq-bar h-4"></div>
+                    <div className="freq-bar h-10"></div>
+                  </div>
+                </div>
+                <p className="text-gray-600 mb-4">
+                  {playingFrequency ? `Reproduciendo: ${frequencies.find(f => f.id === playingFrequency)?.name}` : 'Selecciona una frecuencia para comenzar'}
+                </p>
+                {playingFrequency && (
+                  <div className="text-sm text-blue-600 font-medium">
+                    {frequencies.find(f => f.id === playingFrequency)?.hz_value} Hz • {frequencies.find(f => f.id === playingFrequency)?.category}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Audio controls */}
             <div className="flex items-center justify-center space-x-4 mb-8">
               <button
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={handleMuteToggle}
                 className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
               >
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -282,7 +365,7 @@ export default function CalmFrequencyApp() {
                   min="0"
                   max="100"
                   value={volume}
-                  onChange={(e) => setVolume(parseInt(e.target.value))}
+                  onChange={handleVolumeChange}
                   className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-sm text-gray-700 font-medium w-8">{volume}%</span>
