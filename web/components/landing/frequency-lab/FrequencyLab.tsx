@@ -4,9 +4,10 @@ import { useState, useRef, lazy, Suspense } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { frequencies } from '@/lib/frequencies'
-import { ChevronRight, Waves, Volume2, Play, Microscope, Award } from 'lucide-react'
+import { ChevronRight, Waves, Volume2, Play, Microscope, Award, Lock, Shield } from 'lucide-react'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 import { useAnimationFrame } from '@/hooks/useAnimationFrame'
+import { motion } from 'framer-motion'
 
 // Lazy load the heavy frequency visualizer
 const LazyFrequencyVisualizer = lazy(() => import('./FrequencyVisualizer'))
@@ -37,9 +38,18 @@ interface FrequencyLabProps {
   totalFrequencies: number
   playingFrequency?: string | null
   onFrequencySelect?: (frequencyId: string) => void
+  isEnabled?: boolean
+  complianceProgress?: number
 }
 
-export default function FrequencyLab({ featuredFrequencies, totalFrequencies, playingFrequency, onFrequencySelect }: FrequencyLabProps) {
+export default function FrequencyLab({ 
+  featuredFrequencies, 
+  totalFrequencies, 
+  playingFrequency, 
+  onFrequencySelect,
+  isEnabled = true,
+  complianceProgress = 1
+}: FrequencyLabProps) {
   const [activeFrequency, setActiveFrequency] = useState(0)
   const { ref: sectionRef, isVisible, hasBeenVisible } = useIntersectionObserver({
     threshold: 0.2
@@ -51,6 +61,11 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
     : -1
 
   const handleFrequencyActivate = (index: number) => {
+    if (!isEnabled) {
+      console.warn('[FrequencyLab] Access denied - medical compliance not complete:', complianceProgress)
+      return
+    }
+
     const frequency = featuredFrequencies[index]
     setActiveFrequency(index)
     
@@ -61,6 +76,8 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
       name: frequency.name,
       hz: frequency.hz_value,
       wasPlaying: playingFrequency,
+      complianceProgress: complianceProgress,
+      enabled: isEnabled,
       timestamp: new Date().toISOString()
     })
     
@@ -71,12 +88,48 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
   }
 
   return (
-    <section id="frequency-lab" ref={sectionRef} className="py-48 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="frequency-lab" ref={sectionRef} className="py-48 bg-gradient-to-br from-gray-50 to-blue-50 relative">
+      {/* Compliance overlay when not enabled */}
+      {!isEnabled && (
+        <motion.div 
+          className="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="text-center max-w-md">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Lock className="w-8 h-8 text-amber-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Frecuencias Bloqueadas
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Lee la información médica y de seguridad arriba para acceder a las frecuencias terapéuticas.
+            </p>
+            <div className="bg-gray-100 rounded-full h-3 overflow-hidden mb-4">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-amber-400 to-orange-500"
+                initial={{ width: 0 }}
+                animate={{ width: `${complianceProgress * 100}%` }}
+                transition={{ duration: 0.8 }}
+              />
+            </div>
+            <p className="text-sm text-gray-500">
+              Progreso de cumplimiento: {Math.round(complianceProgress * 100)}%
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold mb-8">
             <Waves className="w-4 h-4" />
             FREQUENCY LABORATORY
+            {isEnabled && (
+              <Shield className="w-4 h-4 text-green-600" />
+            )}
           </div>
           <h2 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8" style={{ fontFamily: '"Playfair Display", serif' }}>
             Experience{' '}
@@ -96,21 +149,34 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
         {hasBeenVisible && (
           <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 mb-20">
             {featuredFrequencies.map((frequency, index) => (
-              <Suspense key={frequency.id} fallback={<FrequencyVisualizerSkeleton />}>
-                <LazyFrequencyVisualizer
-                  frequency={frequency}
-                  isActive={(activeFrequency === index && isVisible) || (playingIndex === index)}
-                  isPlaying={playingFrequency === frequency.id}
-                  onActivate={() => handleFrequencyActivate(index)}
-                />
-              </Suspense>
+              <motion.div
+                key={frequency.id}
+                className={`transition-all duration-300 ${!isEnabled ? 'opacity-30 pointer-events-none' : ''}`}
+                whileHover={isEnabled ? { scale: 1.02 } : {}}
+                transition={{ duration: 0.2 }}
+              >
+                <Suspense fallback={<FrequencyVisualizerSkeleton />}>
+                  <LazyFrequencyVisualizer
+                    frequency={frequency}
+                    isActive={(activeFrequency === index && isVisible && isEnabled) || (playingIndex === index)}
+                    isPlaying={playingFrequency === frequency.id}
+                    onActivate={() => handleFrequencyActivate(index)}
+                  />
+                </Suspense>
+              </motion.div>
             ))}
           </div>
         )}
 
         {/* Frequency Database Teaser - Only show when visible */}
         {isVisible && (
-          <div className="bg-white rounded-3xl p-8 shadow-2xl border border-blue-100">
+          <motion.div 
+            className="bg-white rounded-3xl p-8 shadow-2xl border border-blue-100"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="text-center mb-8">
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Complete Therapeutic Frequency Database</h3>
               <p className="text-gray-600 max-w-3xl mx-auto">
@@ -131,12 +197,17 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
                 { name: "Heart Coherence", hz: 0.1, studies: 25, efficacy: 92.6 },
                 { name: "Immune Boost", hz: 594, studies: 15, efficacy: 78.9 }
               ].map((freq, index) => (
-                <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-2xl hover:shadow-lg transition-shadow">
+                <motion.div 
+                  key={index} 
+                  className={`bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-2xl hover:shadow-lg transition-shadow ${!isEnabled ? 'opacity-50' : ''}`}
+                  whileHover={isEnabled ? { y: -2 } : {}}
+                  transition={{ duration: 0.2 }}
+                >
                   <div className="font-semibold text-gray-900 text-sm">{freq.name}</div>
                   <div className="text-blue-600 font-medium text-xs">{freq.hz} Hz</div>
                   <div className="text-gray-500 text-xs">{freq.studies} studies</div>
                   <div className="text-green-600 font-semibold text-xs">{freq.efficacy}% efficacy</div>
-                </div>
+                </motion.div>
               ))}
             </div>
             
@@ -144,14 +215,15 @@ export default function FrequencyLab({ featuredFrequencies, totalFrequencies, pl
               <Link href="/frequencies">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4"
+                  className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4 transition-all ${!isEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={!isEnabled}
                 >
                   Explore Complete Database ({totalFrequencies} Frequencies)
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

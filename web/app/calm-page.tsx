@@ -1,14 +1,20 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { audioEngine } from '@/lib/real-audio-engine'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { frequencies } from '@/lib/frequencies'
 import { calmDesignSystem } from '@/lib/calmDesignSystem'
 import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
-import MedicalDisclaimer from '@/components/ui/MedicalDisclaimer'
-import { useDisclaimerRequired, medicalCompliance } from '@/lib/disclaimerState'
+import ScrollProgress, { ScrollIndicator } from '@/components/ui/ScrollProgress'
+import { 
+  useScrollStory, 
+  useScrollSection, 
+  defaultScrollSections,
+  validateMedicalCompliance 
+} from '@/lib/scrollStory'
 import { FrequencySafetyValidator } from '@/lib/medicalSafety'
 import { UserHealthProfileManager } from '@/lib/userHealthProfile'
 import { 
@@ -27,7 +33,9 @@ import {
   CheckCircle,
   ArrowRight,
   Menu,
-  X
+  X,
+  Shield,
+  AlertTriangle
 } from 'lucide-react'
 
 export default function CalmFrequencyApp() {
@@ -36,44 +44,64 @@ export default function CalmFrequencyApp() {
   const [volume, setVolume] = useState(75)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   
-  // Medical disclaimer state
-  const { isRequired: isDisclaimerRequired, acceptDisclaimer, resetDisclaimer } = useDisclaimerRequired()
+  // Scroll story state - replaces modal-based disclaimer
+  const {
+    scrollProgress,
+    currentSection,
+    sectionsRead,
+    medicalComplianceProgress,
+    isReadyToStart,
+    sections,
+    markSectionAsRead,
+    fps
+  } = useScrollStory(defaultScrollSections)
 
-  const handleDisclaimerAccept = () => {
-    acceptDisclaimer()
-    
-    // Log compliance acceptance
-    console.log('[Medical Compliance]', {
-      action: 'disclaimer_accepted',
-      timestamp: new Date().toISOString(),
-      metadata: medicalCompliance.getComplianceMetadata()
-    })
-  }
+  // Section refs for scroll tracking
+  const { ref: heroRef, isInView: heroInView } = useScrollSection('hero')
+  const { ref: howItWorksRef, isInView: howItWorksInView } = useScrollSection('how-it-works')
+  const { ref: medicalInfoRef, isInView: medicalInfoInView } = useScrollSection('medical-info')
+  const { ref: safetyRef, isInView: safetyInView } = useScrollSection('safety-guidelines')
+  const { ref: startTherapyRef, isInView: startTherapyInView } = useScrollSection('start-therapy')
 
-  const handleDisclaimerDecline = () => {
-    // Reset disclaimer state and redirect or show message
-    console.log('[Medical Compliance] User declined medical disclaimer')
-    
-    // In a real app, you might redirect to a "declined" page or show an info message
-    // For now, we'll just reset the disclaimer state
-    resetDisclaimer()
-    
-    alert('You must accept the medical disclaimer to use frequency therapy features. You can return to this page anytime to review and accept.')
-  }
+  // Parallax transforms for hero section
+  const { scrollY } = useScroll()
+  const heroY = useTransform(scrollY, [0, 500], [0, 150])
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0.3])
 
   const handlePlay = async (frequencyId: string) => {
-    // Check medical compliance before allowing frequency therapy
-    const sessionValid = medicalCompliance.validateSession()
-    if (!sessionValid.valid) {
-      console.warn('[Medical Compliance] Session invalid:', sessionValid.reason)
-      resetDisclaimer() // Force disclaimer to show again
+    // Check medical compliance through scroll progress instead of modal
+    const complianceValidation = validateMedicalCompliance(medicalComplianceProgress, sectionsRead)
+    
+    if (!complianceValidation.isValid) {
+      console.warn('[Medical Compliance] Scroll-based validation failed:', {
+        progress: medicalComplianceProgress,
+        missing: complianceValidation.missingRequirements
+      })
+      
+      // Scroll to first missing section instead of showing modal
+      const firstMissing = complianceValidation.missingRequirements[0]
+      const targetSection = sections.find(s => s.id === firstMissing)
+      
+      if (targetSection) {
+        const targetProgress = targetSection.minProgress
+        const targetY = targetProgress * document.documentElement.scrollHeight
+        
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        })
+        
+        // Show toast notification
+        console.log('[ScrollStory] Redirecting to medical compliance section:', firstMissing)
+      }
+      
       return
     }
 
     const frequency = frequencies.find(f => f.id === frequencyId)
     if (!frequency || !audioEngine) return
 
-    // Validate frequency safety
+    // Existing frequency safety validation...
     const frequencyInput = {
       hz_value: frequency.hz_value,
       duration_minutes: frequency.duration_minutes,
@@ -88,7 +116,6 @@ export default function CalmFrequencyApp() {
       return
     }
 
-    // Check user health profile for contraindications
     const userProfile = UserHealthProfileManager.getProfile()
     const contraindications = FrequencySafetyValidator.checkContraindications(
       safetyValidation.frequency!,
@@ -108,7 +135,6 @@ export default function CalmFrequencyApp() {
       return
     }
 
-    // Show warnings for supervision required
     if (contraindications.requiresSupervision) {
       const supervisionWarning = [
         'Medical supervision recommended:',
@@ -124,7 +150,6 @@ export default function CalmFrequencyApp() {
       }
     }
 
-    // Show safety warnings if any
     if (contraindications.warnings.length > 0 && !contraindications.isContraindicated) {
       const generalWarnings = [
         'Safety Notice:',
@@ -140,75 +165,54 @@ export default function CalmFrequencyApp() {
       }
     }
 
-    console.log('[AudioEngine] Play request:', {
-      frequencyId,
-      currentlyPlaying: playingFrequency,
-      frequency: frequency.name,
-      hz: frequency.hz_value,
-      timestamp: new Date().toISOString(),
-      complianceValid: true,
-      safetyChecked: true,
-      contraindications: contraindications.warnings.length > 0 ? contraindications.warnings : 'none'
-    })
-
+    // Audio playback logic
     if (playingFrequency === frequencyId) {
-      // Stop current audio
       audioEngine.stop()
       setPlayingFrequency(null)
       console.log('[AudioEngine] Stopped audio')
     } else {
-      // Stop any other playing audio
       audioEngine.stop()
       
-      // Start new audio
       const success = await audioEngine.play(frequency.hz_value, volume / 100)
       if (success) {
         setPlayingFrequency(frequencyId)
         console.log('[AudioEngine] Successfully started audio')
         
-        // Log safety validation for compliance tracking
         console.log('[Medical Compliance] Frequency session started:', {
           action: 'frequency_started',
           frequencyId,
           hz: frequency.hz_value,
           tier: frequency.tier,
-          safetyWarnings: contraindications.warnings.length,
-          requiresSupervision: contraindications.requiresSupervision,
+          complianceProgress: medicalComplianceProgress,
+          scrollProgress: scrollProgress,
           timestamp: new Date().toISOString()
         })
       } else {
-        // Fallback: still show playing state even if audio fails
         setPlayingFrequency(frequencyId)
         console.warn('[AudioEngine] Audio playback failed, but continuing with visual state')
       }
     }
   }
 
-  // Handle volume changes
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseInt(e.target.value)
     setVolume(newVolume)
-    // Update real-time volume if audio is playing
     if (audioEngine) {
       audioEngine.setVolume(newVolume / 100)
     }
   }
 
-  // Handle mute/unmute
   const handleMuteToggle = () => {
     setIsMuted(!isMuted)
     if (audioEngine) {
       if (!isMuted) {
-        // Muting
         audioEngine.setVolume(0)
       } else {
-        // Unmuting
         audioEngine.setVolume(volume / 100)
       }
     }
   }
 
-  // Cleanup audio on component unmount
   useEffect(() => {
     return () => {
       if (audioEngine) {
@@ -217,252 +221,607 @@ export default function CalmFrequencyApp() {
     }
   }, [])
 
-  // Featured frequencies (first 6)
   const featuredFrequencies = frequencies.slice(0, 6)
 
   return (
     <>
-      {/* Medical Disclaimer Modal */}
-      <MedicalDisclaimer
-        isVisible={isDisclaimerRequired}
-        onAccept={handleDisclaimerAccept}
-        onDecline={handleDisclaimerDecline}
-      />
+      {/* Scroll Progress Indicators */}
+      <ScrollProgress showPercentage={false} height={3} />
+      <ScrollIndicator />
+      
+      {/* Performance Monitor (dev only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 left-4 bg-black/80 text-white text-xs p-2 rounded z-50">
+          FPS: {Math.round(fps)} | Section: {currentSection} | Progress: {Math.round(scrollProgress * 100)}%
+        </div>
+      )}
       
       <div className="min-h-screen animated-bg neural-pattern">
-      {/* Header */}
-      <header className="sticky top-0 z-50 glass-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 float-animation">
-                <Waves className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">FreqHeal</h1>
-                <p className="text-sm text-blue-600 font-medium">Terapia de Frecuencias</p>
-              </div>
-            </div>
-            
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                Frecuencias
-              </Link>
-              <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                Biblioteca
-              </Link>
-              <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                Mi Perfil
-              </Link>
-              <button className="btn-primary-glow text-white px-8 py-3 rounded-2xl font-semibold transition-all duration-300">
-                Premium
-              </button>
-            </nav>
-
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:bg-white/20 rounded-lg transition-colors"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        {/* Floating particles */}
-        <div className="particles">
-          <div className="particle float-animation" style={{left: '10%', top: '20%'}}></div>
-          <div className="particle float-animation" style={{left: '80%', top: '40%'}}></div>
-          <div className="particle float-animation" style={{left: '30%', top: '60%'}}></div>
-          <div className="particle float-animation" style={{left: '70%', top: '80%'}}></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-20">
-            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
-              Encuentra tu
-              <span className="hero-gradient block mt-2"> equilibrio</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light">
-              Terapia de frecuencias científicamente respaldada para reducir el estrés, 
-              mejorar el sueño y aumentar tu bienestar mental.
-            </p>
-            
-            {/* Audio Visualizer with playing state */}
-            <div className="max-w-lg mx-auto mb-12">
-              <div className={`glass-card p-8 rounded-3xl ${playingFrequency ? 'playing' : ''}`}>
-                <div className="flex items-center justify-center mb-6">
-                  <div className={`audio-wave ${playingFrequency ? 'active' : ''}`}>
-                    <div className="freq-bar h-6"></div>
-                    <div className="freq-bar h-8"></div>
-                    <div className="freq-bar h-4"></div>
-                    <div className="freq-bar h-10"></div>
-                    <div className="freq-bar h-6"></div>
-                    <div className="freq-bar h-8"></div>
-                    <div className="freq-bar h-4"></div>
-                    <div className="freq-bar h-10"></div>
-                  </div>
+        {/* Header - Updated with scroll-based medical compliance indicator */}
+        <header className="sticky top-0 z-40 glass-card">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 float-animation">
+                  <Waves className="w-7 h-7 text-white" />
                 </div>
-                <p className="text-gray-600 mb-4">
-                  {playingFrequency ? `Reproduciendo: ${frequencies.find(f => f.id === playingFrequency)?.name}` : 'Selecciona una frecuencia para comenzar'}
-                </p>
-                {playingFrequency && (
-                  <div className="text-sm text-blue-600 font-medium">
-                    {frequencies.find(f => f.id === playingFrequency)?.hz_value} Hz • {frequencies.find(f => f.id === playingFrequency)?.category}
-                  </div>
-                )}
+                <div>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">FreqHeal</h1>
+                  <p className="text-sm text-blue-600 font-medium">Terapia de Frecuencias</p>
+                </div>
               </div>
-            </div>
+              
+              {/* Medical Compliance Progress Indicator */}
+              <div className="hidden md:flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Shield className={`w-5 h-5 ${isReadyToStart ? 'text-green-600' : 'text-amber-500'}`} />
+                  <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <motion.div 
+                      className={`h-full ${isReadyToStart ? 'bg-green-500' : 'bg-amber-400'}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${medicalComplianceProgress * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium">
+                    {isReadyToStart ? 'Ready' : `${Math.round(medicalComplianceProgress * 100)}%`}
+                  </span>
+                </div>
+              </div>
 
-            {/* Audio controls */}
-            <div className="flex items-center justify-center space-x-4 mb-8">
-              <button
-                onClick={handleMuteToggle}
-                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              <nav className="hidden lg:flex items-center space-x-8">
+                <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                  Frecuencias
+                </Link>
+                <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                  Biblioteca
+                </Link>
+                <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                  Mi Perfil
+                </Link>
+                <motion.button 
+                  className="btn-primary-glow text-white px-8 py-3 rounded-2xl font-semibold"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Premium
+                </motion.button>
+              </nav>
+
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 text-gray-700 hover:bg-white/20 rounded-lg transition-colors"
               >
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-              </button>
-              
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">Vol:</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                />
-                <span className="text-sm text-gray-700 font-medium w-8">{volume}%</span>
-              </div>
-              
-              <button className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                <Settings className="w-5 h-5" />
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Frequency Laboratory */}
-      <FrequencyLab 
-        featuredFrequencies={featuredFrequencies}
-        totalFrequencies={frequencies.length}
-        playingFrequency={playingFrequency}
-        onFrequencySelect={handlePlay}
-      />
-
-      {/* Benefits Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              ¿Por qué FreqHeal?
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              La única app que combina terapia de frecuencias científica con una experiencia de usuario excepcional.
-            </p>
+        {/* Hero Section with Parallax */}
+        <motion.section 
+          ref={heroRef as any}
+          className="relative py-20 md:py-28 overflow-hidden"
+          style={{ y: heroY, opacity: heroOpacity }}
+        >
+          {/* Floating particles */}
+          <div className="particles">
+            <motion.div 
+              className="particle"
+              style={{left: '10%', top: '20%'}}
+              animate={{ y: [-20, 20, -20] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="particle"
+              style={{left: '80%', top: '40%'}}
+              animate={{ y: [20, -20, 20] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+            <motion.div 
+              className="particle"
+              style={{left: '30%', top: '60%'}}
+              animate={{ y: [-15, 15, -15] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            />
+            <motion.div 
+              className="particle"
+              style={{left: '70%', top: '80%'}}
+              animate={{ y: [25, -25, 25] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+            />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Star className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Científicamente Probado</h3>
-              <p className="text-gray-600">
-                Basado en más de 47 estudios clínicos con una efectividad del 94.7% en la reducción del estrés.
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center max-w-4xl mx-auto mb-20">
+              <motion.h1 
+                className="text-5xl md:text-7xl font-black mb-8 leading-tight"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.2 }}
+              >
+                Encuentra tu
+                <span className="hero-gradient block mt-2"> equilibrio</span>
+              </motion.h1>
+              
+              <motion.p 
+                className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.4 }}
+              >
+                Terapia de frecuencias científicamente respaldada para reducir el estrés, 
+                mejorar el sueño y aumentar tu bienestar mental.
+              </motion.p>
+              
+              {/* Audio Visualizer */}
+              <motion.div 
+                className="max-w-lg mx-auto mb-12"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.6 }}
+              >
+                <div className={`glass-card p-8 rounded-3xl ${playingFrequency ? 'playing' : ''}`}>
+                  <div className="flex items-center justify-center mb-6">
+                    <div className={`audio-wave ${playingFrequency ? 'active' : ''}`}>
+                      <div className="freq-bar h-6"></div>
+                      <div className="freq-bar h-8"></div>
+                      <div className="freq-bar h-4"></div>
+                      <div className="freq-bar h-10"></div>
+                      <div className="freq-bar h-6"></div>
+                      <div className="freq-bar h-8"></div>
+                      <div className="freq-bar h-4"></div>
+                      <div className="freq-bar h-10"></div>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    {playingFrequency ? `Reproduciendo: ${frequencies.find(f => f.id === playingFrequency)?.name}` : 'Continúa scrolling para acceder a las frecuencias'}
+                  </p>
+                  {playingFrequency && (
+                    <div className="text-sm text-blue-600 font-medium">
+                      {frequencies.find(f => f.id === playingFrequency)?.hz_value} Hz • {frequencies.find(f => f.id === playingFrequency)?.category}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Audio controls */}
+              <motion.div 
+                className="flex items-center justify-center space-x-4 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.8 }}
+              >
+                <button
+                  onClick={handleMuteToggle}
+                  className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                </button>
+                
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-500">Vol:</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-700 font-medium w-8">{volume}%</span>
+                </div>
+                
+                <button className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                  <Settings className="w-5 h-5" />
+                </button>
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* How It Works Section */}
+        <motion.section 
+          ref={howItWorksRef as any}
+          className="py-16 bg-gradient-to-br from-gray-50 to-blue-50/50"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-10%" }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                ¿Cómo Funciona?
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                La ciencia detrás de la terapia de frecuencias y por qué es tan efectiva.
               </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <motion.div 
+                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Brain className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Ondas Cerebrales</h3>
+                <p className="text-gray-600">
+                  Las frecuencias específicas sincronizan con las ondas cerebrales naturales, promoviendo estados deseados de relajación o concentración.
+                </p>
+              </motion.div>
+
+              <motion.div 
+                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Waves className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Resonancia</h3>
+                <p className="text-gray-600">
+                  El fenómeno de resonancia permite que el cuerpo se alinee naturalmente con las frecuencias terapéuticas.
+                </p>
+              </motion.div>
+
+              <motion.div 
+                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Heart className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Bienestar</h3>
+                <p className="text-gray-600">
+                  El resultado es una sensación profunda de calma, mejor sueño, reducción del estrés y mayor claridad mental.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Medical Information Section - Replaces Modal */}
+        <motion.section 
+          ref={medicalInfoRef as any}
+          className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-20%" }}
+        >
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="flex items-center justify-center mb-6">
+                <Shield className="w-12 h-12 text-blue-600" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Información Médica Importante
+              </h2>
+              <p className="text-lg text-gray-600">
+                Tu seguridad es nuestra prioridad. Por favor lee esta información antes de continuar.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="glass-card p-8 rounded-3xl"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6">Aviso Médico</h3>
+              
+              <div className="space-y-4 text-gray-700 mb-8">
+                <p>
+                  <strong>Esta aplicación NO sustituye el consejo médico profesional.</strong> Las frecuencias de audio son para fines de bienestar general y relajación únicamente.
+                </p>
+                
+                <p>
+                  Si tienes condiciones médicas preexistentes, especialmente relacionadas con el sistema nervioso, cardiovascular o auditivo, consulta con un profesional de la salud antes de usar terapia de frecuencias.
+                </p>
+                
+                <p>
+                  <strong>Contraindicaciones:</strong> No usar si tienes epilepsia, problemas cardíacos graves, implantes cocleares, o estás embarazada sin supervisión médica.
+                </p>
+                
+                <p>
+                  Las frecuencias pueden afectar a cada persona de manera diferente. Comienza con volúmenes bajos y sesiones cortas.
+                </p>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
+                <div className="flex items-start space-x-3">
+                  <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-amber-800 mb-2">Importante</h4>
+                    <p className="text-amber-700">
+                      Si experimentas mareos, náuseas, dolor de cabeza o cualquier malestar durante el uso, 
+                      detén la sesión inmediatamente y consulta con un médico si los síntomas persisten.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span>Al continuar scrolling, reconoces que has leído esta información</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Safety Guidelines Section */}
+        <motion.section 
+          ref={safetyRef as any}
+          className="py-20 bg-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-20%" }}
+        >
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Pautas de Seguridad
+              </h2>
+              <p className="text-lg text-gray-600">
+                Usa FreqHeal de manera segura y efectiva siguiendo estas recomendaciones.
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <motion.div 
+                className="p-6 rounded-2xl border border-gray-100"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">✅ Recomendado</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li>• Usar auriculares de calidad para mejor efecto</li>
+                  <li>• Comenzar con volumen bajo (30-40%)</li>
+                  <li>• Sesiones de 10-15 minutos inicialmente</li>
+                  <li>• Ambiente tranquilo y relajado</li>
+                  <li>• Hidratarse antes y después</li>
+                  <li>• Llevar un registro de tu experiencia</li>
+                </ul>
+              </motion.div>
+
+              <motion.div 
+                className="p-6 rounded-2xl border border-red-100 bg-red-50/30"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h3 className="text-xl font-semibold text-red-900 mb-4">⛔ Evitar</h3>
+                <ul className="space-y-3 text-red-700">
+                  <li>• Volumen alto o uso excesivo</li>
+                  <li>• Sesiones mientras conduces</li>
+                  <li>• Usar si tienes problemas auditivos</li>
+                  <li>• Combinar con alcohol o drogas</li>
+                  <li>• Ignorar señales de malestar</li>
+                  <li>• Usar como tratamiento médico</li>
+                </ul>
+              </motion.div>
             </div>
 
-            <div className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Heart className="w-8 h-8 text-white" />
+            <motion.div 
+              className="mt-12 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="inline-flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-6 py-3 rounded-full">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span>Pautas de seguridad leídas - Ya puedes acceder a las frecuencias</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Fácil de Usar</h3>
-              <p className="text-gray-600">
-                Interfaz intuitiva diseñada para que cualquier persona pueda beneficiarse de la terapia de frecuencias.
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Frequency Laboratory - Now Enabled by Scroll Progress */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <FrequencyLab 
+            featuredFrequencies={featuredFrequencies}
+            totalFrequencies={frequencies.length}
+            playingFrequency={playingFrequency}
+            onFrequencySelect={handlePlay}
+            isEnabled={isReadyToStart}
+            complianceProgress={medicalComplianceProgress}
+          />
+        </motion.div>
+
+        {/* Start Therapy CTA Section */}
+        <motion.section 
+          ref={startTherapyRef as any}
+          className="py-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 text-white relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-10%" }}
+        >
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="neural-pattern w-full h-full"></div>
+          </div>
+
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Comienza Tu Viaje de Sanación
+              </h2>
+              
+              <p className="text-xl md:text-2xl mb-12 text-blue-100">
+                Miles de personas ya han transformado su bienestar con FreqHeal. 
+                Tu momento es ahora.
               </p>
+
+              <div className="space-y-6">
+                {isReadyToStart ? (
+                  <motion.button
+                    className="btn-primary-glow bg-white text-indigo-600 px-12 py-4 rounded-2xl font-bold text-lg shadow-xl"
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                  >
+                    <span className="flex items-center justify-center space-x-2">
+                      <Play className="w-6 h-6" />
+                      <span>Comenzar Ahora</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </span>
+                  </motion.button>
+                ) : (
+                  <motion.div
+                    className="bg-white/10 border border-white/20 px-8 py-4 rounded-2xl backdrop-blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="flex items-center justify-center space-x-3 mb-2">
+                      <Shield className="w-5 h-5" />
+                      <span className="font-medium">Revisión de Seguridad</span>
+                    </div>
+                    <p className="text-sm text-blue-100 mb-4">
+                      Lee la información médica y de seguridad arriba para desbloquear las frecuencias
+                    </p>
+                    <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+                      <motion.div 
+                        className="h-full bg-gradient-to-r from-green-400 to-blue-400"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${medicalComplianceProgress * 100}%` }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                    <p className="text-xs text-blue-200 mt-2">
+                      {Math.round(medicalComplianceProgress * 100)}% completado
+                    </p>
+                  </motion.div>
+                )}
+
+                <div className="flex items-center justify-center space-x-8 text-sm text-blue-200">
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-4 h-4" />
+                    <span>127K+ usuarios</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Heart className="w-4 h-4" />
+                    <span>94.7% efectividad</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Shield className="w-4 h-4" />
+                    <span>100% seguro</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Footer */}
+        <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-12">
+              <div>
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center">
+                    <Waves className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold">FreqHeal</h3>
+                </div>
+                <p className="text-blue-200 mb-6">
+                  La aplicación líder en terapia de frecuencias para el bienestar mental y físico.
+                </p>
+                <div className="flex space-x-4">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-blue-400">127K+</div>
+                    <div className="text-xs text-blue-200">Usuarios</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-indigo-400">94.7%</div>
+                    <div className="text-xs text-blue-200">Efectividad</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-purple-400">47</div>
+                    <div className="text-xs text-blue-200">Estudios</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-white mb-6">Frecuencias</h4>
+                <ul className="space-y-3 text-blue-200">
+                  <li><Link href="/sleep" className="hover:text-white transition-colors">Sueño</Link></li>
+                  <li><Link href="/focus" className="hover:text-white transition-colors">Concentración</Link></li>
+                  <li><Link href="/meditation" className="hover:text-white transition-colors">Meditación</Link></li>
+                  <li><Link href="/healing" className="hover:text-white transition-colors">Sanación</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-white mb-6">Soporte</h4>
+                <ul className="space-y-3 text-blue-200">
+                  <li><Link href="/help" className="hover:text-white transition-colors">Centro de Ayuda</Link></li>
+                  <li><Link href="/research" className="hover:text-white transition-colors">Investigación</Link></li>
+                  <li><Link href="/medical" className="hover:text-white transition-colors">Información Médica</Link></li>
+                  <li><Link href="/contact" className="hover:text-white transition-colors">Contacto</Link></li>
+                </ul>
+              </div>
             </div>
 
-            <div className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Sparkles className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Personalizable</h3>
-              <p className="text-gray-600">
-                Ajusta duración, intensidad y combina con música ambiente para crear tu experiencia perfecta.
+            <div className="border-t border-blue-700 mt-12 pt-8 text-center text-blue-200 text-sm">
+              <p>
+                © 2024 FreqHeal. Plataforma de terapia de frecuencias para bienestar.
+                <br />
+                <span className="text-xs">
+                  No está destinado a diagnosticar, tratar, curar o prevenir enfermedades. Consulte a su médico.
+                </span>
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center">
-                  <Waves className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold">FreqHeal</h3>
-              </div>
-              <p className="text-blue-200 mb-6">
-                La aplicación líder en terapia de frecuencias para el bienestar mental y físico.
-              </p>
-              <div className="flex space-x-4">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-blue-400">127K+</div>
-                  <div className="text-xs text-blue-200">Usuarios</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-indigo-400">94.7%</div>
-                  <div className="text-xs text-blue-200">Efectividad</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-purple-400">47</div>
-                  <div className="text-xs text-blue-200">Estudios</div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-6">Frecuencias</h4>
-              <ul className="space-y-3 text-blue-200">
-                <li><Link href="/sleep" className="hover:text-white transition-colors">Sueño</Link></li>
-                <li><Link href="/focus" className="hover:text-white transition-colors">Concentración</Link></li>
-                <li><Link href="/meditation" className="hover:text-white transition-colors">Meditación</Link></li>
-                <li><Link href="/healing" className="hover:text-white transition-colors">Sanación</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-6">Soporte</h4>
-              <ul className="space-y-3 text-blue-200">
-                <li><Link href="/help" className="hover:text-white transition-colors">Centro de Ayuda</Link></li>
-                <li><Link href="/research" className="hover:text-white transition-colors">Investigación</Link></li>
-                <li><Link href="/medical" className="hover:text-white transition-colors">Información Médica</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contacto</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-blue-700 mt-12 pt-8 text-center text-blue-200 text-sm">
-            <p>
-              © 2024 FreqHeal. Plataforma de terapia de frecuencias para bienestar.
-              <br />
-              <span className="text-xs">
-                No está destinado a diagnosticar, tratar, curar o prevenir enfermedades. Consulte a su médico.
-              </span>
-            </p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </>
+        </footer>
+      </div>
+    </>
   )
 }

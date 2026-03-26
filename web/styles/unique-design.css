@@ -167,3 +167,85 @@
     backdrop-filter: blur(15px);
   }
 }
+
+/* Scroll-based animations and effects */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-parallax {
+  will-change: transform;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Progressive disclosure medical sections */
+.medical-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  transition: all 0.5s ease;
+}
+
+.medical-section.viewed {
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.1);
+}
+
+/* Scroll progress animations */
+.progress-indicator {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-indicator.complete {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Enhanced particles for scroll sections */
+.scroll-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scroll-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6), transparent);
+  border-radius: 50%;
+  animation: scrollFloat 12s ease-in-out infinite;
+}
+
+@keyframes scrollFloat {
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-100px) translateX(20px) scale(1.2); opacity: 0.8; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-200px) translateX(-10px) scale(0.8); opacity: 0; }
+}
+
+/* Performance optimizations for scroll */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Stagger animations for sections */
+.stagger-animation {
+  animation-delay: calc(var(--stagger-delay, 0) * 0.1s);
+}
