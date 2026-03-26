@@ -8,10 +8,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "analyze": "next experimental-analyze",
+    "analyze:webpack": "ANALYZE=true next build --webpack",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --watchAll=false --coverage"
+    "test:ci": "jest --ci --watchAll=false --coverage",
+    "test:performance": "playwright test tests/performance/",
+    "test:lighthouse": "playwright test tests/performance/lighthouse.spec.ts",
+    "test:cross-browser": "playwright test tests/performance/ --project=chromium --project=firefox --project=webkit",
+    "audit:performance": "bash scripts/performance-audit.sh",
+    "playwright:install": "playwright install"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -30,10 +37,13 @@
     "recharts": "^2.10.3",
     "tailwind-merge": "^2.2.0",
     "tone": "^14.7.77",
+    "web-vitals": "^5.2.0",
     "zod": "^3.22.4",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.1",
+    "@playwright/test": "^1.58.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -49,8 +59,11 @@
     "jest": "^30.3.0",
     "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^30.3.0",
+    "lighthouse": "^13.0.3",
+    "playwright": "^1.58.2",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack-bundle-analyzer": "^5.3.0"
   }
 }

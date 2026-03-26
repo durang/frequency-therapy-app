@@ -1,11 +1,28 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 const nextConfig = {
   // Performance optimizations
   poweredByHeader: false,
   reactStrictMode: true,
   
   experimental: {
-    // Remove invalid turbo option for Next.js 16 compatibility
+    // Next.js 16 optimization features
+    optimizeCss: true,
+    optimizePackageImports: [
+      '@headlessui/react',
+      'lucide-react',
+      'framer-motion',
+      'recharts',
+      'tone'
+    ],
+  },
+
+  // Turbopack configuration for Next.js 16
+  turbopack: {
+    // Empty configuration to satisfy requirement
   },
   
   // Image optimization
@@ -28,6 +45,71 @@ const nextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  
+  // Bundle optimization
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Bundle analysis optimizations
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for shared dependencies
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/]/,
+              priority: 20,
+              enforce: true,
+            },
+            // Common chunk for shared code
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true,
+            },
+            // UI library chunk
+            ui: {
+              name: 'ui',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/](@headlessui|framer-motion|lucide-react)[\\/]/,
+              priority: 30,
+              enforce: true,
+            },
+            // Charts library chunk
+            charts: {
+              name: 'charts',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/](recharts)[\\/]/,
+              priority: 25,
+              enforce: true,
+            },
+          },
+        },
+      }
+    }
+
+    // Bundle size analysis
+    if (process.env.ANALYZE === 'true') {
+      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+          reportFilename: isServer ? 'server-bundle-report.html' : 'client-bundle-report.html',
+        })
+      )
+    }
+
+    return config
   },
   
   env: {
@@ -60,4 +142,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)

@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import { generateMedicalMetadata, generateMedicalSchema, generateHealthAppSchema } from '@/lib/medicalMetadata'
 import { ClientAccessibilityControls } from '@/components/ui/ClientAccessibilityControls'
 import { ClientEmergencyHandler } from '@/components/ui/ClientEmergencyHandler'
+import { reportWebVitals } from '@/lib/performance-monitoring'
 
 // Optimized font loading
 const inter = Inter({ 
@@ -28,6 +29,11 @@ const instrumentSerif = Instrument_Serif({
 
 // Medical-grade metadata
 export const metadata: Metadata = generateMedicalMetadata()
+
+// Enable Web Vitals reporting for production performance monitoring
+export function useReportWebVitals(metric: any) {
+  reportWebVitals(metric)
+}
 
 export default function RootLayout({
   children,

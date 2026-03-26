@@ -119,6 +119,9 @@ const FrequencyVisualizer = memo(({ frequency, isActive, isPlaying, onActivate }
           : 'bg-white hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50 shadow-xl hover:shadow-2xl'
       }`}
       onClick={onActivate}
+      data-testid="frequency-card"
+      data-frequency-id={frequency.id}
+      data-frequency-hz={frequency.hz_value}
     >
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -126,13 +129,16 @@ const FrequencyVisualizer = memo(({ frequency, isActive, isPlaying, onActivate }
           <p className="text-base text-blue-600 font-semibold">{frequency.hz_value} Hz</p>
           <p className="text-sm text-gray-500 mt-1">{frequency.category || 'Therapeutic'}</p>
         </div>
-        <div className={`p-3 rounded-2xl transition-all duration-300 ${
-          isPlaying 
-            ? 'bg-green-500 shadow-lg shadow-green-500/30' 
-            : isActive 
-            ? 'bg-blue-500' 
-            : 'bg-gray-200'
-        }`}>
+        <div 
+          className={`p-3 rounded-2xl transition-all duration-300 ${
+            isPlaying 
+              ? 'bg-green-500 shadow-lg shadow-green-500/30' 
+              : isActive 
+              ? 'bg-blue-500' 
+              : 'bg-gray-200'
+          }`}
+          data-testid="audio-controls"
+        >
           <Volume2 className={`w-6 h-6 ${isPlaying || isActive ? 'text-white' : 'text-gray-600'}`} />
         </div>
       </div>
@@ -142,6 +148,7 @@ const FrequencyVisualizer = memo(({ frequency, isActive, isPlaying, onActivate }
         width={350}
         height={120}
         className="w-full h-28 mb-6 rounded-xl"
+        data-testid="frequency-visualization"
       />
       
       <p className="text-sm text-gray-700 mb-6 line-clamp-3 leading-relaxed">{frequency.description}</p>
@@ -171,6 +178,7 @@ const FrequencyVisualizer = memo(({ frequency, isActive, isPlaying, onActivate }
               : 'hover:bg-blue-50'
           }`}
           aria-label={`Play ${frequency.name} frequency at ${frequency.hz_value} Hz`}
+          data-testid="play-button"
         >
           {isPlaying ? (
             <span className="flex items-center">

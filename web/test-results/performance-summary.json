@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-26T21:46:44.177Z",
+  "testRun": {
+    "total": 6,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit",
+      "edge",
+      "Mobile Chrome",
+      "Mobile Safari"
+    ],
+    "baseURL": "http://localhost:3000"
+  },
+  "reports": {
+    "lighthouse": 0,
+    "crossBrowser": true,
+    "performanceRegression": true
+  },
+  "thresholds": {
+    "desktop": {
+      "performance": 90,
+      "accessibility": 95,
+      "bestPractices": 90,
+      "seo": 95,
+      "lcp": 2500,
+      "fid": 100,
+      "cls": 0.1
+    },
+    "mobile": {
+      "performance": 80,
+      "lcp": 4000,
+      "cls": 0.15,
+      "fcp": 3000
+    }
+  },
+  "notes": [
+    "Lighthouse audits run only on Chromium browsers",
+    "Cross-browser tests validate consistent performance",
+    "Performance regression tracking enabled",
+    "Core Web Vitals monitored across all test runs"
+  ]
+}

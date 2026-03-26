@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2026-03-26T21:46:38.819Z",
+  "thresholds": {
+    "desktop": {
+      "performance": 90,
+      "lcp": 2500,
+      "fid": 100,
+      "cls": 0.1,
+      "fcp": 1800,
+      "ttfb": 600
+    },
+    "mobile": {
+      "performance": 80,
+      "lcp": 4000,
+      "fid": 100,
+      "cls": 0.15,
+      "fcp": 3000,
+      "ttfb": 800
+    }
+  }
+}
