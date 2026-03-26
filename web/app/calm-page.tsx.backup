@@ -9,7 +9,6 @@ import { frequencies } from '@/lib/frequencies'
 import { calmDesignSystem } from '@/lib/calmDesignSystem'
 import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
 import ScrollProgress, { ScrollIndicator } from '@/components/ui/ScrollProgress'
-import MedicalScrollSections from '@/components/landing/MedicalScrollSections'
 import { 
   useScrollStory, 
   useScrollSection, 
@@ -44,7 +43,6 @@ export default function CalmFrequencyApp() {
   const [isMuted, setIsMuted] = useState(false)
   const [volume, setVolume] = useState(75)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [explicitMedicalProgress, setExplicitMedicalProgress] = useState(0)
   
   // Scroll story state - replaces modal-based disclaimer
   const {
@@ -57,9 +55,6 @@ export default function CalmFrequencyApp() {
     markSectionAsRead,
     fps
   } = useScrollStory(defaultScrollSections)
-
-  // Enhanced medical compliance - combines scroll story readiness with explicit medical progress
-  const isFullyReady = isReadyToStart && explicitMedicalProgress >= 1.0
 
   // Section refs for scroll tracking
   const { ref: heroRef, isInView: heroInView } = useScrollSection('hero')
@@ -501,6 +496,83 @@ export default function CalmFrequencyApp() {
           </div>
         </motion.section>
 
+        {/* Medical Information Section - Replaces Modal */}
+        <motion.section 
+          ref={medicalInfoRef as any}
+          className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-20%" }}
+        >
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="flex items-center justify-center mb-6">
+                <Shield className="w-12 h-12 text-blue-600" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Información Médica Importante
+              </h2>
+              <p className="text-lg text-gray-600">
+                Tu seguridad es nuestra prioridad. Por favor lee esta información antes de continuar.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="glass-card p-8 rounded-3xl"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6">Aviso Médico</h3>
+              
+              <div className="space-y-4 text-gray-700 mb-8">
+                <p>
+                  <strong>Esta aplicación NO sustituye el consejo médico profesional.</strong> Las frecuencias de audio son para fines de bienestar general y relajación únicamente.
+                </p>
+                
+                <p>
+                  Si tienes condiciones médicas preexistentes, especialmente relacionadas con el sistema nervioso, cardiovascular o auditivo, consulta con un profesional de la salud antes de usar terapia de frecuencias.
+                </p>
+                
+                <p>
+                  <strong>Contraindicaciones:</strong> No usar si tienes epilepsia, problemas cardíacos graves, implantes cocleares, o estás embarazada sin supervisión médica.
+                </p>
+                
+                <p>
+                  Las frecuencias pueden afectar a cada persona de manera diferente. Comienza con volúmenes bajos y sesiones cortas.
+                </p>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
+                <div className="flex items-start space-x-3">
+                  <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-amber-800 mb-2">Importante</h4>
+                    <p className="text-amber-700">
+                      Si experimentas mareos, náuseas, dolor de cabeza o cualquier malestar durante el uso, 
+                      detén la sesión inmediatamente y consulta con un médico si los síntomas persisten.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span>Al continuar scrolling, reconoces que has leído esta información</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
 
         {/* Medical Scroll Sections - Replaces Modal UX */}
         <section 
@@ -688,3 +760,8 @@ export default function CalmFrequencyApp() {
     </>
   )
 }
+
+  // Enhanced medical compliance state
+  const [explicitMedicalProgress, setExplicitMedicalProgress] = useState(0)
+  const isFullyReady = isReadyToStart && explicitMedicalProgress >= 1.0
+import MedicalScrollSections from '@/components/landing/MedicalScrollSections'

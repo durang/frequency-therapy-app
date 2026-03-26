@@ -1,5 +1,6 @@
 'use client'
 
+// Enhanced disclaimer state for scroll-based compliance
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
@@ -10,13 +11,18 @@ interface DisclaimerState {
   sessionId: string
   userAgent: string
   ipHash: string | null
+  // Enhanced scroll-based compliance tracking
+  scrollBasedProgress: number
+  explicitAcknowledgments: Record<string, boolean>
   acceptDisclaimer: () => void
   resetDisclaimer: () => void
   isDisclaimerRequired: () => boolean
+  updateScrollProgress: (progress: number) => void
+  updateAcknowledgments: (acknowledgments: Record<string, boolean>) => void
 }
 
 // Current disclaimer version - increment when medical terms change
-const CURRENT_DISCLAIMER_VERSION = '1.2'
+const CURRENT_DISCLAIMER_VERSION = '2.0' // Incremented for scroll-based approach
 
 // Session expires after 24 hours
 const DISCLAIMER_EXPIRY_HOURS = 24
@@ -48,6 +54,8 @@ export const useDisclaimerStore = create<DisclaimerState>()(
       sessionId: generateSessionId(),
       userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
       ipHash: null,
+      scrollBasedProgress: 0,
+      explicitAcknowledgments: {},
 
       acceptDisclaimer: () => {
         const now = new Date().toISOString()
@@ -61,10 +69,12 @@ export const useDisclaimerStore = create<DisclaimerState>()(
         // Log acceptance for compliance (anonymized)
         if (typeof window !== 'undefined') {
           console.log('[Medical Compliance]', {
-            action: 'disclaimer_accepted',
+            action: 'disclaimer_accepted_scroll_based',
             version: CURRENT_DISCLAIMER_VERSION,
             timestamp: now,
             sessionId: get().sessionId,
+            scrollProgress: get().scrollBasedProgress,
+            acknowledgments: Object.keys(get().explicitAcknowledgments).length,
             userAgent: get().userAgent.substring(0, 50), // Truncated for privacy
           })
 
@@ -75,10 +85,29 @@ export const useDisclaimerStore = create<DisclaimerState>()(
               version: CURRENT_DISCLAIMER_VERSION,
               timestamp: now,
               sessionId: get().sessionId,
+              method: 'scroll_based',
+              scrollProgress: get().scrollBasedProgress,
+              acknowledgmentCount: Object.keys(get().explicitAcknowledgments).length,
             }))
           } catch (error) {
             console.warn('[Medical Compliance] Failed to store compliance metadata:', error)
           }
+        }
+      },
+
+      updateScrollProgress: (progress: number) => {
+        set({ scrollBasedProgress: progress })
+      },
+
+      updateAcknowledgments: (acknowledgments: Record<string, boolean>) => {
+        set({ explicitAcknowledgments: acknowledgments })
+        
+        // Auto-accept if all medical sections are acknowledged
+        const allAcknowledged = Object.values(acknowledgments).every(Boolean) && 
+                                Object.keys(acknowledgments).length >= 4
+        
+        if (allAcknowledged && !get().hasAcceptedDisclaimer) {
+          get().acceptDisclaimer()
         }
       },
 
@@ -87,6 +116,8 @@ export const useDisclaimerStore = create<DisclaimerState>()(
           hasAcceptedDisclaimer: false,
           disclaimerAcceptedAt: null,
           sessionId: generateSessionId(),
+          scrollBasedProgress: 0,
+          explicitAcknowledgments: {},
         })
 
         // Clear compliance metadata
@@ -143,17 +174,24 @@ export const useDisclaimerStore = create<DisclaimerState>()(
         disclaimerAcceptedAt: state.disclaimerAcceptedAt,
         disclaimerVersion: state.disclaimerVersion,
         sessionId: state.sessionId,
+        scrollBasedProgress: state.scrollBasedProgress,
+        explicitAcknowledgments: state.explicitAcknowledgments,
       }),
     }
   )
 )
 
-// Medical compliance utilities
+// Medical compliance utilities - enhanced for scroll-based approach
 export const medicalCompliance = {
   // Check if user can access frequency therapy
   canAccessTherapy: (): boolean => {
     const store = useDisclaimerStore.getState()
-    return !store.isDisclaimerRequired()
+    const scrollProgress = store.scrollBasedProgress
+    const acknowledgments = store.explicitAcknowledgments
+    const allAcknowledged = Object.values(acknowledgments).every(Boolean) && 
+                            Object.keys(acknowledgments).length >= 4
+    
+    return !store.isDisclaimerRequired() && scrollProgress >= 1.0 && allAcknowledged
   },
 
   // Get compliance metadata for audit trail
@@ -165,10 +203,13 @@ export const medicalCompliance = {
       disclaimerAcceptedAt: store.disclaimerAcceptedAt,
       sessionId: store.sessionId,
       isRequired: store.isDisclaimerRequired(),
+      scrollProgress: store.scrollBasedProgress,
+      acknowledgmentCount: Object.keys(store.explicitAcknowledgments).length,
+      method: 'scroll_based',
     }
   },
 
-  // Validate session for medical features
+  // Validate session for medical features - enhanced
   validateSession: (): { valid: boolean; reason?: string } => {
     const store = useDisclaimerStore.getState()
     
@@ -190,6 +231,19 @@ export const medicalCompliance = {
     
     if (hoursElapsed > DISCLAIMER_EXPIRY_HOURS) {
       return { valid: false, reason: 'Session expired' }
+    }
+
+    // Check scroll-based compliance
+    if (store.scrollBasedProgress < 1.0) {
+      return { valid: false, reason: 'Medical information not fully reviewed' }
+    }
+
+    const acknowledgments = store.explicitAcknowledgments
+    const allAcknowledged = Object.values(acknowledgments).every(Boolean) && 
+                            Object.keys(acknowledgments).length >= 4
+    
+    if (!allAcknowledged) {
+      return { valid: false, reason: 'Medical acknowledgments incomplete' }
     }
 
     return { valid: true }
@@ -220,11 +274,19 @@ export const useDisclaimerRequired = () => {
   const acceptDisclaimer = useDisclaimerStore((state) => state.acceptDisclaimer)
   const resetDisclaimer = useDisclaimerStore((state) => state.resetDisclaimer)
   const hasAccepted = useDisclaimerStore((state) => state.hasAcceptedDisclaimer)
+  const scrollProgress = useDisclaimerStore((state) => state.scrollBasedProgress)
+  const acknowledgments = useDisclaimerStore((state) => state.explicitAcknowledgments)
+  const updateScrollProgress = useDisclaimerStore((state) => state.updateScrollProgress)
+  const updateAcknowledgments = useDisclaimerStore((state) => state.updateAcknowledgments)
   
   return {
     isRequired,
     hasAccepted,
     acceptDisclaimer,
     resetDisclaimer,
+    scrollProgress,
+    acknowledgments,
+    updateScrollProgress,
+    updateAcknowledgments,
   }
 }

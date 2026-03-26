@@ -1,0 +1,22 @@
+  const handlePlay = async (frequencyId: string) => {
+    // Check enhanced medical compliance - both scroll progress AND explicit acknowledgments
+    if (!isFullyReady) {
+      console.warn('[Medical Compliance] Enhanced validation failed:', {
+        scrollProgress: isReadyToStart,
+        medicalAcknowledgments: medicalComplianceProgress,
+        combined: isFullyReady
+      })
+      
+      // Scroll to medical sections if not completed
+      if (medicalComplianceProgress < 1.0) {
+        const medicalSectionElement = document.getElementById('medical-scroll-sections')
+        if (medicalSectionElement) {
+          medicalSectionElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }
+      }
+      
+      return
+    }
