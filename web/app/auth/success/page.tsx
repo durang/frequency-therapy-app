@@ -1,11 +1,12 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent } from '@/components/ui/card'
 
-export default function AuthSuccess() {
+function AuthSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<'checking' | 'success' | 'error'>('checking')
@@ -107,5 +108,25 @@ export default function AuthSuccess() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function AuthSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4">
+        <Card className="w-full max-w-md p-8 text-center">
+          <CardContent className="space-y-6">
+            <div className="text-6xl mb-4">⏳</div>
+            <h1 className="text-2xl font-bold text-slate-900">Loading...</h1>
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <AuthSuccessContent />
+    </Suspense>
   )
 }

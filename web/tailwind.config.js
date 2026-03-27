@@ -54,12 +54,51 @@ module.exports = {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'spin-slow': 'spin 8s linear infinite',
         'frequency-wave': 'frequency-wave 3s ease-in-out infinite',
+        'pulse-neural': 'pulse-neural 6s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+        'float-1': 'float-1 8s ease-in-out infinite',
+        'float-2': 'float-2 10s ease-in-out infinite',
+        'float-3': 'float-3 12s ease-in-out infinite',
+        'pulse-spectrum': 'pulse-spectrum 2s ease-in-out infinite alternate',
+        'pulse-wave': 'pulse-wave 1s ease-in-out infinite',
       },
       keyframes: {
         'frequency-wave': {
           '0%, 100%': { transform: 'scale(1) rotate(0deg)', opacity: 1 },
           '50%': { transform: 'scale(1.05) rotate(180deg)', opacity: 0.8 },
-        }
+        },
+        'pulse-neural': {
+          '0%, 100%': { opacity: 0.6 },
+          '50%': { opacity: 1 },
+        },
+        'pulse-glow': {
+          '0%': { boxShadow: '0 0 20px rgba(168, 85, 247, 0.3)' },
+          '100%': { boxShadow: '0 0 40px rgba(168, 85, 247, 0.6), 0 0 60px rgba(168, 85, 247, 0.3)' },
+        },
+        'float-1': {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '33%': { transform: 'translateY(-20px) translateX(10px)' },
+          '66%': { transform: 'translateY(10px) translateX(-5px)' },
+        },
+        'float-2': {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '33%': { transform: 'translateY(15px) translateX(-8px)' },
+          '66%': { transform: 'translateY(-10px) translateX(12px)' },
+        },
+        'float-3': {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+          '33%': { transform: 'translateY(-15px) translateX(-10px)' },
+          '66%': { transform: 'translateY(20px) translateX(8px)' },
+        },
+        'pulse-spectrum': {
+          '0%': { transform: 'scaleY(0.3)', opacity: 0.6 },
+          '100%': { transform: 'scaleY(1)', opacity: 1 },
+        },
+        'pulse-wave': {
+          '0%': { transform: 'scaleY(0.5)', opacity: 0.7 },
+          '50%': { transform: 'scaleY(1)', opacity: 1 },
+          '100%': { transform: 'scaleY(0.5)', opacity: 0.7 },
+        },
       }
     },
   },
