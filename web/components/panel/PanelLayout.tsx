@@ -14,6 +14,7 @@ import { ChatSidebar } from './ChatSidebar'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
+import { ProgressionOverlay } from './ProgressionOverlay'
 
 interface PanelLayoutProps {
   demoMode?: boolean
@@ -175,6 +176,9 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
 
   return (
     <PanelContainer>
+      {/* Progression particle overlay — renders above background, below content */}
+      <ProgressionOverlay />
+
       <div className="h-screen flex flex-col overflow-hidden">
         {/* Panel Header */}
         <PanelHeader />

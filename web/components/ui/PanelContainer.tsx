@@ -2,6 +2,8 @@
 
 import { ReactNode } from 'react'
 import { cn } from '@/utils/cn'
+import { useProgression } from '@/lib/progressionState'
+import '@/styles/progression.css'
 
 interface PanelContainerProps {
   children: ReactNode
@@ -9,11 +11,17 @@ interface PanelContainerProps {
 }
 
 export function PanelContainer({ children, className }: PanelContainerProps) {
+  const { level, isLevelingUp } = useProgression()
+
   return (
     <div 
       className={cn(
         // Base container styles
         'relative min-h-screen w-full',
+
+        // Progression level theme class — cascades CSS custom properties
+        `progression-level-${Math.min(level, 8)}`,
+        isLevelingUp && 'progression-leveling-up',
         
         // Neural-inspired gradient background
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
