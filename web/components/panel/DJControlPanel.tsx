@@ -9,6 +9,7 @@ import { AudioFaders } from './AudioFaders'
 import { WaveformVisualizer } from './WaveformVisualizer'
 import { ControlKnobs } from './ControlKnobs'
 import { LayerControls } from './LayerControls'
+import { MovementPatternSelector } from './MovementPatternSelector'
 import { 
   PlayIcon, 
   PauseIcon, 
@@ -383,6 +384,13 @@ export function DJControlPanel() {
                     <LayerControls
                       frequencyId={activeFreq.frequency.id}
                       frequency={activeFreq.frequency}
+                    />
+                  </div>
+
+                  {/* Movement Pattern Selector */}
+                  <div className="flex-shrink-0">
+                    <MovementPatternSelector
+                      frequencyId={activeFreq.frequency.id}
                     />
                   </div>
                   

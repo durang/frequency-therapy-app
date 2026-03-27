@@ -8,6 +8,7 @@ import { FrequencyLibrary } from './FrequencyLibrary'
 import { DJControlPanel } from './DJControlPanel'
 import { MobileControls } from './MobileControls'
 import { PanelHeader } from './PanelHeader'
+import { SpatialArena } from './SpatialArena'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -232,8 +233,12 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
               </div>
 
               {/* DJ Control Panel Main Area */}
-              <div className="flex-1 transition-all duration-300">
-                <DJControlPanel />
+              <div className="flex-1 transition-all duration-300 flex flex-col">
+                {/* Spatial Audio Arena — shown when spatial is enabled */}
+                <SpatialArena />
+                <div className="flex-1 min-h-0">
+                  <DJControlPanel />
+                </div>
               </div>
             </>
           )}
