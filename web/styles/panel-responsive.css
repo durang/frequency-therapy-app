@@ -435,6 +435,17 @@
   transition: width 0.3s ease;
 }
 
+.chat-sidebar-mobile {
+  border-left: none;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+.chat-mobile-overlay {
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+}
+
 .chat-message-user {
   border-bottom-right-radius: 6px;
 }
@@ -452,6 +463,20 @@
   flex-shrink: 0;
   backdrop-filter: blur(8px);
   background: rgba(0, 0, 0, 0.15);
+  /* Safe area for mobile keyboards */
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Mobile chat overlay */
+@media (max-width: 767px) {
+  .chat-sidebar-mobile .chat-input-area {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .chat-sidebar-mobile {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 /* Tablet chat sidebar */

@@ -10,13 +10,15 @@ import {
   XMarkIcon,
   PaperAirplaneIcon,
   SparklesIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 
-// ─── Quick-action suggestion chips ─────────────────────────────────────
+// ─── Quick-action preset buttons ───────────────────────────────────────
 const QUICK_ACTIONS = [
   { emoji: '🧘', label: 'Relaxation', prompt: 'I want to relax and reduce stress' },
   { emoji: '🧠', label: 'Focus', prompt: 'Help me focus and concentrate' },
   { emoji: '😴', label: 'Sleep', prompt: 'I need help falling asleep' },
+  { emoji: '⚡', label: 'Energy', prompt: 'I need an energy boost' },
 ]
 
 // ─── Tool result card ──────────────────────────────────────────────────
@@ -77,16 +79,65 @@ function StreamingDots() {
   )
 }
 
+// ─── Missing API key setup card ────────────────────────────────────────
+function ApiKeyMissingCard() {
+  return (
+    <div className="mx-4 my-auto flex flex-col items-center text-center">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
+        <ExclamationTriangleIcon className="h-7 w-7 text-amber-400" />
+      </div>
+      <h3 className="mb-1 text-sm font-semibold text-white/90">AI Assistant Setup</h3>
+      <p className="mb-3 text-xs leading-relaxed text-white/50">
+        The AI chat assistant needs an OpenAI API key to work. Add one to your{' '}
+        <code className="rounded bg-white/10 px-1.5 py-0.5 text-quantum-300">.env.local</code>{' '}
+        file:
+      </p>
+      <div className="w-full rounded-lg bg-black/30 border border-white/10 px-3 py-2 text-left text-xs font-mono text-white/60">
+        OPENAI_API_KEY=sk-...
+      </div>
+      <p className="mt-3 text-[11px] text-white/30">
+        This feature is optional — the panel works fine without it.
+      </p>
+    </div>
+  )
+}
+
 // ─── Main ChatSidebar Component ────────────────────────────────────────
-export function ChatSidebar() {
+interface ChatSidebarProps {
+  isMobile?: boolean
+  onClose?: () => void
+}
+
+export function ChatSidebar({ isMobile = false, onClose }: ChatSidebarProps) {
   const { sidebarOpen, setSidebarOpen } = useChatState()
   const [input, setInput] = useState('')
+  const [apiKeyMissing, setApiKeyMissing] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const processedToolCalls = useRef<Set<string>>(new Set())
 
   const { messages, sendMessage, status, error } = useChat()
 
   const isLoading = status === 'streaming' || status === 'submitted'
+
+  // Detect API key missing from error responses
+  useEffect(() => {
+    if (
+      error &&
+      (error.message?.includes('API key') ||
+        error.message?.includes('OPENAI') ||
+        error.message?.includes('503'))
+    ) {
+      setApiKeyMissing(true)
+    }
+  }, [error])
+
+  const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose()
+    } else {
+      setSidebarOpen(false)
+    }
+  }, [onClose, setSidebarOpen])
 
   // ── Tool→Action Bridge ────────────────────────────────────────────
   const handleToolAction = useCallback(
@@ -173,10 +224,25 @@ export function ChatSidebar() {
     [input, isLoading, sendMessage],
   )
 
-  if (!sidebarOpen) return null
+  // ── Quick-action sends the prompt directly as a message ───────────
+  const handleQuickAction = useCallback(
+    (prompt: string) => {
+      if (isLoading) return
+      sendMessage({ text: prompt })
+    },
+    [isLoading, sendMessage],
+  )
+
+  if (!sidebarOpen && !isMobile) return null
 
   return (
-    <div className="chat-sidebar flex h-full w-80 flex-col border-l border-white/10 bg-black/20 backdrop-blur-sm lg:w-96">
+    <div
+      className={`chat-sidebar flex flex-col border-l border-white/10 bg-black/20 backdrop-blur-sm ${
+        isMobile
+          ? 'chat-sidebar-mobile h-full w-full'
+          : 'h-full w-80 lg:w-96'
+      }`}
+    >
       {/* ── Header ────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -184,7 +250,7 @@ export function ChatSidebar() {
           <h2 className="text-sm font-semibold text-white">AI Assistant</h2>
         </div>
         <button
-          onClick={() => setSidebarOpen(false)}
+          onClick={handleClose}
           className="rounded-lg p-1 text-white/50 transition-colors hover:bg-white/10 hover:text-white"
         >
           <XMarkIcon className="h-5 w-5" />
@@ -193,7 +259,10 @@ export function ChatSidebar() {
 
       {/* ── Messages area ─────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        {messages.length === 0 ? (
+        {apiKeyMissing ? (
+          /* API key missing — graceful setup card */
+          <ApiKeyMissingCard />
+        ) : messages.length === 0 ? (
           /* Welcome state */
           <div className="flex h-full flex-col items-center justify-center text-center">
             <SparklesIcon className="mb-3 h-10 w-10 text-quantum-400/60" />
@@ -207,7 +276,7 @@ export function ChatSidebar() {
               {QUICK_ACTIONS.map((action) => (
                 <button
                   key={action.label}
-                  onClick={() => setInput(action.prompt)}
+                  onClick={() => handleQuickAction(action.prompt)}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition-all hover:border-quantum-500/40 hover:bg-quantum-500/10 hover:text-white"
                 >
                   {action.emoji} {action.label}
@@ -268,19 +337,9 @@ export function ChatSidebar() {
       </div>
 
       {/* ── Error display ─────────────────────────────────────────── */}
-      {error && (
+      {error && !apiKeyMissing && (
         <div className="mx-4 mb-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
-          {error.message?.includes('API key') ||
-          error.message?.includes('OPENAI') ||
-          error.message?.includes('503') ? (
-            <p>
-              ⚠️ OpenAI API key not configured. Add{' '}
-              <code className="rounded bg-black/30 px-1">OPENAI_API_KEY</code> to your{' '}
-              <code className="rounded bg-black/30 px-1">.env.local</code> file.
-            </p>
-          ) : (
-            <p>⚠️ {error.message || 'Something went wrong. Please try again.'}</p>
-          )}
+          <p>⚠️ {error.message || 'Something went wrong. Please try again.'}</p>
         </div>
       )}
 

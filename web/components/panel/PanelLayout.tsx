@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { usePanel, usePanelStore } from '@/lib/panelState'
 import { usePanelPersistence, panelPersistenceUtils } from '@/lib/panelPersistence'
+import { useChatState } from '@/lib/chatState'
 import { PanelContainer } from '@/components/ui/PanelContainer'
 import { FrequencyLibrary } from './FrequencyLibrary'
 import { DJControlPanel } from './DJControlPanel'
@@ -11,7 +12,8 @@ import { PanelHeader } from './PanelHeader'
 import { SpatialArena } from './SpatialArena'
 import { ChatSidebar } from './ChatSidebar'
 import { Button } from '@/components/ui/button'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
+import { AnimatePresence, motion } from 'framer-motion'
 
 interface PanelLayoutProps {
   demoMode?: boolean
@@ -34,6 +36,8 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
     searchQuery,
     libraryScrollPosition
   } = usePanel()
+
+  const { sidebarOpen: chatOpen, setSidebarOpen: setChatOpen } = useChatState()
   
   const {
     initialize: initializePersistence,
@@ -181,18 +185,33 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
             <div className="flex items-center justify-between">
               <div className="flex space-x-2">
                 <Button
-                  variant={panelView === 'library' ? 'quantum' : 'outline'}
+                  variant={panelView === 'library' && !chatOpen ? 'quantum' : 'outline'}
                   size="sm"
-                  onClick={() => handleMobileViewSwitch('library')}
+                  onClick={() => {
+                    setChatOpen(false)
+                    handleMobileViewSwitch('library')
+                  }}
                 >
                   Library
                 </Button>
                 <Button
-                  variant={panelView === 'mixer' ? 'quantum' : 'outline'}
+                  variant={panelView === 'mixer' && !chatOpen ? 'quantum' : 'outline'}
                   size="sm"
-                  onClick={() => handleMobileViewSwitch('mixer')}
+                  onClick={() => {
+                    setChatOpen(false)
+                    handleMobileViewSwitch('mixer')
+                  }}
                 >
                   Mixer
+                </Button>
+                <Button
+                  variant={chatOpen ? 'quantum' : 'outline'}
+                  size="sm"
+                  onClick={() => setChatOpen(!chatOpen)}
+                  className="flex items-center gap-1"
+                >
+                  <ChatBubbleLeftRightIcon className="w-4 h-4" />
+                  Chat
                 </Button>
               </div>
               <Button
@@ -211,15 +230,33 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
         <div className="flex-1 flex overflow-hidden">
           {/* Mobile Layout */}
           {isMobile ? (
-            panelView === 'library' ? (
-              <div className="w-full">
-                <FrequencyLibrary demoMode={demoMode} />
-              </div>
-            ) : (
-              <div className="w-full">
-                <MobileControls />
-              </div>
-            )
+            <div className="relative w-full h-full">
+              {/* Normal mobile views */}
+              {panelView === 'library' ? (
+                <div className="w-full h-full">
+                  <FrequencyLibrary demoMode={demoMode} />
+                </div>
+              ) : (
+                <div className="w-full h-full">
+                  <MobileControls />
+                </div>
+              )}
+
+              {/* Mobile chat overlay with slide animation */}
+              <AnimatePresence>
+                {chatOpen && (
+                  <motion.div
+                    initial={{ x: '100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '100%' }}
+                    transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                    className="chat-mobile-overlay absolute inset-0 z-40"
+                  >
+                    <ChatSidebar isMobile onClose={() => setChatOpen(false)} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           ) : (
             /* Desktop/Tablet Layout */
             <>
