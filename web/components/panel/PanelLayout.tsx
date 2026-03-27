@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePanel } from '@/lib/panelState'
 import { PanelContainer } from '@/components/ui/PanelContainer'
 import { FrequencyLibrary } from './FrequencyLibrary'
-import { DJMixer } from './DJMixer'
+import { DJControlPanel } from './DJControlPanel'
 import { PanelHeader } from './PanelHeader'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -128,7 +128,7 @@ export function PanelLayout() {
             )}
           </div>
 
-          {/* DJ Mixer Main Area */}
+          {/* DJ Control Panel Main Area */}
           <div
             className={`
               flex-1 transition-all duration-300
@@ -138,7 +138,7 @@ export function PanelLayout() {
             `}
           >
             {(!isMobile || panelView === 'mixer') && (
-              <DJMixer />
+              <DJControlPanel />
             )}
           </div>
 
