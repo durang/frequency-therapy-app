@@ -3,17 +3,20 @@
 import { useAuth } from '@/lib/authState'
 import { usePanel } from '@/lib/panelState'
 import { useChatState } from '@/lib/chatState'
+import { useProgression } from '@/lib/progressionState'
 import { Button } from '@/components/ui/button'
 import {
   UserCircleIcon,
   Cog6ToothIcon,
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline'
+import { LevelIndicator } from './LevelIndicator'
 
 export function PanelHeader() {
   const { user } = useAuth()
   const { activeFrequencyCount, isPlaying, masterVolume } = usePanel()
   const { sidebarOpen, toggleSidebar } = useChatState()
+  const { setProgressionPanelOpen } = useProgression()
 
   return (
     <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4">
@@ -26,6 +29,8 @@ export function PanelHeader() {
           
           {/* Status Indicators */}
           <div className="hidden md:flex items-center space-x-3 text-sm text-white/70">
+            <LevelIndicator onClick={() => setProgressionPanelOpen(true)} />
+            <div className="text-white/50">•</div>
             <div className="flex items-center space-x-1">
               <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-green-400' : 'bg-red-400'}`} />
               <span>{isPlaying ? 'Playing' : 'Stopped'}</span>

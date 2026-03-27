@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePanel, usePanelStore } from '@/lib/panelState'
 import { usePanelPersistence, panelPersistenceUtils } from '@/lib/panelPersistence'
 import { useChatState } from '@/lib/chatState'
+import { useProgression } from '@/lib/progressionState'
 import { PanelContainer } from '@/components/ui/PanelContainer'
 import { FrequencyLibrary } from './FrequencyLibrary'
 import { DJControlPanel } from './DJControlPanel'
@@ -15,6 +16,8 @@ import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProgressionOverlay } from './ProgressionOverlay'
+import { UnlockCelebration } from './UnlockCelebration'
+import { ProgressionPanel } from './ProgressionPanel'
 
 interface PanelLayoutProps {
   demoMode?: boolean
@@ -39,6 +42,7 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
   } = usePanel()
 
   const { sidebarOpen: chatOpen, setSidebarOpen: setChatOpen } = useChatState()
+  const { progressionPanelOpen, setProgressionPanelOpen } = useProgression()
   
   const {
     initialize: initializePersistence,
@@ -178,6 +182,15 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
     <PanelContainer>
       {/* Progression particle overlay — renders above background, below content */}
       <ProgressionOverlay />
+
+      {/* Level-up celebration overlay — fixed, only visible during isLevelingUp */}
+      <UnlockCelebration />
+
+      {/* Progression stats panel — slide-in from right */}
+      <ProgressionPanel
+        open={progressionPanelOpen}
+        onClose={() => setProgressionPanelOpen(false)}
+      />
 
       <div className="h-screen flex flex-col overflow-hidden">
         {/* Panel Header */}

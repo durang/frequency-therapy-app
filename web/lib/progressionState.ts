@@ -27,11 +27,13 @@ export interface ProgressionState {
   streakDays: number
   longestStreak: number
   isLevelingUp: boolean
+  progressionPanelOpen: boolean
 
   // Actions
   initFromPersistence: () => Promise<void>
   addPlaytime: (seconds: number) => void
   getColorTheme: () => ProgressionTheme
+  setProgressionPanelOpen: (open: boolean) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -61,6 +63,7 @@ export const useProgressionStore = create<ProgressionState>((set, get) => ({
   streakDays: 0,
   longestStreak: 0,
   isLevelingUp: false,
+  progressionPanelOpen: false,
 
   // --------------------------------------------------
   // initFromPersistence — read analytics.totalPlaytime
@@ -150,6 +153,10 @@ export const useProgressionStore = create<ProgressionState>((set, get) => ({
     const { level } = get()
     return getThemeForLevel(level)
   },
+
+  setProgressionPanelOpen: (open: boolean) => {
+    set({ progressionPanelOpen: open })
+  },
 }))
 
 // ---------------------------------------------------------------------------
@@ -192,9 +199,11 @@ export function useProgression() {
   const streakDays = useProgressionStore((s) => s.streakDays)
   const longestStreak = useProgressionStore((s) => s.longestStreak)
   const isLevelingUp = useProgressionStore((s) => s.isLevelingUp)
+  const progressionPanelOpen = useProgressionStore((s) => s.progressionPanelOpen)
   const initFromPersistence = useProgressionStore((s) => s.initFromPersistence)
   const addPlaytime = useProgressionStore((s) => s.addPlaytime)
   const getColorTheme = useProgressionStore((s) => s.getColorTheme)
+  const setProgressionPanelOpen = useProgressionStore((s) => s.setProgressionPanelOpen)
 
   return {
     // State
@@ -207,11 +216,13 @@ export function useProgression() {
     streakDays,
     longestStreak,
     isLevelingUp,
+    progressionPanelOpen,
 
     // Actions
     initFromPersistence,
     addPlaytime,
     getColorTheme,
+    setProgressionPanelOpen,
 
     // Derived
     levelLabel: getLevelLabel(level),
