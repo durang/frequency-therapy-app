@@ -5,19 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import AdvancedDashboard from '@/components/dashboard/advanced-dashboard'
-import { Brain, Play, Settings, Star, TrendingUp, Zap } from 'lucide-react'
-
-// Mock user data - in production this would come from authentication
-const mockUser = {
-  id: '1',
-  name: 'Alex Chen',
-  email: 'alex@example.com',
-  subscription_tier: 'pro' as const,
-  avatar: null,
-  joined_date: '2024-01-15',
-  total_sessions: 47,
-  streak_days: 12
-}
+import { useAuth, useAuthStore } from '@/lib/authState'
+import { Brain, Play, Settings, Star, TrendingUp, Zap, LogOut, User, Calendar, Activity } from 'lucide-react'
 
 // Quick access frequency cards
 const quickFrequencies = [
@@ -52,12 +41,104 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'frequencies'>('overview')
   const [greeting, setGreeting] = useState('')
 
+  // Auth state management
+  const { 
+    user, 
+    session, 
+    initializing, 
+    loading, 
+    error, 
+    isAuthenticated,
+    signOut,
+    initializeAuth,
+    getUserMetadata 
+  } = useAuth()
+
+  // Initialize auth on component mount
+  useEffect(() => {
+    if (initializing) {
+      console.log('🔄 [Dashboard] Initializing auth...')
+      initializeAuth()
+    }
+  }, [initializing, initializeAuth])
+
+  // Auth protection - redirect if not authenticated
+  useEffect(() => {
+    if (!initializing && !isAuthenticated) {
+      console.log('🔒 [Dashboard] User not authenticated, redirecting to landing page')
+      router.replace('/')
+    }
+  }, [initializing, isAuthenticated, router])
+
+  // Set greeting based on time of day
   useEffect(() => {
     const hour = new Date().getHours()
     if (hour < 12) setGreeting('Good morning')
     else if (hour < 17) setGreeting('Good afternoon')
     else setGreeting('Good evening')
   }, [])
+
+  // Handle sign out
+  const handleSignOut = async () => {
+    try {
+      console.log('👋 [Dashboard] Initiating sign out')
+      await signOut()
+    } catch (error) {
+      console.error('❌ [Dashboard] Sign out failed:', error)
+    }
+  }
+
+  // Show loading state while auth initializes
+  if (initializing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-r from-quantum-primary to-quantum-secondary rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <Brain className="w-6 h-6 text-white" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Dashboard...</h2>
+          <p className="text-gray-600">Verifying your session</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state if auth error occurred
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <User className="w-6 h-6 text-red-600" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Error</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => router.push('/')}>
+            Return to Home
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render dashboard if not authenticated (will redirect)
+  if (!isAuthenticated || !user) {
+    return null
+  }
+
+  // Calculate user stats
+  const userStats = {
+    totalSessions: user.profile?.progress_stats?.total_sessions || 0,
+    totalMinutes: user.profile?.progress_stats?.total_minutes || 0,
+    streakDays: Math.floor(Math.random() * 15) + 1, // TODO: Calculate from session history
+    joinDate: new Date(user.created_at).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }),
+    thisWeekSessions: Math.floor(Math.random() * 8) + 1, // TODO: Calculate from recent sessions
+    avgEffectiveness: user.profile?.progress_stats?.average_session_rating || 8.4
+  }
 
   const startQuickSession = (frequencyId: string) => {
     router.push(`/therapy?frequency=${frequencyId}&quick=true`)
@@ -77,6 +158,10 @@ export default function DashboardPage() {
     )
   }
 
+  const getInitials = (email: string) => {
+    return email.split('@')[0].substring(0, 2).toUpperCase()
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
       {/* Header */}
@@ -85,26 +170,46 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-gradient-to-r from-quantum-primary to-quantum-secondary rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold">
-                  {mockUser.name.split(' ').map(n => n[0]).join('')}
+                <span className="text-white font-semibold text-sm">
+                  {user.profile?.full_name 
+                    ? user.profile.full_name.split(' ').map(n => n[0]).join('')
+                    : getInitials(user.email)
+                  }
                 </span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  {greeting}, {mockUser.name.split(' ')[0]}!
+                  {greeting}, {user.profile?.full_name?.split(' ')[0] || user.email.split('@')[0]}!
                 </h1>
                 <div className="flex items-center gap-3 mt-1">
-                  {getTierBadge(mockUser.subscription_tier)}
+                  {getTierBadge(user.subscription_tier)}
                   <span className="text-sm text-gray-600">
-                    🔥 {mockUser.streak_days} day streak
+                    🔥 {userStats.streakDays} day streak
+                  </span>
+                  <span className="text-sm text-gray-500 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    Joined {userStats.joinDate}
                   </span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+                <User className="w-4 h-4" />
+                {user.email}
+              </div>
               <Button variant="outline" size="sm">
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleSignOut}
+                disabled={loading}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {loading ? 'Signing out...' : 'Sign Out'}
               </Button>
               <Button onClick={() => router.push('/pricing')}>
                 Upgrade Plan
@@ -141,6 +246,36 @@ export default function DashboardPage() {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
+            {/* User Profile Summary */}
+            <Card className="bg-gradient-to-r from-quantum-primary to-quantum-secondary text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Welcome to Quantum Healing
+                    </h3>
+                    <p className="opacity-90 mb-4">
+                      You've completed {userStats.totalSessions} healing sessions and spent {Math.floor(userStats.totalMinutes / 60)} hours 
+                      in therapeutic frequency practice. Keep up the excellent progress!
+                    </p>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <Activity className="w-4 h-4" />
+                        <span>Session ID: {session?.access_token?.substring(0, 8)}...</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <User className="w-4 h-4" />
+                        <span>{user.subscription_tier.toUpperCase()} Member</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="hidden md:block">
+                    <Brain className="w-16 h-16 opacity-50" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Quick Stats */}
             <div className="grid gap-6 md:grid-cols-3">
               <Card>
@@ -151,7 +286,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Total Sessions</p>
-                      <p className="text-2xl font-bold text-gray-900">{mockUser.total_sessions}</p>
+                      <p className="text-2xl font-bold text-gray-900">{userStats.totalSessions}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -165,7 +300,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">This Week</p>
-                      <p className="text-2xl font-bold text-gray-900">5 sessions</p>
+                      <p className="text-2xl font-bold text-gray-900">{userStats.thisWeekSessions} sessions</p>
                     </div>
                   </div>
                 </CardContent>
@@ -179,7 +314,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Avg Effectiveness</p>
-                      <p className="text-2xl font-bold text-gray-900">8.4/10</p>
+                      <p className="text-2xl font-bold text-gray-900">{userStats.avgEffectiveness}/10</p>
                     </div>
                   </div>
                 </CardContent>
@@ -232,43 +367,56 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    {
-                      session: 'DNA Repair Session',
-                      duration: '20 minutes',
-                      effectiveness: 9,
-                      time: '2 hours ago',
-                      mood: '+3 mood boost'
-                    },
-                    {
-                      session: 'Focus Amplifier',
-                      duration: '45 minutes',
-                      effectiveness: 8,
-                      time: '1 day ago',
-                      mood: '+2 mood boost'
-                    },
-                    {
-                      session: 'Deep Sleep Induction',
-                      duration: '30 minutes',
-                      effectiveness: 9,
-                      time: '2 days ago',
-                      mood: '+4 mood boost'
-                    }
-                  ].map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-                      <div>
-                        <h4 className="font-medium text-gray-900">{activity.session}</h4>
-                        <p className="text-sm text-gray-600">{activity.duration} • {activity.time}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-1 mb-1">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-sm font-medium">{activity.effectiveness}/10</span>
+                  {userStats.totalSessions > 0 ? (
+                    // Show placeholder data for users with sessions
+                    [
+                      {
+                        session: 'DNA Repair Session',
+                        duration: '20 minutes',
+                        effectiveness: 9,
+                        time: '2 hours ago',
+                        mood: '+3 mood boost'
+                      },
+                      {
+                        session: 'Focus Amplifier',
+                        duration: '45 minutes',
+                        effectiveness: 8,
+                        time: '1 day ago',
+                        mood: '+2 mood boost'
+                      },
+                      {
+                        session: 'Deep Sleep Induction',
+                        duration: '30 minutes',
+                        effectiveness: 9,
+                        time: '2 days ago',
+                        mood: '+4 mood boost'
+                      }
+                    ].map((activity, index) => (
+                      <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                        <div>
+                          <h4 className="font-medium text-gray-900">{activity.session}</h4>
+                          <p className="text-sm text-gray-600">{activity.duration} • {activity.time}</p>
                         </div>
-                        <p className="text-xs text-green-600">{activity.mood}</p>
+                        <div className="text-right">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                            <span className="text-sm font-medium">{activity.effectiveness}/10</span>
+                          </div>
+                          <p className="text-xs text-green-600">{activity.mood}</p>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    // Show empty state for new users
+                    <div className="text-center py-8">
+                      <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No sessions yet</h3>
+                      <p className="text-gray-600 mb-4">Start your first healing session to see your activity here</p>
+                      <Button onClick={() => startQuickSession('1')}>
+                        Start First Session
+                      </Button>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -280,8 +428,10 @@ export default function DashboardPage() {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">🎯 AI Recommendation</h3>
                     <p className="opacity-90 mb-4">
-                      Based on your circadian rhythm, now is optimal for DNA Repair frequency. 
-                      Your effectiveness is 23% higher at this time.
+                      {userStats.totalSessions === 0 
+                        ? "As a new user, we recommend starting with DNA Repair frequency for optimal cellular health benefits."
+                        : "Based on your circadian rhythm, now is optimal for DNA Repair frequency. Your effectiveness is 23% higher at this time."
+                      }
                     </p>
                     <Button 
                       variant="secondary"
@@ -301,7 +451,7 @@ export default function DashboardPage() {
         )}
 
         {activeTab === 'analytics' && (
-          <AdvancedDashboard userId={mockUser.id} />
+          <AdvancedDashboard userId={user.id} />
         )}
 
         {activeTab === 'frequencies' && (
