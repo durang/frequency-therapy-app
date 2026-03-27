@@ -53,6 +53,15 @@ interface PersistentPanelData {
       language: string
     }
   }
+  progression?: {
+    level: number
+    xp: number
+    unlockedEffects: string[]
+    activeTheme: string
+    lastLevelUp: string | null
+    streakDays: number
+    longestStreak: number
+  }
 }
 
 interface PersistenceStore {

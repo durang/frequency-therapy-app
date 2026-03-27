@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { usePanel } from '@/lib/panelState'
 import { usePanelAudioEngine } from '@/lib/panelAudioEngine'
+import { usePanelPersistence } from '@/lib/panelPersistence'
+import { useProgressionStore } from '@/lib/progressionState'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AudioFaders } from './AudioFaders'
@@ -46,6 +48,12 @@ export function DJControlPanel() {
   
   const initializeRef = useRef(false)
   const performanceTimerRef = useRef<NodeJS.Timeout>()
+  const playtimeIntervalRef = useRef<NodeJS.Timeout>()
+
+  // Grab persistence + progression actions (stable refs via Zustand)
+  const trackPlaytime = usePanelPersistence((s) => s.trackPlaytime)
+  const addPlaytime = useProgressionStore((s) => s.addPlaytime)
+  const initFromPersistence = useProgressionStore((s) => s.initFromPersistence)
 
   // Initialize audio engine on mount
   useEffect(() => {
@@ -66,6 +74,33 @@ export function DJControlPanel() {
       }
     }
   }, [initialize])
+
+  // Initialize progression engine from persisted data on mount
+  useEffect(() => {
+    initFromPersistence()
+  }, [initFromPersistence])
+
+  // Track playtime every 5 seconds while playing
+  useEffect(() => {
+    if (isPlaying) {
+      playtimeIntervalRef.current = setInterval(() => {
+        trackPlaytime(5)
+        addPlaytime(5)
+      }, 5000)
+    } else {
+      if (playtimeIntervalRef.current) {
+        clearInterval(playtimeIntervalRef.current)
+        playtimeIntervalRef.current = undefined
+      }
+    }
+
+    return () => {
+      if (playtimeIntervalRef.current) {
+        clearInterval(playtimeIntervalRef.current)
+        playtimeIntervalRef.current = undefined
+      }
+    }
+  }, [isPlaying, trackPlaytime, addPlaytime])
 
   // Sync master volume with audio engine
   useEffect(() => {
