@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/authState'
 import { usePanel } from '@/lib/panelState'
 import { useChatState } from '@/lib/chatState'
@@ -9,14 +11,40 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
   ChatBubbleLeftRightIcon,
+  ArrowRightOnRectangleIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline'
 import { LevelIndicator } from './LevelIndicator'
 
 export function PanelHeader() {
-  const { user } = useAuth()
+  const router = useRouter()
+  const { user, signOut } = useAuth()
   const { activeFrequencyCount, isPlaying, masterVolume } = usePanel()
   const { sidebarOpen, toggleSidebar } = useChatState()
   const { setProgressionPanelOpen } = useProgression()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleSignOut = async () => {
+    setUserMenuOpen(false)
+    await signOut()
+  }
+
+  const handleDashboard = () => {
+    setUserMenuOpen(false)
+    router.push('/dashboard')
+  }
 
   return (
     <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4">
@@ -66,17 +94,57 @@ export function PanelHeader() {
             variant="outline"
             size="sm"
             className="p-2"
+            onClick={() => router.push('/dashboard')}
+            title="Settings"
           >
             <Cog6ToothIcon className="w-4 h-4" />
           </Button>
           
-          <Button
-            variant="outline"
-            size="sm"
-            className="p-2"
-          >
-            <UserCircleIcon className="w-4 h-4" />
-          </Button>
+          {/* User menu with dropdown */}
+          <div className="relative" ref={menuRef}>
+            <Button
+              variant="outline"
+              size="sm"
+              className={`p-2 transition-colors ${
+                userMenuOpen
+                  ? 'border-quantum-500/50 bg-quantum-500/20 text-quantum-300'
+                  : ''
+              }`}
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              title="User menu"
+            >
+              <UserCircleIcon className="w-4 h-4" />
+            </Button>
+            
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 rounded-lg bg-slate-900 border border-white/10 shadow-xl z-50 overflow-hidden">
+                <div className="px-4 py-3 border-b border-white/10">
+                  <p className="text-sm text-white font-medium truncate">
+                    {user?.email?.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-white/50 truncate">
+                    {user?.email}
+                  </p>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={handleDashboard}
+                    className="flex items-center w-full px-4 py-2 text-sm text-white/80 hover:bg-white/10 transition-colors"
+                  >
+                    <ChartBarIcon className="w-4 h-4 mr-3" />
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-white/10 transition-colors"
+                  >
+                    <ArrowRightOnRectangleIcon className="w-4 h-4 mr-3" />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

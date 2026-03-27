@@ -40,10 +40,10 @@ function AuthSuccessContent() {
         if (session) {
           console.log('✅ Authentication successful for user:', session.user.email)
           setStatus('success')
-          setMessage('Authentication successful! Redirecting to dashboard...')
+          setMessage('Authentication successful! Redirecting to panel...')
           
-          // Redirect to dashboard after successful auth
-          setTimeout(() => router.push('/dashboard'), 2000)
+          // Redirect to panel after successful auth
+          setTimeout(() => router.push('/panel'), 2000)
         } else {
           setStatus('error')
           setMessage('No active session found. Please try signing in again.')

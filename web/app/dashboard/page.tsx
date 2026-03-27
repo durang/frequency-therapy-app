@@ -141,7 +141,7 @@ export default function DashboardPage() {
   }
 
   const startQuickSession = (frequencyId: string) => {
-    router.push(`/therapy?frequency=${frequencyId}&quick=true`)
+    router.push(`/panel?frequency=${frequencyId}&quick=true`)
   }
 
   const getTierBadge = (tier: string) => {
@@ -211,8 +211,9 @@ export default function DashboardPage() {
                 <LogOut className="w-4 h-4 mr-2" />
                 {loading ? 'Signing out...' : 'Sign Out'}
               </Button>
-              <Button onClick={() => router.push('/pricing')}>
-                Upgrade Plan
+              <Button onClick={() => router.push('/panel')}>
+                <Play className="w-4 h-4 mr-2" />
+                Open Panel
               </Button>
             </div>
           </div>
@@ -472,7 +473,7 @@ export default function DashboardPage() {
                   <p className="text-gray-600 mb-4">
                     Advanced frequency browsing and filtering capabilities
                   </p>
-                  <Button onClick={() => router.push('/therapy')}>
+                  <Button onClick={() => router.push('/panel')}>
                     Browse Current Frequencies
                   </Button>
                 </div>

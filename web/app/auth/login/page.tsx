@@ -47,7 +47,7 @@ export default function LoginPage() {
       } else if (data?.user) {
         toast.success('Welcome back!')
         // Redirect handled by auth state change
-        window.location.href = '/dashboard'
+        window.location.href = '/panel'
       }
     } catch (error) {
       toast.error('An unexpected error occurred')
@@ -213,7 +213,7 @@ export default function LoginPage() {
         {/* Demo Access */}
         <Card variant="quantum" className="mt-6 p-4 text-center">
           <p className="text-sm mb-3">Want to try without signing up?</p>
-          <Link href="/therapy?demo=true">
+          <Link href="/panel?demo=true">
             <Button variant="outline" size="sm" className="w-full">
               🎧 Try Demo Session
             </Button>
