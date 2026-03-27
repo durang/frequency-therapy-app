@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { usePanel } from '@/lib/panelState'
+import { usePanelPersistence, panelPersistenceUtils } from '@/lib/panelPersistence'
 import { PanelContainer } from '@/components/ui/PanelContainer'
 import { FrequencyLibrary } from './FrequencyLibrary'
 import { DJControlPanel } from './DJControlPanel'
+import { MobileControls } from './MobileControls'
 import { PanelHeader } from './PanelHeader'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -17,10 +19,92 @@ export function PanelLayout() {
     setLayoutMode, 
     setPanelView, 
     toggleSidebar,
-    isMobile 
+    isMobile,
+    // Include all panel state for persistence
+    masterVolume,
+    isPlaying,
+    activeFrequencies,
+    selectedCategory,
+    searchQuery,
+    libraryScrollPosition
   } = usePanel()
   
+  const {
+    initialize: initializePersistence,
+    savePanelState,
+    loadPanelState,
+    isEnabled: persistenceEnabled,
+    isLoading: persistenceLoading
+  } = usePanelPersistence()
+  
   const [mounted, setMounted] = useState(false)
+  const [persistenceInitialized, setPersistenceInitialized] = useState(false)
+
+  // Initialize persistence system
+  useEffect(() => {
+    if (!persistenceInitialized) {
+      initializePersistence()
+        .then(async () => {
+          setPersistenceInitialized(true)
+          
+          // Load saved panel state
+          const savedState = await loadPanelState()
+          if (savedState) {
+            // Apply saved state to panel (except isPlaying for safety)
+            const panelState = usePanel.getState()
+            if (savedState.layoutMode) panelState.setLayoutMode(savedState.layoutMode)
+            if (savedState.panelView) panelState.setPanelView(savedState.panelView)
+            if (savedState.sidebarCollapsed !== undefined) panelState.setSidebarCollapsed(savedState.sidebarCollapsed)
+            if (savedState.masterVolume !== undefined) panelState.setMasterVolume(savedState.masterVolume)
+            if (savedState.selectedCategory !== undefined) panelState.setSelectedCategory(savedState.selectedCategory)
+            if (savedState.searchQuery !== undefined) panelState.setSearchQuery(savedState.searchQuery)
+            if (savedState.libraryScrollPosition !== undefined) panelState.setLibraryScrollPosition(savedState.libraryScrollPosition)
+            
+            // Restore active frequencies (but don't auto-play)
+            if (savedState.activeFrequencies && savedState.activeFrequencies.length > 0) {
+              savedState.activeFrequencies.forEach(af => {
+                panelState.activateFrequency(af.frequency)
+                panelState.updateFrequencyVolume(af.frequency.id, af.volume)
+              })
+            }
+            
+            console.log('📖 [PanelLayout] Session restored from storage')
+          }
+        })
+        .catch((error) => {
+          console.error('❌ [PanelLayout] Persistence initialization failed:', error)
+          setPersistenceInitialized(true) // Continue without persistence
+        })
+    }
+  }, [persistenceInitialized, initializePersistence, loadPanelState])
+
+  // Auto-save panel state when it changes
+  useEffect(() => {
+    if (!persistenceEnabled || !persistenceInitialized) return
+    
+    const panelState = {
+      layoutMode,
+      panelView,
+      sidebarCollapsed,
+      masterVolume,
+      isPlaying,
+      activeFrequencies,
+      selectedCategory,
+      searchQuery,
+      libraryScrollPosition
+    }
+    
+    // Debounced save
+    const saveTimeout = setTimeout(() => {
+      savePanelState(panelState)
+    }, 1000)
+    
+    return () => clearTimeout(saveTimeout)
+  }, [
+    layoutMode, panelView, sidebarCollapsed, masterVolume, isPlaying, 
+    activeFrequencies, selectedCategory, searchQuery, libraryScrollPosition,
+    persistenceEnabled, persistenceInitialized, savePanelState
+  ])
 
   // Handle responsive layout detection
   useEffect(() => {
@@ -60,13 +144,20 @@ export function PanelLayout() {
     }
   }
 
-  // Prevent hydration mismatch
-  if (!mounted) {
+  // Prevent hydration mismatch and show loading during persistence initialization
+  if (!mounted || persistenceLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-quantum-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading panel...</p>
+          <p className="text-white text-lg">
+            {persistenceLoading ? 'Loading session...' : 'Loading panel...'}
+          </p>
+          {persistenceEnabled && (
+            <p className="text-white/60 text-sm mt-2">
+              Restoring your previous session
+            </p>
+          )}
         </div>
       </div>
     )
@@ -112,35 +203,36 @@ export function PanelLayout() {
 
         {/* Main Panel Content */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Frequency Library Sidebar */}
-          <div
-            className={`
-              transition-all duration-300 bg-black/10 backdrop-blur-sm border-r border-white/10
-              ${isMobile ? (
-                panelView === 'library' ? 'w-full' : 'w-0'
-              ) : sidebarCollapsed ? 'w-0' : 'w-80 lg:w-96'
-              }
-              ${sidebarCollapsed && !isMobile ? 'overflow-hidden' : 'overflow-visible'}
-            `}
-          >
-            {(!sidebarCollapsed || isMobile) && (
-              <FrequencyLibrary />
-            )}
-          </div>
+          {/* Mobile Layout */}
+          {isMobile ? (
+            panelView === 'library' ? (
+              <div className="w-full">
+                <FrequencyLibrary />
+              </div>
+            ) : (
+              <div className="w-full">
+                <MobileControls />
+              </div>
+            )
+          ) : (
+            /* Desktop/Tablet Layout */
+            <>
+              {/* Frequency Library Sidebar */}
+              <div
+                className={`
+                  transition-all duration-300 bg-black/10 backdrop-blur-sm border-r border-white/10
+                  ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-80 lg:w-96 overflow-visible'}
+                `}
+              >
+                {!sidebarCollapsed && <FrequencyLibrary />}
+              </div>
 
-          {/* DJ Control Panel Main Area */}
-          <div
-            className={`
-              flex-1 transition-all duration-300
-              ${isMobile ? (
-                panelView === 'mixer' ? 'block' : 'hidden'
-              ) : 'block'}
-            `}
-          >
-            {(!isMobile || panelView === 'mixer') && (
-              <DJControlPanel />
-            )}
-          </div>
+              {/* DJ Control Panel Main Area */}
+              <div className="flex-1 transition-all duration-300">
+                <DJControlPanel />
+              </div>
+            </>
+          )}
 
           {/* Sidebar Toggle for Desktop */}
           {!isMobile && (
@@ -157,8 +249,12 @@ export function PanelLayout() {
 
         {/* Layout Mode Debug Info (Development Only) */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="fixed bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white text-xs p-2 rounded border border-white/20">
-            {layoutMode} | {panelView} | {sidebarCollapsed ? 'collapsed' : 'expanded'}
+          <div className="fixed bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white text-xs p-2 rounded border border-white/20 z-50">
+            <div>{layoutMode} | {panelView} | {sidebarCollapsed ? 'collapsed' : 'expanded'}</div>
+            <div className="text-quantum-400">
+              Persistence: {persistenceEnabled ? '✅' : '❌'} | 
+              Active: {activeFrequencies.length}/4
+            </div>
           </div>
         )}
       </div>

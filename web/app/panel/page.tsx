@@ -4,6 +4,7 @@ import { useAuth } from '@/lib/authState'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PanelLayout } from '@/components/panel/PanelLayout'
+import '../../styles/panel-responsive.css'
 
 export default function PanelPage() {
   const { user, initializing } = useAuth()
