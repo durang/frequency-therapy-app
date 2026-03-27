@@ -1,6 +1,7 @@
 'use client'
 
 import { AdvancedFrequencyAudioEngine, AdvancedAudioConfig } from './advanced-audio-engine'
+import { spatialAudioManager } from './spatialAudioManager'
 
 // Audio engine instance manager for panel
 class PanelAudioEngineManager {
@@ -43,6 +44,9 @@ class PanelAudioEngineManager {
 
       this.isInitialized = true
       
+      // Hand the shared context to the spatial audio manager
+      spatialAudioManager.setAudioContext(this.audioContext)
+      
       console.log('🎛️ [PanelAudioEngine] Initialized successfully')
       console.log('🎛️ [PanelAudioEngine] Sample rate:', this.audioContext.sampleRate)
       console.log('🎛️ [PanelAudioEngine] Base latency:', this.audioContext.baseLatency)
@@ -66,8 +70,26 @@ class PanelAudioEngineManager {
     }
 
     try {
-      const engine = new AdvancedFrequencyAudioEngine(config)
+      // Pass shared AudioContext so all engines use the same context
+      const engine = new AdvancedFrequencyAudioEngine(config, this.audioContext ?? undefined)
       this.engines.set(frequencyId, engine)
+      
+      // Create a spatial PannerNode and insert into signal chain:
+      // engine output → PannerNode → masterGain → destination
+      if (this.audioContext && this.masterGain) {
+        const pannerNode = spatialAudioManager.createPannerNode(frequencyId)
+        const outputNode = engine.getOutputNode()
+        if (pannerNode && outputNode) {
+          // Disconnect engine from its default destination and route through panner
+          try { outputNode.disconnect() } catch { /* may not be connected yet */ }
+          outputNode.connect(pannerNode)
+          pannerNode.connect(this.masterGain)
+        } else if (outputNode) {
+          // No panner available — route directly to masterGain
+          try { outputNode.disconnect() } catch { /* may not be connected yet */ }
+          outputNode.connect(this.masterGain)
+        }
+      }
       
       console.log('🎵 [PanelAudioEngine] Created engine for frequency:', frequencyId, config.frequency + 'Hz')
       
@@ -104,6 +126,8 @@ class PanelAudioEngineManager {
     const engine = this.engines.get(frequencyId)
     if (engine) {
       engine.stop()
+      // Clean up spatial PannerNode for this frequency
+      spatialAudioManager.removePannerNode(frequencyId)
       console.log('⏹️ [PanelAudioEngine] Stopped frequency:', frequencyId)
     }
   }
@@ -186,6 +210,7 @@ class PanelAudioEngineManager {
   stopAllFrequencies(): void {
     this.engines.forEach((engine, frequencyId) => {
       engine.stop()
+      spatialAudioManager.removePannerNode(frequencyId)
       console.log('⏹️ [PanelAudioEngine] Stopped frequency:', frequencyId)
     })
     this.engines.clear()
@@ -196,6 +221,7 @@ class PanelAudioEngineManager {
   // Clean up audio engine
   destroy(): void {
     this.stopAllFrequencies()
+    spatialAudioManager.destroy()
     
     if (this.audioContext) {
       this.audioContext.close()
@@ -207,6 +233,11 @@ class PanelAudioEngineManager {
     this.isInitialized = false
     
     console.log('🗑️ [PanelAudioEngine] Destroyed')
+  }
+
+  // Expose shared AudioContext for external consumers (e.g. spatial manager, layer manager)
+  getAudioContext(): AudioContext | null {
+    return this.audioContext
   }
 
   // Performance tracking
@@ -227,7 +258,9 @@ class PanelAudioEngineManager {
       sampleRate: this.audioContext?.sampleRate || 0,
       baseLatency: this.audioContext?.baseLatency || 0,
       currentTime: this.audioContext?.currentTime || 0,
-      timeSinceLastChange: currentTime - this.performanceMetrics.lastParameterChange
+      timeSinceLastChange: currentTime - this.performanceMetrics.lastParameterChange,
+      spatialNodeCount: spatialAudioManager.getActiveNodeCount(),
+      panningModel: spatialAudioManager.getPanningModel(),
     }
   }
 
@@ -272,6 +305,7 @@ export function usePanelAudioEngine() {
     stopAllFrequencies: () => panelAudioEngine.stopAllFrequencies(),
     getPerformanceMetrics: () => panelAudioEngine.getPerformanceMetrics(),
     getEngineStatus: (id: string) => panelAudioEngine.getEngineStatus(id),
-    getActiveEngines: () => panelAudioEngine.getActiveEngines()
+    getActiveEngines: () => panelAudioEngine.getActiveEngines(),
+    getAudioContext: () => panelAudioEngine.getAudioContext(),
   }
 }

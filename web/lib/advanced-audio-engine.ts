@@ -31,6 +31,7 @@ export interface AdvancedAudioConfig {
 
 export class AdvancedFrequencyAudioEngine {
   private audioContext: AudioContext | null = null
+  private externalContext: boolean = false
   private primaryOscillator: OscillatorNode | null = null
   private secondaryOscillator: OscillatorNode | null = null
   private gainNode: GainNode | null = null
@@ -51,9 +52,15 @@ export class AdvancedFrequencyAudioEngine {
   private breathingRate: number = 12 // breaths per minute
   private currentTime: number = 0
 
-  constructor(config: AdvancedAudioConfig) {
+  constructor(config: AdvancedAudioConfig, sharedContext?: AudioContext) {
     this.config = config
-    this.initializeAudioContext()
+    if (sharedContext) {
+      this.audioContext = sharedContext
+      this.externalContext = true
+      this.setupAdvancedAudioChain()
+    } else {
+      this.initializeAudioContext()
+    }
   }
 
   private async initializeAudioContext() {
@@ -428,10 +435,20 @@ export class AdvancedFrequencyAudioEngine {
 
   destroy() {
     this.stop()
-    if (this.audioContext) {
+    if (this.audioContext && !this.externalContext) {
       this.audioContext.close()
       this.audioContext = null
     }
+  }
+
+  // Expose the gain node for external signal chain routing
+  getOutputNode(): GainNode | null {
+    return this.gainNode
+  }
+
+  // Expose the audio context
+  getAudioContext(): AudioContext | null {
+    return this.audioContext
   }
 
   // Status getters

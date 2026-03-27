@@ -20,6 +20,7 @@ interface FrequencyCardProps {
   onSelect: (frequency: Frequency) => void
   onShowDetails?: (frequency: Frequency) => void
   className?: string
+  demoMode?: boolean
 }
 
 const tierColors = {
@@ -41,13 +42,14 @@ export function FrequencyCard({
   isActive = false, 
   onSelect, 
   onShowDetails, 
-  className = '' 
+  className = '',
+  demoMode = false
 }: FrequencyCardProps) {
   const { user, hasSubscriptionTier } = useAuth()
   const [showAccessMessage, setShowAccessMessage] = useState(false)
   
   // Check if user has access to this frequency tier
-  const hasAccess = hasSubscriptionTier(frequency.tier)
+  const hasAccess = demoMode || hasSubscriptionTier(frequency.tier)
   
   // Handle frequency selection with tier validation
   const handleSelect = () => {

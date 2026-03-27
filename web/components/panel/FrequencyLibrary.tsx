@@ -24,7 +24,11 @@ import {
   ChartBarIcon 
 } from '@heroicons/react/24/outline'
 
-export function FrequencyLibrary() {
+interface FrequencyLibraryProps {
+  demoMode?: boolean
+}
+
+export function FrequencyLibrary({ demoMode = false }: FrequencyLibraryProps) {
   const { user, hasSubscriptionTier } = useAuth()
   const { activateFrequency, isFrequencyActive } = usePanel()
   
@@ -202,6 +206,7 @@ export function FrequencyLibrary() {
                     isActive={isActive}
                     onSelect={handleFrequencySelect}
                     onShowDetails={handleShowDetails}
+                    demoMode={demoMode}
                     className="hover:shadow-lg hover:shadow-quantum-500/20"
                   />
                 )

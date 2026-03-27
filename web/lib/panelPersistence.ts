@@ -206,7 +206,7 @@ class PanelPersistenceEngine {
       version: this.VERSION,
       timestamp: Date.now(),
       session: oldData.session || {
-        id: this.generateSessionId(),
+        id: PanelPersistenceEngine.generateSessionId(),
         startTime: Date.now(),
         lastActivity: Date.now()
       },
@@ -250,12 +250,8 @@ class PanelPersistenceEngine {
     return migrated
   }
   
-  private static generateSessionId(): string {
-    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-  }
-  
   static generateSessionId(): string {
-    return this.generateSessionId()
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
   }
 }
 

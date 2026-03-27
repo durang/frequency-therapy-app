@@ -194,7 +194,9 @@ export function MobileControls() {
     startPlayback,
     stopPlayback,
     clearActiveFrequencies,
-    setPanelView
+    setPanelView,
+    updateFrequencyVolume,
+    deactivateFrequency
   } = usePanel()
 
   const [expanded, setExpanded] = useState(false)
@@ -374,7 +376,6 @@ export function MobileControls() {
                             step={1}
                             unit="%"
                             onChange={(value) => {
-                              const { updateFrequencyVolume } = usePanel.getState()
                               updateFrequencyVolume(selectedFrequency, value / 100)
                             }}
                           />
@@ -384,7 +385,6 @@ export function MobileControls() {
                             <Button
                               variant="outline"
                               onClick={() => {
-                                const { deactivateFrequency } = usePanel.getState()
                                 deactivateFrequency(selectedFrequency)
                                 setSelectedFrequency(null)
                               }}

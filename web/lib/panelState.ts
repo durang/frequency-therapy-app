@@ -5,15 +5,25 @@ import { Frequency } from '@/types'
 
 export type LayoutMode = 'desktop' | 'mobile' | 'tablet'
 export type PanelView = 'library' | 'mixer' | 'both'
+export type MovementPatternType = 'static' | 'circular' | 'pendulum' | 'spiral'
+
+interface SpatialPosition {
+  x: number
+  y: number
+  z: number
+}
 
 interface ActiveFrequency {
   frequency: Frequency
   volume: number
   active: boolean
   lastActivated?: Date
+  spatialPosition?: SpatialPosition
+  movementPattern?: MovementPatternType
+  movementSpeed?: number
 }
 
-interface PanelState {
+export interface PanelState {
   // Layout and UI state
   layoutMode: LayoutMode
   panelView: PanelView
@@ -23,6 +33,9 @@ interface PanelState {
   activeFrequencies: ActiveFrequency[]
   masterVolume: number
   isPlaying: boolean
+
+  // Spatial audio state
+  spatialEnabled: boolean
   
   // Library state
   selectedCategory: string | null
@@ -43,6 +56,11 @@ interface PanelState {
   togglePlayback: () => void
   startPlayback: () => void
   stopPlayback: () => void
+
+  // Spatial audio actions
+  updateSpatialPosition: (frequencyId: string, position: SpatialPosition) => void
+  setMovementPattern: (frequencyId: string, pattern: MovementPatternType, speed?: number) => void
+  toggleSpatial: () => void
   
   // Library management
   setSelectedCategory: (category: string | null) => void
@@ -62,6 +80,7 @@ export const usePanelStore = create<PanelState>((set, get) => ({
   activeFrequencies: [],
   masterVolume: 0.7,
   isPlaying: false,
+  spatialEnabled: false,
   selectedCategory: null,
   searchQuery: '',
   libraryScrollPosition: 0,
@@ -134,7 +153,10 @@ export const usePanelStore = create<PanelState>((set, get) => ({
         frequency,
         volume: 0.7,
         active: true,
-        lastActivated: new Date()
+        lastActivated: new Date(),
+        spatialPosition: { x: 0, y: 0, z: 0 },
+        movementPattern: 'static' as MovementPatternType,
+        movementSpeed: 1,
       })
       
       console.log('🎵 [PanelState] Frequency activated:', frequency.name, frequency.hz_value + 'Hz')
@@ -186,6 +208,39 @@ export const usePanelStore = create<PanelState>((set, get) => ({
     set({ isPlaying: false })
   },
 
+  // Spatial audio actions
+  updateSpatialPosition: (frequencyId, position) => {
+    const { activeFrequencies } = get()
+    const clamped: SpatialPosition = {
+      x: Math.max(-1, Math.min(1, position.x)),
+      y: Math.max(-1, Math.min(1, position.y)),
+      z: Math.max(-1, Math.min(1, position.z)),
+    }
+    const updated = activeFrequencies.map(af =>
+      af.frequency.id === frequencyId
+        ? { ...af, spatialPosition: clamped }
+        : af
+    )
+    set({ activeFrequencies: updated })
+  },
+
+  setMovementPattern: (frequencyId, pattern, speed) => {
+    const { activeFrequencies } = get()
+    const updated = activeFrequencies.map(af =>
+      af.frequency.id === frequencyId
+        ? { ...af, movementPattern: pattern, ...(speed !== undefined ? { movementSpeed: speed } : {}) }
+        : af
+    )
+    console.log('🌐 [PanelState] Movement pattern set:', frequencyId, pattern, speed ?? 'default')
+    set({ activeFrequencies: updated })
+  },
+
+  toggleSpatial: () => {
+    const { spatialEnabled } = get()
+    console.log('🌐 [PanelState] Spatial audio toggled:', !spatialEnabled)
+    set({ spatialEnabled: !spatialEnabled })
+  },
+
   // Library management
   setSelectedCategory: (category) => {
     console.log('📚 [PanelState] Category selected:', category)
@@ -212,7 +267,8 @@ export const usePanelStore = create<PanelState>((set, get) => ({
     set({
       activeFrequencies: [],
       masterVolume: 0.7,
-      isPlaying: false
+      isPlaying: false,
+      spatialEnabled: false,
     })
   }
 }))
@@ -287,13 +343,16 @@ export const usePanel = () => {
   const activeFrequencies = usePanelStore((state) => state.activeFrequencies)
   const masterVolume = usePanelStore((state) => state.masterVolume)
   const isPlaying = usePanelStore((state) => state.isPlaying)
+  const spatialEnabled = usePanelStore((state) => state.spatialEnabled)
   const selectedCategory = usePanelStore((state) => state.selectedCategory)
   const searchQuery = usePanelStore((state) => state.searchQuery)
+  const libraryScrollPosition = usePanelStore((state) => state.libraryScrollPosition)
   
   // Actions
   const setLayoutMode = usePanelStore((state) => state.setLayoutMode)
   const setPanelView = usePanelStore((state) => state.setPanelView)
   const toggleSidebar = usePanelStore((state) => state.toggleSidebar)
+  const setSidebarCollapsed = usePanelStore((state) => state.setSidebarCollapsed)
   const activateFrequency = usePanelStore((state) => state.activateFrequency)
   const deactivateFrequency = usePanelStore((state) => state.deactivateFrequency)
   const updateFrequencyVolume = usePanelStore((state) => state.updateFrequencyVolume)
@@ -301,8 +360,12 @@ export const usePanel = () => {
   const togglePlayback = usePanelStore((state) => state.togglePlayback)
   const startPlayback = usePanelStore((state) => state.startPlayback)
   const stopPlayback = usePanelStore((state) => state.stopPlayback)
+  const updateSpatialPosition = usePanelStore((state) => state.updateSpatialPosition)
+  const setMovementPattern = usePanelStore((state) => state.setMovementPattern)
+  const toggleSpatial = usePanelStore((state) => state.toggleSpatial)
   const setSelectedCategory = usePanelStore((state) => state.setSelectedCategory)
   const setSearchQuery = usePanelStore((state) => state.setSearchQuery)
+  const setLibraryScrollPosition = usePanelStore((state) => state.setLibraryScrollPosition)
   const clearActiveFrequencies = usePanelStore((state) => state.clearActiveFrequencies)
   
   return {
@@ -313,13 +376,16 @@ export const usePanel = () => {
     activeFrequencies,
     masterVolume,
     isPlaying,
+    spatialEnabled,
     selectedCategory,
     searchQuery,
+    libraryScrollPosition,
     
     // Actions
     setLayoutMode,
     setPanelView,
     toggleSidebar,
+    setSidebarCollapsed,
     activateFrequency,
     deactivateFrequency,
     updateFrequencyVolume,
@@ -327,14 +393,18 @@ export const usePanel = () => {
     togglePlayback,
     startPlayback,
     stopPlayback,
+    updateSpatialPosition,
+    setMovementPattern,
+    toggleSpatial,
     setSelectedCategory,
     setSearchQuery,
+    setLibraryScrollPosition,
     clearActiveFrequencies,
     
     // Computed state
-    isMobile: panelUtils.isMobile(),
-    isDesktop: panelUtils.isDesktop(),
-    activeFrequencyCount: panelUtils.getActiveFrequencyCount(),
+    isMobile: layoutMode === 'mobile',
+    isDesktop: layoutMode === 'desktop',
+    activeFrequencyCount: activeFrequencies.filter(af => af.active).length,
     
     // Utilities
     isFrequencyActive: panelUtils.isFrequencyActive,

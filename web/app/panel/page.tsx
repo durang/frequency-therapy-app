@@ -57,7 +57,7 @@ export default function PanelPage() {
           🧪 Demo Mode Active - Full functionality without authentication
         </div>
       )}
-      <PanelLayout />
+      <PanelLayout demoMode={isDemoMode} />
     </div>
   )
 }

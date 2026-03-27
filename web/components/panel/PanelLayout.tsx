@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { usePanel } from '@/lib/panelState'
+import { usePanel, usePanelStore } from '@/lib/panelState'
 import { usePanelPersistence, panelPersistenceUtils } from '@/lib/panelPersistence'
 import { PanelContainer } from '@/components/ui/PanelContainer'
 import { FrequencyLibrary } from './FrequencyLibrary'
@@ -11,7 +11,11 @@ import { PanelHeader } from './PanelHeader'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-export function PanelLayout() {
+interface PanelLayoutProps {
+  demoMode?: boolean
+}
+
+export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
   const { 
     layoutMode, 
     panelView, 
@@ -51,7 +55,7 @@ export function PanelLayout() {
           const savedState = await loadPanelState()
           if (savedState) {
             // Apply saved state to panel (except isPlaying for safety)
-            const panelState = usePanel.getState()
+            const panelState = usePanelStore.getState()
             if (savedState.layoutMode) panelState.setLayoutMode(savedState.layoutMode)
             if (savedState.panelView) panelState.setPanelView(savedState.panelView)
             if (savedState.sidebarCollapsed !== undefined) panelState.setSidebarCollapsed(savedState.sidebarCollapsed)
@@ -62,7 +66,7 @@ export function PanelLayout() {
             
             // Restore active frequencies (but don't auto-play)
             if (savedState.activeFrequencies && savedState.activeFrequencies.length > 0) {
-              savedState.activeFrequencies.forEach(af => {
+              savedState.activeFrequencies.forEach((af: any) => {
                 panelState.activateFrequency(af.frequency)
                 panelState.updateFrequencyVolume(af.frequency.id, af.volume)
               })
@@ -207,7 +211,7 @@ export function PanelLayout() {
           {isMobile ? (
             panelView === 'library' ? (
               <div className="w-full">
-                <FrequencyLibrary />
+                <FrequencyLibrary demoMode={demoMode} />
               </div>
             ) : (
               <div className="w-full">
@@ -224,7 +228,7 @@ export function PanelLayout() {
                   ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-80 lg:w-96 overflow-visible'}
                 `}
               >
-                {!sidebarCollapsed && <FrequencyLibrary />}
+                {!sidebarCollapsed && <FrequencyLibrary demoMode={demoMode} />}
               </div>
 
               {/* DJ Control Panel Main Area */}
