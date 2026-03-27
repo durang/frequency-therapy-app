@@ -427,3 +427,49 @@
     display: none !important;
   }
 }
+
+/* ─── Chat Sidebar Styles ─────────────────────────────── */
+
+.chat-sidebar {
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.chat-message-user {
+  border-bottom-right-radius: 6px;
+}
+
+.chat-message-ai {
+  border-bottom-left-radius: 6px;
+}
+
+.chat-tool-card {
+  border-left: 2px solid rgba(99, 102, 241, 0.4);
+  padding-left: 0.25rem;
+}
+
+.chat-input-area {
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Tablet chat sidebar */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .chat-sidebar {
+    width: 280px;
+  }
+}
+
+/* Desktop chat sidebar */
+@media (min-width: 1024px) {
+  .chat-sidebar {
+    width: 320px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .chat-sidebar {
+    width: 384px;
+  }
+}

@@ -2,12 +2,18 @@
 
 import { useAuth } from '@/lib/authState'
 import { usePanel } from '@/lib/panelState'
+import { useChatState } from '@/lib/chatState'
 import { Button } from '@/components/ui/button'
-import { UserCircleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline'
+import {
+  UserCircleIcon,
+  Cog6ToothIcon,
+  ChatBubbleLeftRightIcon,
+} from '@heroicons/react/24/outline'
 
 export function PanelHeader() {
   const { user } = useAuth()
   const { activeFrequencyCount, isPlaying, masterVolume } = usePanel()
+  const { sidebarOpen, toggleSidebar } = useChatState()
 
   return (
     <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4">
@@ -36,6 +42,20 @@ export function PanelHeader() {
           <div className="hidden md:block text-sm text-white/70">
             Welcome, {user?.email?.split('@')[0]}
           </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleSidebar}
+            className={`p-2 transition-colors ${
+              sidebarOpen
+                ? 'border-quantum-500/50 bg-quantum-500/20 text-quantum-300'
+                : ''
+            }`}
+            title="AI Chat Assistant"
+          >
+            <ChatBubbleLeftRightIcon className="w-4 h-4" />
+          </Button>
           
           <Button
             variant="outline"

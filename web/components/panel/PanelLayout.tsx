@@ -9,6 +9,7 @@ import { DJControlPanel } from './DJControlPanel'
 import { MobileControls } from './MobileControls'
 import { PanelHeader } from './PanelHeader'
 import { SpatialArena } from './SpatialArena'
+import { ChatSidebar } from './ChatSidebar'
 import { Button } from '@/components/ui/button'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -240,6 +241,9 @@ export function PanelLayout({ demoMode = false }: PanelLayoutProps) {
                   <DJControlPanel />
                 </div>
               </div>
+
+              {/* AI Chat Sidebar — right panel, collapsible */}
+              <ChatSidebar />
             </>
           )}
 
