@@ -13,6 +13,22 @@ interface SpatialPosition {
   z: number
 }
 
+interface LayerConfig {
+  ambient: boolean
+  binaural: boolean
+  binauralFreq: number
+  ambientVolume: number
+  binauralVolume: number
+}
+
+const DEFAULT_LAYER_CONFIG: LayerConfig = {
+  ambient: false,
+  binaural: false,
+  binauralFreq: 10, // Alpha preset
+  ambientVolume: 0.3,
+  binauralVolume: 0.4,
+}
+
 interface ActiveFrequency {
   frequency: Frequency
   volume: number
@@ -21,6 +37,7 @@ interface ActiveFrequency {
   spatialPosition?: SpatialPosition
   movementPattern?: MovementPatternType
   movementSpeed?: number
+  layers?: LayerConfig
 }
 
 export interface PanelState {
@@ -61,6 +78,11 @@ export interface PanelState {
   updateSpatialPosition: (frequencyId: string, position: SpatialPosition) => void
   setMovementPattern: (frequencyId: string, pattern: MovementPatternType, speed?: number) => void
   toggleSpatial: () => void
+
+  // Layer stacking actions
+  toggleLayer: (frequencyId: string, layerType: 'ambient' | 'binaural') => void
+  setBinauralFrequency: (frequencyId: string, freq: number) => void
+  updateLayerVolume: (frequencyId: string, layerType: 'ambient' | 'binaural', volume: number) => void
   
   // Library management
   setSelectedCategory: (category: string | null) => void
@@ -157,6 +179,7 @@ export const usePanelStore = create<PanelState>((set, get) => ({
         spatialPosition: { x: 0, y: 0, z: 0 },
         movementPattern: 'static' as MovementPatternType,
         movementSpeed: 1,
+        layers: { ...DEFAULT_LAYER_CONFIG },
       })
       
       console.log('🎵 [PanelState] Frequency activated:', frequency.name, frequency.hz_value + 'Hz')
@@ -239,6 +262,43 @@ export const usePanelStore = create<PanelState>((set, get) => ({
     const { spatialEnabled } = get()
     console.log('🌐 [PanelState] Spatial audio toggled:', !spatialEnabled)
     set({ spatialEnabled: !spatialEnabled })
+  },
+
+  // Layer stacking actions
+  toggleLayer: (frequencyId, layerType) => {
+    const { activeFrequencies } = get()
+    const updated = activeFrequencies.map(af => {
+      if (af.frequency.id !== frequencyId) return af
+      const layers = af.layers ?? { ...DEFAULT_LAYER_CONFIG }
+      const newLayers = { ...layers, [layerType]: !layers[layerType] }
+      console.log('🎚️ [PanelState] Layer toggled:', frequencyId, layerType, '->', newLayers[layerType])
+      return { ...af, layers: newLayers }
+    })
+    set({ activeFrequencies: updated })
+  },
+
+  setBinauralFrequency: (frequencyId, freq) => {
+    const clamped = Math.max(0.5, Math.min(40, freq))
+    const { activeFrequencies } = get()
+    const updated = activeFrequencies.map(af => {
+      if (af.frequency.id !== frequencyId) return af
+      const layers = af.layers ?? { ...DEFAULT_LAYER_CONFIG }
+      console.log('🎚️ [PanelState] Binaural freq set:', frequencyId, clamped, 'Hz')
+      return { ...af, layers: { ...layers, binauralFreq: clamped } }
+    })
+    set({ activeFrequencies: updated })
+  },
+
+  updateLayerVolume: (frequencyId, layerType, volume) => {
+    const clamped = Math.max(0, Math.min(1, volume))
+    const { activeFrequencies } = get()
+    const volumeKey = layerType === 'ambient' ? 'ambientVolume' : 'binauralVolume'
+    const updated = activeFrequencies.map(af => {
+      if (af.frequency.id !== frequencyId) return af
+      const layers = af.layers ?? { ...DEFAULT_LAYER_CONFIG }
+      return { ...af, layers: { ...layers, [volumeKey]: clamped } }
+    })
+    set({ activeFrequencies: updated })
   },
 
   // Library management
@@ -363,6 +423,9 @@ export const usePanel = () => {
   const updateSpatialPosition = usePanelStore((state) => state.updateSpatialPosition)
   const setMovementPattern = usePanelStore((state) => state.setMovementPattern)
   const toggleSpatial = usePanelStore((state) => state.toggleSpatial)
+  const toggleLayer = usePanelStore((state) => state.toggleLayer)
+  const setBinauralFrequency = usePanelStore((state) => state.setBinauralFrequency)
+  const updateLayerVolume = usePanelStore((state) => state.updateLayerVolume)
   const setSelectedCategory = usePanelStore((state) => state.setSelectedCategory)
   const setSearchQuery = usePanelStore((state) => state.setSearchQuery)
   const setLibraryScrollPosition = usePanelStore((state) => state.setLibraryScrollPosition)
@@ -396,6 +459,9 @@ export const usePanel = () => {
     updateSpatialPosition,
     setMovementPattern,
     toggleSpatial,
+    toggleLayer,
+    setBinauralFrequency,
+    updateLayerVolume,
     setSelectedCategory,
     setSearchQuery,
     setLibraryScrollPosition,

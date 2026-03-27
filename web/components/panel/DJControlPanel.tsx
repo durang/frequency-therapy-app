@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { AudioFaders } from './AudioFaders'
 import { WaveformVisualizer } from './WaveformVisualizer'
 import { ControlKnobs } from './ControlKnobs'
+import { LayerControls } from './LayerControls'
 import { 
   PlayIcon, 
   PauseIcon, 
@@ -372,6 +373,14 @@ export function DJControlPanel() {
                   {/* Control Knobs */}
                   <div className="flex-1">
                     <ControlKnobs 
+                      frequencyId={activeFreq.frequency.id}
+                      frequency={activeFreq.frequency}
+                    />
+                  </div>
+
+                  {/* Layer Controls */}
+                  <div className="flex-shrink-0">
+                    <LayerControls
                       frequencyId={activeFreq.frequency.id}
                       frequency={activeFreq.frequency}
                     />
