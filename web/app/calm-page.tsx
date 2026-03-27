@@ -10,6 +10,7 @@ import { calmDesignSystem } from '@/lib/calmDesignSystem'
 import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
 import ScrollProgress, { ScrollIndicator } from '@/components/ui/ScrollProgress'
 import MedicalScrollSections from '@/components/landing/MedicalScrollSections'
+import MagicLinkForm from '@/components/auth/MagicLinkForm'
 import { 
   useScrollStory, 
   useScrollSection, 
@@ -45,6 +46,7 @@ export default function CalmFrequencyApp() {
   const [volume, setVolume] = useState(75)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [explicitMedicalProgress, setExplicitMedicalProgress] = useState(0)
+  const [showMagicLinkForm, setShowMagicLinkForm] = useState(false)
   
   // Scroll story state - replaces modal-based disclaimer
   const {
@@ -216,6 +218,18 @@ export default function CalmFrequencyApp() {
         audioEngine.setVolume(volume / 100)
       }
     }
+  }
+
+  const handleStartNow = () => {
+    if (isFullyReady) {
+      setShowMagicLinkForm(true)
+      console.log('🔐 [CalmPage] Opening magic link form for authenticated start')
+    }
+  }
+
+  const handleMagicLinkCancel = () => {
+    setShowMagicLinkForm(false)
+    console.log('🔐 [CalmPage] Magic link form cancelled')
   }
 
   useEffect(() => {
@@ -572,6 +586,7 @@ export default function CalmFrequencyApp() {
               <div className="space-y-6">
                 {isReadyToStart ? (
                   <motion.button
+                    onClick={handleStartNow}
                     className="btn-primary-glow bg-white text-indigo-600 px-12 py-4 rounded-2xl font-bold text-lg shadow-xl"
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
@@ -628,6 +643,24 @@ export default function CalmFrequencyApp() {
                   </div>
                 </div>
               </div>
+
+              {/* Magic Link Form - overlays on top when needed */}
+              {isReadyToStart && showMagicLinkForm && (
+                <motion.div
+                  className="fixed inset-0 flex items-center justify-center p-4 z-50"
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }} // Dark overlay
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={(e) => e.target === e.currentTarget && handleMagicLinkCancel()}
+                >
+                  <MagicLinkForm
+                    isVisible={showMagicLinkForm}
+                    onCancel={handleMagicLinkCancel}
+                    className="max-w-md w-full"
+                  />
+                </motion.div>
+              )}
             </motion.div>
           </div>
         </motion.section>
