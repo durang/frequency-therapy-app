@@ -20,6 +20,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
   const [isExiting, setIsExiting] = useState(false)
   const [breathingActive, setBreathingActive] = useState(true)
   const [breathingSettingsOpen, setBreathingSettingsOpen] = useState(false)
+  const [dimmed, setDimmed] = useState(false)
   const audioContextRef = useRef<AudioContext | null>(null)
   const oscillatorRef = useRef<OscillatorNode | null>(null)
   const gainRef = useRef<GainNode | null>(null)
@@ -186,6 +187,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
             sections={teleprompterSections}
             frequencyName={frequency.name}
             hzValue={frequency.hz_value}
+            dimmed={dimmed}
           />
 
           {/* Breathing guide — fixed at bottom center */}
@@ -193,7 +195,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
             <BreathingGuide isActive={breathingActive && isPlaying} />
           </div>
 
-          {/* Breathing controls — bottom bar */}
+          {/* Controls — bottom bar */}
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
             <button
               onClick={() => setBreathingActive(!breathingActive)}
@@ -221,6 +223,20 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
                 </svg>
               </button>
             )}
+            {/* Dim/Lights off toggle */}
+            <button
+              onClick={() => setDimmed(!dimmed)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs tracking-widest uppercase transition-all duration-300 ${
+                dimmed
+                  ? 'border-amber-500/20 text-amber-400/60 bg-amber-500/5'
+                  : 'border-white/[0.06] text-white/20 bg-white/[0.02]'
+              }`}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              {dimmed ? 'Lights On' : 'Lights Off'}
+            </button>
           </div>
 
           {/* Breathing settings panel */}
