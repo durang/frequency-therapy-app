@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import AdvancedDashboard from '@/components/dashboard/advanced-dashboard'
 import { useAuth, useAuthStore } from '@/lib/authState'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { Brain, Play, Settings, Star, TrendingUp, Zap, LogOut, User, Calendar, Activity } from 'lucide-react'
 
 // Quick access frequency cards
@@ -91,13 +92,13 @@ export default function DashboardPage() {
   // Show loading state while auth initializes
   if (initializing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 bg-gradient-to-r from-quantum-primary to-quantum-secondary rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
             <Brain className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Dashboard...</h2>
-          <p className="text-gray-600">Verifying your session</p>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Loading Dashboard...</h2>
+          <p className="text-slate-600 dark:text-slate-400">Verifying your session</p>
         </div>
       </div>
     )
@@ -106,13 +107,13 @@ export default function DashboardPage() {
   // Show error state if auth error occurred
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="w-6 h-6 text-red-600" />
+          <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <User className="w-6 h-6 text-red-600 dark:text-red-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Error</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Authentication Error</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
           <Button onClick={() => router.push('/')}>
             Return to Home
           </Button>
@@ -146,10 +147,10 @@ export default function DashboardPage() {
 
   const getTierBadge = (tier: string) => {
     const styles = {
-      free: 'bg-gray-100 text-gray-800',
-      basic: 'bg-blue-100 text-blue-800',
-      pro: 'bg-purple-100 text-purple-800',
-      clinical: 'bg-gold-100 text-gold-800'
+      free: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
+      basic: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+      pro: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+      clinical: 'bg-gold-100 text-gold-800 dark:bg-yellow-900/30 dark:text-yellow-300'
     }
     return (
       <span className={`px-2 py-1 text-xs font-medium rounded-full ${styles[tier as keyof typeof styles]}`}>
@@ -163,9 +164,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
+    <div className="min-h-screen bg-[var(--surface-primary)]">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-4">
@@ -178,15 +179,15 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                   {greeting}, {user.profile?.full_name?.split(' ')[0] || user.email.split('@')[0]}!
                 </h1>
                 <div className="flex items-center gap-3 mt-1">
                   {getTierBadge(user.subscription_tier)}
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
                     🔥 {userStats.streakDays} day streak
                   </span>
-                  <span className="text-sm text-gray-500 flex items-center gap-1">
+                  <span className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     Joined {userStats.joinDate}
                   </span>
@@ -194,10 +195,11 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+              <div className="hidden md:flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg">
                 <User className="w-4 h-4" />
                 {user.email}
               </div>
+              <ThemeToggle />
               <Button variant="outline" size="sm">
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
@@ -235,7 +237,7 @@ export default function DashboardPage() {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-quantum-primary text-quantum-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
                 {tab.label}
@@ -282,12 +284,12 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Play className="w-6 h-6 text-blue-600" />
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <Play className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Total Sessions</p>
-                      <p className="text-2xl font-bold text-gray-900">{userStats.totalSessions}</p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Sessions</p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white">{userStats.totalSessions}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -296,12 +298,12 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <Brain className="w-6 h-6 text-purple-600" />
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                      <Brain className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">This Week</p>
-                      <p className="text-2xl font-bold text-gray-900">{userStats.thisWeekSessions} sessions</p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">This Week</p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white">{userStats.thisWeekSessions} sessions</p>
                     </div>
                   </div>
                 </CardContent>
@@ -310,12 +312,12 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <Star className="w-6 h-6 text-green-600" />
+                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                      <Star className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Avg Effectiveness</p>
-                      <p className="text-2xl font-bold text-gray-900">{userStats.avgEffectiveness}/10</p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Avg Effectiveness</p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white">{userStats.avgEffectiveness}/10</p>
                     </div>
                   </div>
                 </CardContent>
@@ -326,7 +328,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Quick Sessions</CardTitle>
-                <p className="text-gray-600">Start your most effective frequencies</p>
+                <p className="text-slate-600 dark:text-slate-400">Start your most effective frequencies</p>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-3">
@@ -393,10 +395,10 @@ export default function DashboardPage() {
                         mood: '+4 mood boost'
                       }
                     ].map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                      <div key={index} className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700 last:border-0">
                         <div>
-                          <h4 className="font-medium text-gray-900">{activity.session}</h4>
-                          <p className="text-sm text-gray-600">{activity.duration} • {activity.time}</p>
+                          <h4 className="font-medium text-slate-900 dark:text-white">{activity.session}</h4>
+                          <p className="text-sm text-slate-600 dark:text-slate-400">{activity.duration} • {activity.time}</p>
                         </div>
                         <div className="text-right">
                           <div className="flex items-center gap-1 mb-1">
@@ -410,9 +412,9 @@ export default function DashboardPage() {
                   ) : (
                     // Show empty state for new users
                     <div className="text-center py-8">
-                      <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No sessions yet</h3>
-                      <p className="text-gray-600 mb-4">Start your first healing session to see your activity here</p>
+                      <Activity className="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No sessions yet</h3>
+                      <p className="text-slate-600 dark:text-slate-400 mb-4">Start your first healing session to see your activity here</p>
                       <Button onClick={() => startQuickSession('1')}>
                         Start First Session
                       </Button>
@@ -460,17 +462,17 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Frequency Library</CardTitle>
-                <p className="text-gray-600">
+                <p className="text-slate-600 dark:text-slate-400">
                   Explore our scientifically-backed frequency collection
                 </p>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12">
-                  <Brain className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  <Brain className="w-16 h-16 text-slate-400 dark:text-slate-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
                     Frequency Library Coming Soon
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-slate-600 dark:text-slate-400 mb-4">
                     Advanced frequency browsing and filtering capabilities
                   </p>
                   <Button onClick={() => router.push('/panel')}>

@@ -49,9 +49,9 @@ const InsightCard = ({ insight, onAction }: InsightCardProps) => {
 
   const getPriorityColor = () => {
     switch (insight.priority) {
-      case 'high': return 'border-l-red-500 bg-red-50'
-      case 'medium': return 'border-l-yellow-500 bg-yellow-50'
-      case 'low': return 'border-l-green-500 bg-green-50'
+      case 'high': return 'border-l-red-500 bg-red-50 dark:bg-red-900/20'
+      case 'medium': return 'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/20'
+      case 'low': return 'border-l-green-500 bg-green-50 dark:bg-green-900/20'
     }
   }
 
@@ -60,10 +60,10 @@ const InsightCard = ({ insight, onAction }: InsightCardProps) => {
       <div className="flex items-start gap-3">
         {getInsightIcon()}
         <div className="flex-1">
-          <h4 className="font-medium text-gray-900 mb-1">{insight.title}</h4>
-          <p className="text-sm text-gray-600 mb-2">{insight.description}</p>
+          <h4 className="font-medium text-slate-900 dark:text-white mb-1">{insight.title}</h4>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{insight.description}</p>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-slate-500 dark:text-slate-400">
               {Math.round(insight.confidence * 100)}% confidence
             </span>
             {insight.actionable && insight.actionText && (
@@ -97,14 +97,14 @@ const MetricCard = ({ title, value, change, changeType, icon, description }: Met
     switch (changeType) {
       case 'positive': return 'text-green-600'
       case 'negative': return 'text-red-600'
-      default: return 'text-gray-600'
+      default: return 'text-slate-600 dark:text-slate-400'
     }
   }
 
   return (
     <Card className="relative overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600">
+        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
           {title}
         </CardTitle>
         <div className="text-quantum-primary">
@@ -112,14 +112,14 @@ const MetricCard = ({ title, value, change, changeType, icon, description }: Met
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-gray-900">{value}</div>
+        <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
         {change && (
           <p className={`text-xs ${getChangeColor()}`}>
             {change}
           </p>
         )}
         {description && (
-          <p className="text-xs text-gray-500 mt-1">{description}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{description}</p>
         )}
       </CardContent>
     </Card>
@@ -190,11 +190,11 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader className="space-y-0 pb-2">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
               </CardHeader>
               <CardContent>
-                <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
+                <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-2"></div>
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
               </CardContent>
             </Card>
           ))}
@@ -206,9 +206,9 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
   if (!metrics) {
     return (
       <div className="text-center py-12">
-        <Brain className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Data Available</h3>
-        <p className="text-gray-600">Complete some therapy sessions to see your analytics.</p>
+        <Brain className="w-16 h-16 text-slate-400 dark:text-slate-500 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No Data Available</h3>
+        <p className="text-slate-600 dark:text-slate-400">Complete some therapy sessions to see your analytics.</p>
       </div>
     )
   }
@@ -225,8 +225,8 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Your Analytics</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Your Analytics</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">
             Insights from your frequency therapy journey
           </p>
         </div>
@@ -323,13 +323,13 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   <div key={freq.frequencyId} className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">Frequency {freq.frequencyId}</div>
-                      <div className="text-sm text-gray-600">{freq.usageCount} sessions</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">{freq.usageCount} sessions</div>
                     </div>
                     <div className="text-right">
                       <div className="font-medium text-green-600">
                         {Math.round(freq.effectivenessScore * 100)}%
                       </div>
-                      <div className="text-xs text-gray-500">effectiveness</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">effectiveness</div>
                     </div>
                   </div>
                 ))}
@@ -351,12 +351,12 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                     <div className="font-medium">{time}</div>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      <span className="text-sm text-gray-600">Optimal</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Optimal</span>
                     </div>
                   </div>
                 ))}
                 {metrics.optimalUsageTimes.length === 0 && (
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
                     Complete more sessions to identify your optimal times
                   </p>
                 )}
@@ -383,7 +383,7 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   <path
                     d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
                     fill="none"
-                    stroke="#e5e7eb"
+                    className="stroke-slate-200 dark:stroke-slate-700"
                     strokeWidth="3"
                   />
                   <path
@@ -395,12 +395,12 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">
                     {Math.round(metrics.consistencyScore * 100)}%
                   </span>
                 </div>
               </div>
-              <div className="text-sm text-gray-600">Consistency</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">Consistency</div>
             </div>
 
             {/* Effectiveness Visualization */}
@@ -410,7 +410,7 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   <path
                     d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
                     fill="none"
-                    stroke="#e5e7eb"
+                    className="stroke-slate-200 dark:stroke-slate-700"
                     strokeWidth="3"
                   />
                   <path
@@ -422,12 +422,12 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">
                     {metrics.averageEffectivenessRating.toFixed(1)}
                   </span>
                 </div>
               </div>
-              <div className="text-sm text-gray-600">Avg Effectiveness</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">Avg Effectiveness</div>
             </div>
 
             {/* Mood Improvement */}
@@ -437,7 +437,7 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   <path
                     d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
                     fill="none"
-                    stroke="#e5e7eb"
+                    className="stroke-slate-200 dark:stroke-slate-700"
                     strokeWidth="3"
                   />
                   <path
@@ -449,12 +449,12 @@ export default function AdvancedDashboard({ userId }: DashboardProps) {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">
                     +{metrics.averageMoodImprovement.toFixed(1)}
                   </span>
                 </div>
               </div>
-              <div className="text-sm text-gray-600">Mood Boost</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">Mood Boost</div>
             </div>
           </div>
         </CardContent>
