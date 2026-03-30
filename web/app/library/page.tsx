@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { frequencies } from '@/lib/frequencies'
 import { audioEngine } from '@/lib/real-audio-engine'
 import { 
@@ -21,12 +22,12 @@ import {
 } from 'lucide-react'
 
 const categories = [
-  { id: 'all', name: 'Todas', icon: Star },
-  { id: 'dna_repair', name: 'Reparación DNA', icon: Sparkles },
-  { id: 'anxiety_relief', name: 'Alivio Ansiedad', icon: Heart },
-  { id: 'focus', name: 'Concentración', icon: Brain },
-  { id: 'sleep', name: 'Sueño', icon: Moon },
-  { id: 'meditation', name: 'Meditación', icon: Waves }
+  { id: 'all', name: 'All', icon: Star },
+  { id: 'dna_repair', name: 'DNA Repair', icon: Sparkles },
+  { id: 'anxiety_relief', name: 'Anxiety Relief', icon: Heart },
+  { id: 'focus', name: 'Focus', icon: Brain },
+  { id: 'sleep', name: 'Sleep', icon: Moon },
+  { id: 'meditation', name: 'Meditation', icon: Waves }
 ]
 
 export default function LibraryPage() {
@@ -61,23 +62,24 @@ export default function LibraryPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/30">
+    <div className="min-h-screen bg-[var(--surface-primary)]">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-blue-100/50">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--surface-overlay)] border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link 
                 href="/"
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Biblioteca de Frecuencias</h1>
-                <p className="text-sm text-blue-600">{filteredFrequencies.length} frecuencias disponibles</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Frequency Library</h1>
+                <p className="text-sm text-blue-600 dark:text-blue-400">{filteredFrequencies.length} frequencies available</p>
               </div>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -87,13 +89,13 @@ export default function LibraryPage() {
         <div className="mb-8 space-y-4">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3 w-5 h-5 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
-              placeholder="Buscar frecuencias..."
+              placeholder="Search frequencies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
             />
           </div>
 
@@ -107,8 +109,8 @@ export default function LibraryPage() {
                   onClick={() => setSelectedCategory(category.id)}
                   className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full font-medium transition-all ${
                     selectedCategory === category.id
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-lg'
+                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -122,7 +124,7 @@ export default function LibraryPage() {
         {/* Frequency Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredFrequencies.map((frequency) => (
-            <Card key={frequency.id} className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm border-0">
+            <Card key={frequency.id} className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0">
               <CardContent className="p-6">
                 {/* Category Icon */}
                 <div className="flex items-start justify-between mb-4">
@@ -135,23 +137,23 @@ export default function LibraryPage() {
                     {!['sleep', 'focus', 'meditation', 'anxiety_relief', 'dna_repair'].includes(frequency.category) && <Star className="w-6 h-6 text-white" />}
                   </div>
                   
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-semibold">
+                  <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">
                     {frequency.tier || 'free'}
                   </span>
                 </div>
 
                 {/* Frequency Info */}
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
                     {frequency.name}
                   </h3>
-                  <p className="text-sm text-blue-600 font-medium">
+                  <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
                     {frequency.hz_value} Hz
                   </p>
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-700 text-sm mb-4 leading-relaxed">
+                <p className="text-slate-700 dark:text-slate-300 text-sm mb-4 leading-relaxed">
                   {frequency.description?.substring(0, 80)}...
                 </p>
 
@@ -160,19 +162,19 @@ export default function LibraryPage() {
                   onClick={() => handlePlay(frequency.id)}
                   className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
                     playingFrequency === frequency.id
-                      ? 'bg-gray-600 hover:bg-gray-700 text-white' 
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25'
+                      ? 'bg-slate-600 dark:bg-slate-500 hover:bg-slate-700 dark:hover:bg-slate-400 text-white' 
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 dark:shadow-blue-500/10'
                   }`}
                 >
                   {playingFrequency === frequency.id ? (
                     <>
                       <Pause className="w-4 h-4" />
-                      <span>Pausar</span>
+                      <span>Pause</span>
                     </>
                   ) : (
                     <>
                       <Play className="w-4 h-4" />
-                      <span>Reproducir</span>
+                      <span>Play</span>
                     </>
                   )}
                 </button>
@@ -181,8 +183,8 @@ export default function LibraryPage() {
                 <div className="mt-4 space-y-1">
                   {frequency.benefits?.slice(0, 2).map((benefit: string, index: number) => (
                     <div key={index} className="flex items-start space-x-2">
-                      <CheckCircle className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-xs text-gray-600">{benefit}</span>
+                      <CheckCircle className="w-3 h-3 text-green-500 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <span className="text-xs text-slate-600 dark:text-slate-400">{benefit}</span>
                     </div>
                   ))}
                 </div>
@@ -194,11 +196,11 @@ export default function LibraryPage() {
         {/* No Results */}
         {filteredFrequencies.length === 0 && (
           <div className="text-center py-12">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
+            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-8 h-8 text-slate-400 dark:text-slate-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No se encontraron frecuencias</h3>
-            <p className="text-gray-600">Intenta con otros términos de búsqueda o categorías.</p>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No frequencies found</h3>
+            <p className="text-slate-600 dark:text-slate-400">Try different search terms or categories.</p>
           </div>
         )}
       </div>

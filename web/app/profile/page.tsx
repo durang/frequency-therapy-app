@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { 
   ArrowLeft,
   User,
@@ -19,10 +20,10 @@ import {
 } from 'lucide-react'
 
 const statsData = [
-  { label: 'Sesiones Completadas', value: '127', change: '+12%', icon: Headphones },
-  { label: 'Tiempo Total', value: '2.4h', change: '+8%', icon: Clock },
-  { label: 'Frecuencias Favoritas', value: '8', change: '+2', icon: Heart },
-  { label: 'Racha Actual', value: '15 días', change: '+3', icon: TrendingUp }
+  { label: 'Sessions Completed', value: '127', change: '+12%', icon: Headphones },
+  { label: 'Total Time', value: '2.4h', change: '+8%', icon: Clock },
+  { label: 'Favorite Frequencies', value: '8', change: '+2', icon: Heart },
+  { label: 'Current Streak', value: '15 days', change: '+3', icon: TrendingUp }
 ]
 
 const recentSessions = [
@@ -33,36 +34,39 @@ const recentSessions = [
 ]
 
 const achievements = [
-  { title: 'Primera Semana', description: 'Completaste 7 días consecutivos', earned: true },
-  { title: 'Explorador de Frecuencias', description: 'Probaste 10 frecuencias diferentes', earned: true },
-  { title: 'Maestro del Sueño', description: '30 sesiones de frecuencias de sueño', earned: false },
-  { title: 'Gurú de la Calma', description: '100 horas de meditación', earned: false }
+  { title: 'First Week', description: 'Completed 7 consecutive days', earned: true },
+  { title: 'Frequency Explorer', description: 'Tried 10 different frequencies', earned: true },
+  { title: 'Sleep Master', description: '30 sleep frequency sessions', earned: false },
+  { title: 'Calm Guru', description: '100 hours of meditation', earned: false }
 ]
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('overview')
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/30">
+    <div className="min-h-screen bg-[var(--surface-primary)]">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-blue-100/50">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--surface-overlay)] border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link 
                 href="/"
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Mi Perfil</h1>
-                <p className="text-sm text-blue-600">Gestiona tu experiencia de terapia</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">My Profile</h1>
+                <p className="text-sm text-blue-600 dark:text-blue-400">Manage your therapy experience</p>
               </div>
             </div>
-            <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              <button className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                <Settings className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -78,10 +82,10 @@ export default function ProfilePage() {
                   <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <User className="w-12 h-12" />
                   </div>
-                  <h2 className="text-2xl font-bold">Usuario FreqHeal</h2>
+                  <h2 className="text-2xl font-bold">FreqTherapy User</h2>
                   <div className="flex items-center justify-center space-x-2 mt-2">
                     <Crown className="w-4 h-4 text-yellow-300" />
-                    <span className="text-sm text-blue-100">Miembro Premium</span>
+                    <span className="text-sm text-blue-100">Premium Member</span>
                   </div>
                 </div>
 
@@ -89,11 +93,11 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold">127</div>
-                    <div className="text-sm text-blue-200">Sesiones</div>
+                    <div className="text-sm text-blue-200">Sessions</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold">15</div>
-                    <div className="text-sm text-blue-200">Días seguidos</div>
+                    <div className="text-sm text-blue-200">Days Streak</div>
                   </div>
                 </div>
 
@@ -126,19 +130,19 @@ export default function ProfilePage() {
                       <span className="text-sm font-semibold">75%</span>
                     </div>
                   </div>
-                  <p className="text-sm text-blue-200 mt-2">Objetivo mensual</p>
+                  <p className="text-sm text-blue-200 mt-2">Monthly Goal</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Navigation Tabs */}
-            <div className="mt-6 bg-white rounded-xl p-2 shadow-lg">
+            <div className="mt-6 bg-white dark:bg-slate-800 rounded-xl p-2 shadow-lg dark:shadow-slate-900/50">
               <nav className="space-y-1">
                 {[
-                  { id: 'overview', label: 'Resumen', icon: BarChart3 },
-                  { id: 'sessions', label: 'Sesiones', icon: Clock },
-                  { id: 'achievements', label: 'Logros', icon: Award },
-                  { id: 'settings', label: 'Configuración', icon: Settings }
+                  { id: 'overview', label: 'Overview', icon: BarChart3 },
+                  { id: 'sessions', label: 'Sessions', icon: Clock },
+                  { id: 'achievements', label: 'Achievements', icon: Award },
+                  { id: 'settings', label: 'Settings', icon: Settings }
                 ].map((tab) => {
                   const Icon = tab.icon
                   return (
@@ -147,8 +151,8 @@ export default function ProfilePage() {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -169,16 +173,16 @@ export default function ProfilePage() {
                   {statsData.map((stat, index) => {
                     const Icon = stat.icon
                     return (
-                      <Card key={index} className="border-0 shadow-lg bg-white">
+                      <Card key={index} className="border-0 shadow-lg dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
                         <CardContent className="p-6">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-gray-600">{stat.label}</p>
-                              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                              <p className="text-sm text-green-600">{stat.change}</p>
+                              <p className="text-sm text-slate-600 dark:text-slate-400">{stat.label}</p>
+                              <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                              <p className="text-sm text-green-600 dark:text-green-400">{stat.change}</p>
                             </div>
-                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                              <Icon className="w-6 h-6 text-blue-600" />
+                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                              <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
                           </div>
                         </CardContent>
@@ -188,18 +192,18 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Progress Chart Placeholder */}
-                <Card className="border-0 shadow-lg">
+                <Card className="border-0 shadow-lg dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
+                    <CardTitle className="flex items-center space-x-2 text-slate-900 dark:text-white">
                       <TrendingUp className="w-5 h-5" />
-                      <span>Progreso Semanal</span>
+                      <span>Weekly Progress</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div className="h-64 bg-slate-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center">
                       <div className="text-center">
-                        <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">Gráfico de progreso próximamente</p>
+                        <BarChart3 className="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+                        <p className="text-slate-500 dark:text-slate-400">Progress chart coming soon</p>
                       </div>
                     </div>
                   </CardContent>
@@ -208,27 +212,27 @@ export default function ProfilePage() {
             )}
 
             {activeTab === 'sessions' && (
-              <Card className="border-0 shadow-lg">
+              <Card className="border-0 shadow-lg dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+                  <CardTitle className="flex items-center space-x-2 text-slate-900 dark:text-white">
                     <Clock className="w-5 h-5" />
-                    <span>Sesiones Recientes</span>
+                    <span>Recent Sessions</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {recentSessions.map((session, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
                         <div>
-                          <h3 className="font-medium text-gray-900">{session.frequency}</h3>
-                          <p className="text-sm text-gray-500">{session.duration} • {session.date}</p>
+                          <h3 className="font-medium text-slate-900 dark:text-white">{session.frequency}</h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400">{session.duration} • {session.date}</p>
                         </div>
                         <div className="flex items-center space-x-1">
                           {[...Array(5)].map((_, i) => (
                             <div
                               key={i}
                               className={`w-4 h-4 rounded-full ${
-                                i < session.rating ? 'bg-yellow-400' : 'bg-gray-200'
+                                i < session.rating ? 'bg-yellow-400 dark:bg-yellow-300' : 'bg-slate-200 dark:bg-slate-600'
                               }`}
                             />
                           ))}
@@ -241,11 +245,11 @@ export default function ProfilePage() {
             )}
 
             {activeTab === 'achievements' && (
-              <Card className="border-0 shadow-lg">
+              <Card className="border-0 shadow-lg dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+                  <CardTitle className="flex items-center space-x-2 text-slate-900 dark:text-white">
                     <Award className="w-5 h-5" />
-                    <span>Logros</span>
+                    <span>Achievements</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -255,23 +259,23 @@ export default function ProfilePage() {
                         key={index}
                         className={`p-4 rounded-lg border-2 ${
                           achievement.earned
-                            ? 'border-yellow-200 bg-yellow-50'
-                            : 'border-gray-200 bg-gray-50'
+                            ? 'border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20'
+                            : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
                           <div
                             className={`w-12 h-12 rounded-full flex items-center justify-center ${
                               achievement.earned
-                                ? 'bg-yellow-400 text-white'
-                                : 'bg-gray-300 text-gray-500'
+                                ? 'bg-yellow-400 dark:bg-yellow-500 text-white'
+                                : 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400'
                             }`}
                           >
                             <Award className="w-6 h-6" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900">{achievement.title}</h3>
-                            <p className="text-sm text-gray-600">{achievement.description}</p>
+                            <h3 className="font-medium text-slate-900 dark:text-white">{achievement.title}</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">{achievement.description}</p>
                           </div>
                         </div>
                       </div>
@@ -282,38 +286,38 @@ export default function ProfilePage() {
             )}
 
             {activeTab === 'settings' && (
-              <Card className="border-0 shadow-lg">
+              <Card className="border-0 shadow-lg dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+                  <CardTitle className="flex items-center space-x-2 text-slate-900 dark:text-white">
                     <Settings className="w-5 h-5" />
-                    <span>Configuración</span>
+                    <span>Settings</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-3">Preferencias de Audio</h3>
+                      <h3 className="font-medium text-slate-900 dark:text-white mb-3">Audio Preferences</h3>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Volumen por defecto</span>
+                          <span className="text-sm text-slate-600 dark:text-slate-400">Default Volume</span>
                           <input type="range" min="0" max="100" defaultValue="75" className="w-24" />
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Audio espacial</span>
+                          <span className="text-sm text-slate-600 dark:text-slate-400">Spatial Audio</span>
                           <input type="checkbox" defaultChecked className="rounded" />
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-3">Notificaciones</h3>
+                      <h3 className="font-medium text-slate-900 dark:text-white mb-3">Notifications</h3>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Recordatorios diarios</span>
+                          <span className="text-sm text-slate-600 dark:text-slate-400">Daily Reminders</span>
                           <input type="checkbox" defaultChecked className="rounded" />
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Progreso semanal</span>
+                          <span className="text-sm text-slate-600 dark:text-slate-400">Weekly Progress</span>
                           <input type="checkbox" defaultChecked className="rounded" />
                         </div>
                       </div>
