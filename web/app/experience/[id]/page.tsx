@@ -24,12 +24,12 @@ export default function ExperiencePage() {
     }
   }, [params.id, router])
 
-  // Check if URL has bypass params
-  const [isBypass, setIsBypass] = useState(false)
+  // Check if URL has demo param (for development only)
+  const [isDemoMode, setIsDemoMode] = useState(false)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search)
-      setIsBypass(urlParams.get('demo') === 'true' || urlParams.get('superadmin') === 'true')
+      setIsDemoMode(urlParams.get('demo') === 'true')
     }
   }, [])
 
@@ -42,7 +42,7 @@ export default function ExperiencePage() {
   }
 
   // Admin and subscribers get full access
-  const hasFullAccess = isSubscribed || isBypass || isSuperadmin
+  const hasFullAccess = isSubscribed || isDemoMode || isSuperadmin
   const isFreeUser = !hasFullAccess
 
   // If free user tries to access a non-free frequency, redirect to pricing

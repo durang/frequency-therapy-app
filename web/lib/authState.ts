@@ -514,10 +514,8 @@ export const useAuth = () => {
   const initializeAuth = useAuthStore((state) => state.initializeAuth)
   const clearError = useAuthStore((state) => state.clearError)
 
-  // Activate superadmin if URL param present
-  if (typeof window !== 'undefined' && isSuperadminMode() && (!user || user.id !== SUPERADMIN_USER.id)) {
-    activateSuperadmin()
-  }
+  // Superadmin URL param removed — only email-based admin detection
+  // (kept for backward compat but does nothing without admin email)
   
   return {
     // State
@@ -542,9 +540,11 @@ export const useAuth = () => {
     hasSubscriptionTier: authUtils.hasSubscriptionTier,
     getUserMetadata: authUtils.getUserMetadata,
     
-    // Superadmin — URL param OR admin email match
-    isSuperadmin: user?.id === SUPERADMIN_USER.id || 
-      (!!user?.email && typeof window !== 'undefined' && user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL),
+    // Superadmin — only sergioduran89@gmail.com gets admin access
+    isSuperadmin: (!!user?.email && (
+      user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
+      user.email === 'sergioduran89@gmail.com'
+    )),
   }
 }
 
