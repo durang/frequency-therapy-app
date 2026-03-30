@@ -38,7 +38,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
     e.preventDefault()
     
     if (!isValidEmail) {
-      setLocalError('Por favor, introduce una dirección de email válida')
+      setLocalError('Please enter a valid email address')
       return
     }
     
@@ -49,7 +49,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
       
       if (result.error) {
         console.error('❌ [MagicLinkForm] Magic link failed:', result.error)
-        setLocalError(result.error.message || 'Error al enviar el enlace mágico')
+        setLocalError(result.error.message || 'Failed to send magic link')
         return
       }
       
@@ -64,7 +64,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
       
     } catch (error: any) {
       console.error('❌ [MagicLinkForm] Unexpected error:', error)
-      setLocalError(error?.message || 'Error inesperado')
+      setLocalError(error?.message || 'An unexpected error occurred')
     }
   }
 
@@ -83,7 +83,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className={`glass-card p-8 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-md ${className}`}
+          className={`glass-card p-8 rounded-3xl border border-white/20 dark:border-gray-600 shadow-2xl backdrop-blur-md ${className}`}
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -107,19 +107,19 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                   >
                     <Mail className="w-8 h-8 text-white" />
                   </motion.div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    Acceso Instantáneo
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Instant Access
                   </h3>
-                  <p className="text-gray-600">
-                    Te enviaremos un enlace mágico para acceder sin contraseñas
+                  <p className="text-gray-600 dark:text-gray-300">
+                    We&apos;ll send you a magic link to sign in without a password
                   </p>
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="relative">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Dirección de email
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Email address
                     </label>
                     <div className="relative">
                       <input
@@ -127,13 +127,13 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                         type="email"
                         value={email}
                         onChange={handleEmailChange}
-                        placeholder="tu@email.com"
-                        className={`w-full px-4 py-4 pl-12 bg-white/80 border-2 rounded-2xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
+                        placeholder="you@email.com"
+                        className={`w-full px-4 py-4 pl-12 bg-white/80 dark:bg-white/10 border-2 rounded-2xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-gray-900 dark:text-white ${
                           displayError
                             ? 'border-red-300 focus:border-red-500'
                             : isValidEmail
                               ? 'border-green-300 focus:border-green-500'
-                              : 'border-gray-200 focus:border-blue-500'
+                              : 'border-gray-200 dark:border-gray-600 focus:border-blue-500'
                         }`}
                         disabled={loading}
                         autoComplete="email"
@@ -170,7 +170,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                   <AnimatePresence>
                     {displayError && (
                       <motion.div
-                        className="flex items-center space-x-2 text-red-600 text-sm bg-red-50 px-4 py-3 rounded-xl border border-red-200"
+                        className="flex items-center space-x-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/30 px-4 py-3 rounded-xl border border-red-200 dark:border-red-800"
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -189,7 +189,7 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                       disabled={!isValidEmail || loading}
                       className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-2xl font-semibold transition-all duration-200 ${
                         !isValidEmail || loading
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                           : 'btn-primary-glow text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0'
                       }`}
                       whileHover={isValidEmail && !loading ? { scale: 1.02 } : {}}
@@ -198,12 +198,12 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                       {loading ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          <span>Enviando...</span>
+                          <span>Sending...</span>
                         </>
                       ) : (
                         <>
                           <Send className="w-5 h-5" />
-                          <span>Enviar Enlace Mágico</span>
+                          <span>Send Magic Link</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -212,22 +212,22 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                     <motion.button
                       type="button"
                       onClick={handleCancel}
-                      className="px-6 py-4 rounded-2xl font-medium text-gray-600 hover:text-gray-800 hover:bg-white/50 transition-colors"
+                      className="px-6 py-4 rounded-2xl font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
                       disabled={loading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      Cancelar
+                      Cancel
                     </motion.button>
                   </div>
                 </form>
 
                 {/* Privacy note */}
                 <div className="mt-6 text-center">
-                  <p className="text-xs text-gray-500">
-                    Tu email solo se usará para enviarte el enlace de acceso.
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Your email will only be used to send you the sign-in link.
                     <br />
-                    No compartimos tu información con terceros.
+                    We do not share your information with third parties.
                   </p>
                 </div>
               </motion.div>
@@ -261,55 +261,55 @@ export default function MagicLinkForm({ isVisible, onCancel, className = '' }: M
                   </motion.div>
                 </motion.div>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  ¡Enlace Enviado!
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  Link Sent!
                 </h3>
                 
                 <div className="mb-6">
-                  <p className="text-gray-600 mb-2">
-                    Hemos enviado un enlace mágico a:
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
+                    We&apos;ve sent a magic link to:
                   </p>
-                  <div className="bg-blue-50 px-4 py-3 rounded-xl border border-blue-200">
-                    <span className="font-medium text-blue-800">{email}</span>
+                  <div className="bg-blue-50 dark:bg-blue-900/30 px-4 py-3 rounded-xl border border-blue-200 dark:border-blue-800">
+                    <span className="font-medium text-blue-800 dark:text-blue-300">{email}</span>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm text-gray-600">
+                <div className="space-y-4 text-sm text-gray-600 dark:text-gray-300">
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
+                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
                       1
                     </div>
                     <p className="text-left">
-                      Revisa tu bandeja de entrada (y spam) para el email de FreqHeal
+                      Check your inbox (and spam) for the email from FreqTherapy
                     </p>
                   </div>
                   
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
+                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
                       2
                     </div>
                     <p className="text-left">
-                      Haz clic en el enlace para acceder automáticamente
+                      Click the link to sign in automatically
                     </p>
                   </div>
                   
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
+                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-xs mt-0.5">
                       3
                     </div>
                     <p className="text-left">
-                      Disfruta de todas las frecuencias de FreqHeal
+                      Enjoy all FreqTherapy frequencies
                     </p>
                   </div>
                 </div>
 
                 <motion.button
                   onClick={handleCancel}
-                  className="mt-6 px-6 py-3 rounded-xl font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 transition-colors"
+                  className="mt-6 px-6 py-3 rounded-xl font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Entendido
+                  Got it
                 </motion.button>
               </motion.div>
             )}

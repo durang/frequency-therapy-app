@@ -350,7 +350,7 @@ export function ChatSidebar({ isMobile = false, onClose }: ChatSidebarProps) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about frequencies... / Pregunta sobre frecuencias..."
+            placeholder="Ask about frequencies..."
             className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-quantum-500/50 focus:bg-white/10"
             disabled={isLoading}
           />

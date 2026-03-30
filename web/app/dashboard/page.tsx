@@ -486,7 +486,7 @@ export default function DashboardPage() {
                     </p>
                     <Button 
                       variant="secondary"
-                      className="bg-white text-quantum-primary hover:bg-gray-50"
+                      className="bg-white dark:bg-gray-800 text-quantum-primary hover:bg-gray-50 dark:hover:bg-gray-700"
                       onClick={() => startQuickSession('1')}
                     >
                       Start Optimized Session

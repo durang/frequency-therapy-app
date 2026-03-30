@@ -280,7 +280,7 @@ export default function AdvancedFrequencyPlayer({
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <p className="text-gray-600">Frequency not found</p>
+          <p className="text-gray-600 dark:text-gray-400">Frequency not found</p>
         </CardContent>
       </Card>
     )
@@ -289,16 +289,16 @@ export default function AdvancedFrequencyPlayer({
   return (
     <div className="space-y-6">
       {/* Main Player */}
-      <Card className="overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50">
+      <Card className="overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
         <CardHeader className="text-center pb-4">
           <div className="flex items-center justify-center gap-2 mb-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-600 font-medium">
+            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
               {sessionStarted ? 'Session Active' : 'Ready to Start'}
             </span>
           </div>
           <CardTitle className="text-2xl mb-2">{currentFrequency.name}</CardTitle>
-          <p className="text-gray-600 mb-4">{currentFrequency.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{currentFrequency.description}</p>
           <div className="flex items-center justify-center gap-6 text-sm">
             <div className="flex items-center gap-1">
               <Activity className="w-4 h-4 text-quantum-primary" />
@@ -319,7 +319,7 @@ export default function AdvancedFrequencyPlayer({
                 cx="72"
                 cy="72"
                 r="64"
-                stroke="#e5e7eb"
+                className="stroke-gray-200 dark:stroke-gray-700"
                 strokeWidth="8"
                 fill="none"
               />
@@ -342,10 +342,10 @@ export default function AdvancedFrequencyPlayer({
               </defs>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-3xl font-bold text-gray-900 mb-1">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
                 {formatTime(timeRemaining)}
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
                 {Math.round(progress)}% Complete
               </div>
             </div>
@@ -388,7 +388,7 @@ export default function AdvancedFrequencyPlayer({
 
           {/* Volume Control */}
           <div className="flex items-center gap-4 mb-6">
-            <Volume2 className="w-5 h-5 text-gray-600" />
+            <Volume2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <input
               type="range"
               min="0"
@@ -400,9 +400,9 @@ export default function AdvancedFrequencyPlayer({
                 setVolume(newVolume)
                 updateAudioConfig({ volume: newVolume })
               }}
-              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
             />
-            <span className="text-sm text-gray-600 w-8">
+            <span className="text-sm text-gray-600 dark:text-gray-400 w-8">
               {Math.round(volume * 100)}%
             </span>
           </div>
@@ -413,7 +413,7 @@ export default function AdvancedFrequencyPlayer({
               variant="outline"
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
-              className="text-gray-600"
+              className="text-gray-600 dark:text-gray-400"
             >
               <Settings className="w-4 h-4 mr-2" />
               Advanced Settings
@@ -431,7 +431,7 @@ export default function AdvancedFrequencyPlayer({
           <CardContent className="space-y-6">
             {/* Waveform Selection */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 Waveform Type
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -452,7 +452,7 @@ export default function AdvancedFrequencyPlayer({
             {/* Binaural Beats */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Binaural Beats
                 </label>
                 <input
@@ -466,7 +466,7 @@ export default function AdvancedFrequencyPlayer({
               </div>
               {audioConfig.binauralBeat?.enabled && (
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-600">Beat Frequency:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Beat Frequency:</span>
                   <input
                     type="range"
                     min="1"
@@ -480,7 +480,7 @@ export default function AdvancedFrequencyPlayer({
                     })}
                     className="flex-1"
                   />
-                  <span className="text-sm text-gray-600 w-8">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 w-8">
                     {audioConfig.binauralBeat.beatFrequency}Hz
                   </span>
                 </div>
@@ -490,7 +490,7 @@ export default function AdvancedFrequencyPlayer({
             {/* Spatial Audio */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   3D Spatial Audio
                 </label>
                 <input
@@ -504,7 +504,7 @@ export default function AdvancedFrequencyPlayer({
               </div>
               {audioConfig.spatialAudio?.enabled && (
                 <div>
-                  <span className="text-sm text-gray-600 mb-2 block">Movement Pattern:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">Movement Pattern:</span>
                   <div className="grid grid-cols-4 gap-2">
                     {['static', 'circular', 'pendulum', 'spiral'].map((movement) => (
                       <Button
@@ -533,30 +533,30 @@ export default function AdvancedFrequencyPlayer({
           <Card>
             <CardContent className="p-4 text-center">
               <Heart className="w-8 h-8 text-red-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {Math.round(heartRate)}
               </div>
-              <div className="text-sm text-gray-600">BPM</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">BPM</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 text-center">
               <Brain className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stressLevel.toFixed(1)}
               </div>
-              <div className="text-sm text-gray-600">Stress Level</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Stress Level</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 text-center">
               <TrendingUp className="w-8 h-8 text-green-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {moodBefore && moodAfter ? `+${moodAfter - moodBefore}` : '--'}
               </div>
-              <div className="text-sm text-gray-600">Mood Change</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Mood Change</div>
             </CardContent>
           </Card>
         </div>
@@ -572,13 +572,13 @@ export default function AdvancedFrequencyPlayer({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-gray-700">{currentFrequency.scientific_backing}</p>
+            <p className="text-gray-700 dark:text-gray-300">{currentFrequency.scientific_backing}</p>
             <div className="grid gap-3 md:grid-cols-2">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Key Benefits:</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Key Benefits:</h4>
                 <ul className="space-y-1">
                   {currentFrequency.benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <div className="w-1.5 h-1.5 bg-quantum-primary rounded-full"></div>
                       {benefit}
                     </li>
@@ -586,10 +586,10 @@ export default function AdvancedFrequencyPlayer({
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Best For:</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Best For:</h4>
                 <ul className="space-y-1">
                   {currentFrequency.best_for.map((use, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <Star className="w-3 h-3 text-yellow-500" />
                       {use}
                     </li>
