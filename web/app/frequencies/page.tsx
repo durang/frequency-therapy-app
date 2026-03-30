@@ -106,9 +106,9 @@ export default function FrequenciesPage() {
 
       {/* Main content — grid + detail panel */}
       <div className="max-w-6xl mx-auto px-6 pb-20">
-        <div className={`grid gap-6 ${selectedFreq ? 'lg:grid-cols-[1fr,400px]' : ''}`}>
+        <div className={`flex gap-6 ${selectedFreq ? '' : ''}`}>
           {/* Frequency grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className={`flex-1 grid gap-4 ${selectedFreq ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
             {filtered.map((freq, i) => {
               const tier = tierConfig[freq.tier]
               const isSelected = selectedFreq?.id === freq.id
@@ -153,7 +153,7 @@ export default function FrequenciesPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="hidden lg:block sticky top-24 h-fit p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]"
+                className="hidden lg:block w-[380px] flex-shrink-0 sticky top-24 h-fit p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]"
               >
                 {/* Close */}
                 <button onClick={() => setSelectedFreq(null)} className="absolute top-4 right-4 text-gray-300 dark:text-white/15 hover:text-gray-500 dark:hover:text-white/40 transition-colors">

@@ -38,21 +38,38 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
         await ctx.resume()
       }
 
-      const osc = ctx.createOscillator()
       const gain = ctx.createGain()
-
+      
+      // Main oscillator
+      const osc = ctx.createOscillator()
       osc.type = 'sine'
       osc.frequency.setValueAtTime(frequency.hz_value, ctx.currentTime)
-
-      // 5-second fade-in
-      gain.gain.setValueAtTime(0, ctx.currentTime)
-      gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 5)
-
       osc.connect(gain)
-      gain.connect(ctx.destination)
       osc.start()
-
       oscillatorRef.current = osc
+
+      // For very low frequencies (<100Hz), add an audible harmonic so it's hearable on laptop speakers
+      if (frequency.hz_value < 100) {
+        const harmonic = ctx.createOscillator()
+        const harmonicGain = ctx.createGain()
+        harmonic.type = 'sine'
+        // Use 3rd or 5th harmonic to make it audible
+        const harmonicFreq = frequency.hz_value < 20 ? frequency.hz_value * 8 : frequency.hz_value * 4
+        harmonic.frequency.setValueAtTime(harmonicFreq, ctx.currentTime)
+        harmonicGain.gain.setValueAtTime(0, ctx.currentTime)
+        harmonicGain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 5)
+        harmonic.connect(harmonicGain)
+        harmonicGain.connect(ctx.destination)
+        harmonic.start()
+      }
+
+      // 5-second fade-in — louder for low frequencies
+      const volume = frequency.hz_value < 100 ? 0.15 : 0.08
+      gain.gain.setValueAtTime(0, ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 5)
+
+      gain.connect(ctx.destination)
+
       gainRef.current = gain
       setIsPlaying(true)
 

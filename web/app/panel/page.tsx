@@ -117,8 +117,8 @@ export default function PanelPage() {
 
       {/* Frequencies by category + detail panel */}
       <div className="max-w-6xl mx-auto px-6 pb-20">
-        <div className={`grid gap-6 ${selectedFreq ? 'lg:grid-cols-[1fr,380px]' : ''}`}>
-          <div>
+        <div className="flex gap-6">
+          <div className="flex-1">
             {Object.entries(byCategory).map(([cat, freqs]) => (
               <div key={cat} className="mb-10">
                 <h2 className="text-sm font-medium text-gray-700 dark:text-white/50 uppercase tracking-wider mb-4">
@@ -165,7 +165,7 @@ export default function PanelPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="hidden lg:block sticky top-24 h-fit p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]"
+                className="hidden lg:block w-[380px] flex-shrink-0 sticky top-24 h-fit p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]"
               >
                 <button onClick={() => setSelectedFreq(null)} className="absolute top-4 right-4 text-gray-300 dark:text-white/15 hover:text-gray-500 dark:hover:text-white/40 transition-colors">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
