@@ -52,7 +52,14 @@ export default function ExperiencePage() {
   return (
     <ImmersiveExperience
       frequency={frequency}
-      onExit={() => router.push('/frequencies')}
+      onExit={() => {
+        // Go back to where the user came from, or /frequencies as fallback
+        if (window.history.length > 1) {
+          router.back()
+        } else {
+          router.push('/frequencies')
+        }
+      }}
       isFreeUser={isFreeUser}
     />
   )

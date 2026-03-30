@@ -14,82 +14,104 @@ function getAdminClient() {
 async function verifyAdmin(request: NextRequest): Promise<boolean> {
   const authHeader = request.headers.get('authorization')
   if (!authHeader) return false
-  
   const token = authHeader.replace('Bearer ', '')
+  if (!token || token === 'undefined') return false
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const supabase = createClient(url, key)
-  
   const { data } = await supabase.auth.getUser(token)
   return data?.user?.email === ADMIN_EMAIL
 }
 
-// GET /api/admin/users — list all users with subscription status
 export async function GET(request: NextRequest) {
   const isAdmin = await verifyAdmin(request)
-  if (!isAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const admin = getAdminClient()
-
-  // Get all users
   const { data: usersData, error: usersError } = await admin.auth.admin.listUsers()
-  if (usersError) {
-    return NextResponse.json({ error: usersError.message }, { status: 500 })
-  }
+  if (usersError) return NextResponse.json({ error: usersError.message }, { status: 500 })
 
-  // Get all subscriptions
   const { data: subs } = await admin.from('subscriptions').select('*')
 
-  // Merge users with subscription data
+  const now = new Date()
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+
   const users = usersData.users.map(u => {
     const sub = subs?.find(s => s.user_id === u.id)
+    const createdAt = new Date(u.created_at)
+    const lastSignIn = u.last_sign_in_at ? new Date(u.last_sign_in_at) : null
+    const daysSinceSignup = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+    const daysSinceLastLogin = lastSignIn ? Math.floor((now.getTime() - lastSignIn.getTime()) / (1000 * 60 * 60 * 24)) : null
+    const isActiveRecently = lastSignIn && lastSignIn > sevenDaysAgo
+    const expiresAt = sub?.current_period_end ? new Date(sub.current_period_end) : null
+    const daysUntilExpiry = expiresAt ? Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null
+
     return {
       id: u.id,
       email: u.email,
+      phone: u.phone || null,
       created_at: u.created_at,
       last_sign_in_at: u.last_sign_in_at,
-      phone: u.phone || null,
       confirmed: !!u.email_confirmed_at,
+      provider: u.app_metadata?.provider || 'email',
+      // Computed fields
+      daysSinceSignup,
+      daysSinceLastLogin,
+      isActiveRecently,
+      isAdmin: u.email === ADMIN_EMAIL,
+      // Subscription
       subscription: sub ? {
         status: sub.status,
         plan_id: sub.plan_id,
+        current_period_start: sub.current_period_start,
         current_period_end: sub.current_period_end,
         customer_portal_url: sub.customer_portal_url,
+        daysUntilExpiry,
+        isExpiringSoon: daysUntilExpiry !== null && daysUntilExpiry <= 7 && daysUntilExpiry > 0,
+        isExpired: daysUntilExpiry !== null && daysUntilExpiry <= 0,
       } : null,
-      isAdmin: u.email === ADMIN_EMAIL,
     }
-  })
+  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+  // Analytics
+  const activeSubscribers = users.filter(u => u.subscription?.status === 'active')
+  const freeUsers = users.filter(u => !u.subscription || u.subscription.status !== 'active')
+  const recentSignups = users.filter(u => new Date(u.created_at) > thirtyDaysAgo)
+  const activeLastWeek = users.filter(u => u.isActiveRecently)
+  const expiringSoon = users.filter(u => u.subscription?.isExpiringSoon)
+  const churned = users.filter(u => u.subscription?.isExpired)
+  const revenue = activeSubscribers.length * 19 // rough monthly estimate
 
   return NextResponse.json({
     users,
-    total: users.length,
-    active: users.filter(u => u.subscription?.status === 'active').length,
-    free: users.filter(u => !u.subscription || u.subscription.status !== 'active').length,
+    analytics: {
+      total: users.length,
+      active: activeSubscribers.length,
+      free: freeUsers.length,
+      recentSignups: recentSignups.length,
+      activeLastWeek: activeLastWeek.length,
+      expiringSoon: expiringSoon.length,
+      churned: churned.length,
+      estimatedMRR: revenue,
+      conversionRate: users.length > 0 ? Math.round((activeSubscribers.length / users.length) * 100) : 0,
+    }
   })
 }
 
-// POST /api/admin/users — update user (grant/revoke access)
 export async function POST(request: NextRequest) {
   const isAdmin = await verifyAdmin(request)
-  if (!isAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
   const { userId, action, months } = body
-
-  if (!userId || !action) {
-    return NextResponse.json({ error: 'userId and action required' }, { status: 400 })
-  }
+  if (!userId || !action) return NextResponse.json({ error: 'userId and action required' }, { status: 400 })
 
   const admin = getAdminClient()
 
   if (action === 'grant_access') {
     const endDate = new Date()
     endDate.setMonth(endDate.getMonth() + (months || 1))
-
     const { error } = await admin.from('subscriptions').upsert({
       user_id: userId,
       status: 'active',
@@ -99,17 +121,14 @@ export async function POST(request: NextRequest) {
       current_period_end: endDate.toISOString(),
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id' })
-
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ success: true, message: `Access granted until ${endDate.toLocaleDateString()}` })
   }
 
   if (action === 'revoke_access') {
     const { error } = await admin.from('subscriptions').update({
-      status: 'expired',
-      updated_at: new Date().toISOString(),
+      status: 'expired', updated_at: new Date().toISOString(),
     }).eq('user_id', userId)
-
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ success: true, message: 'Access revoked' })
   }

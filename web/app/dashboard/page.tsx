@@ -183,21 +183,37 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Sessions */}
           <div className="mb-10">
-            <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Quick Actions</p>
+            <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Quick Sessions</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { id: '2', name: 'Calm', hz: '432 Hz', icon: '😌', desc: 'Anxiety relief' },
+                { id: '4', name: 'Sleep', hz: '1.5 Hz', icon: '🌙', desc: 'Deep delta' },
+                { id: '3', name: 'Focus', hz: '40 Hz', icon: '🧠', desc: 'Gamma boost' },
+                { id: '21', name: 'Heal', hz: '10K Hz', icon: '✨', desc: 'Universal' },
+              ].map(q => (
+                <Link key={q.id} href={`/experience/${q.id}`}
+                  className="group p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all text-center">
+                  <span className="text-xl block mb-1">{q.icon}</span>
+                  <p className="text-xs font-medium text-gray-700 dark:text-white/60">{q.name}</p>
+                  <p className="text-[10px] text-gray-400 dark:text-white/20">{q.hz} · {q.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="mb-10">
+            <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Explore</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <Link href="/frequencies" className="group p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all text-center">
                 <span className="text-xl block mb-2">🎵</span>
-                <p className="text-xs font-medium text-gray-700 dark:text-white/60">Frequencies</p>
+                <p className="text-xs font-medium text-gray-700 dark:text-white/60">All Frequencies</p>
               </Link>
               <Link href="/protocols" className="group p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all text-center">
                 <span className="text-xl block mb-2">📋</span>
                 <p className="text-xs font-medium text-gray-700 dark:text-white/60">Protocols</p>
-              </Link>
-              <Link href="/experience/2" className="group p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:border-gray-300 dark:hover:border-white/[0.1] transition-all text-center">
-                <span className="text-xl block mb-2">🧘</span>
-                <p className="text-xs font-medium text-gray-700 dark:text-white/60">Quick Session</p>
               </Link>
               {!hasAccess && (
                 <Link href="/pricing" className="group p-4 rounded-2xl border border-cyan-200 dark:border-cyan-500/20 bg-cyan-50 dark:bg-cyan-500/[0.04] hover:border-cyan-300 dark:hover:border-cyan-500/30 transition-all text-center">
