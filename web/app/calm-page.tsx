@@ -11,6 +11,7 @@ import FrequencyLab from '@/components/landing/frequency-lab/FrequencyLab'
 import ScrollProgress, { ScrollIndicator } from '@/components/ui/ScrollProgress'
 import MedicalScrollSections from '@/components/landing/MedicalScrollSections'
 import MagicLinkForm from '@/components/auth/MagicLinkForm'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { 
   useScrollStory, 
   useScrollSection, 
@@ -250,31 +251,31 @@ export default function CalmFrequencyApp() {
       
       {/* Performance Monitor (dev only) */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 left-4 bg-black/80 text-white text-xs p-2 rounded z-50">
+        <div className="fixed bottom-4 left-4 bg-black/80 text-white text-xs p-2 rounded z-50 font-variant-numeric:tabular-nums">
           FPS: {Math.round(fps)} | Section: {currentSection} | Progress: {Math.round(scrollProgress * 100)}%
         </div>
       )}
       
       <div className="min-h-screen animated-bg neural-pattern">
-        {/* Header - Updated with scroll-based medical compliance indicator */}
+        {/* Header */}
         <header className="sticky top-0 z-40 glass-card">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 float-animation">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-500/20 float-animation">
                   <Waves className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">FreqHeal</h1>
-                  <p className="text-sm text-blue-600 font-medium">Terapia de Frecuencias</p>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-cyan-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">FreqTherapy</h1>
+                  <p className="text-sm text-blue-600 dark:text-cyan-400 font-medium">Frequency Therapy</p>
                 </div>
               </div>
               
               {/* Medical Compliance Progress Indicator */}
               <div className="hidden md:flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <Shield className={`w-5 h-5 ${isReadyToStart ? 'text-green-600' : 'text-amber-500'}`} />
-                  <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <Shield className={`w-5 h-5 ${isReadyToStart ? 'text-green-600 dark:text-green-400' : 'text-amber-500 dark:text-amber-400'}`} />
+                  <div className="w-20 h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                     <motion.div 
                       className={`h-full ${isReadyToStart ? 'bg-green-500' : 'bg-amber-400'}`}
                       initial={{ width: 0 }}
@@ -282,37 +283,41 @@ export default function CalmFrequencyApp() {
                       transition={{ duration: 0.5 }}
                     />
                   </div>
-                  <span className="text-xs font-medium">
+                  <span className="text-xs font-medium text-gray-700 dark:text-slate-300">
                     {isReadyToStart ? 'Ready' : `${Math.round(explicitMedicalProgress * 100)}%`}
                   </span>
                 </div>
               </div>
 
               <nav className="hidden lg:flex items-center space-x-8">
-                <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                  Frecuencias
+                <Link href="/library" className="text-gray-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 font-medium transition-colors">
+                  Frequencies
                 </Link>
-                <Link href="/library" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                  Biblioteca
+                <Link href="/library" className="text-gray-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 font-medium transition-colors">
+                  Library
                 </Link>
-                <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                  Mi Perfil
+                <Link href="/profile" className="text-gray-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 font-medium transition-colors">
+                  Profile
                 </Link>
+                <ThemeToggle />
                 <motion.button 
                   className="btn-primary-glow text-white px-8 py-3 rounded-2xl font-semibold"
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   Premium
                 </motion.button>
               </nav>
 
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 text-gray-700 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+              <div className="flex items-center space-x-2 lg:hidden">
+                <ThemeToggle />
+                <button 
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="p-2 text-gray-700 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-slate-700/20 rounded-lg transition-colors"
+                >
+                  {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -364,23 +369,25 @@ export default function CalmFrequencyApp() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-4xl mx-auto mb-20">
               <motion.h1 
-                className="text-5xl md:text-7xl font-black mb-8 leading-tight"
+                className="text-5xl md:text-7xl font-black mb-8 leading-tight text-gray-900 dark:text-slate-100"
+                style={{ textWrap: 'balance' }}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.2 }}
               >
-                Encuentra tu
-                <span className="hero-gradient block mt-2"> equilibrio</span>
+                Find your
+                <span className="hero-gradient block mt-2"> balance</span>
               </motion.h1>
               
               <motion.p 
-                className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light"
+                className="text-xl md:text-2xl text-gray-600 dark:text-slate-400 mb-12 leading-relaxed font-light"
+                style={{ textWrap: 'pretty' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.4 }}
               >
-                Terapia de frecuencias científicamente respaldada para reducir el estrés, 
-                mejorar el sueño y aumentar tu bienestar mental.
+                Scientifically backed frequency therapy to reduce stress, 
+                improve sleep, and elevate your mental well-being.
               </motion.p>
               
               {/* Audio Visualizer */}
@@ -403,11 +410,11 @@ export default function CalmFrequencyApp() {
                       <div className="freq-bar h-10"></div>
                     </div>
                   </div>
-                  <p className="text-gray-600 mb-4">
-                    {playingFrequency ? `Reproduciendo: ${frequencies.find(f => f.id === playingFrequency)?.name}` : 'Continúa scrolling para acceder a las frecuencias'}
+                  <p className="text-gray-600 dark:text-slate-400 mb-4">
+                    {playingFrequency ? `Playing: ${frequencies.find(f => f.id === playingFrequency)?.name}` : 'Keep scrolling to unlock frequencies'}
                   </p>
                   {playingFrequency && (
-                    <div className="text-sm text-blue-600 font-medium">
+                    <div className="text-sm text-blue-600 dark:text-cyan-400 font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {frequencies.find(f => f.id === playingFrequency)?.hz_value} Hz • {frequencies.find(f => f.id === playingFrequency)?.category}
                     </div>
                   )}
@@ -423,26 +430,26 @@ export default function CalmFrequencyApp() {
               >
                 <button
                   onClick={handleMuteToggle}
-                  className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  className="p-3 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                 >
-                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  {isMuted ? <VolumeX className="w-5 h-5 text-gray-700 dark:text-slate-300" /> : <Volume2 className="w-5 h-5 text-gray-700 dark:text-slate-300" />}
                 </button>
                 
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-500">Vol:</span>
+                  <span className="text-sm text-gray-500 dark:text-slate-500">Vol:</span>
                   <input
                     type="range"
                     min="0"
                     max="100"
                     value={volume}
                     onChange={handleVolumeChange}
-                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-24 h-2 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
                   />
-                  <span className="text-sm text-gray-700 font-medium w-8">{volume}%</span>
+                  <span className="text-sm text-gray-700 dark:text-slate-300 font-medium w-8" style={{ fontVariantNumeric: 'tabular-nums' }}>{volume}%</span>
                 </div>
                 
-                <button className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                  <Settings className="w-5 h-5" />
+                <button className="p-3 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
+                  <Settings className="w-5 h-5 text-gray-700 dark:text-slate-300" />
                 </button>
               </motion.div>
             </div>
@@ -452,7 +459,7 @@ export default function CalmFrequencyApp() {
         {/* How It Works Section */}
         <motion.section 
           ref={howItWorksRef as any}
-          className="py-16 bg-gradient-to-br from-gray-50 to-blue-50/50"
+          className="py-16 bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-slate-900 dark:to-slate-800/50"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-10%" }}
@@ -465,60 +472,60 @@ export default function CalmFrequencyApp() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                ¿Cómo Funciona?
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-slate-100 mb-4" style={{ textWrap: 'balance' }}>
+                How It Works
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                La ciencia detrás de la terapia de frecuencias y por qué es tan efectiva.
+              <p className="text-lg text-gray-600 dark:text-slate-400 max-w-2xl mx-auto" style={{ textWrap: 'pretty' }}>
+                The science behind frequency therapy and why it works so effectively.
               </p>
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-8">
               <motion.div 
-                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                className="text-center p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 shadow-lg dark:shadow-slate-900/30"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25">
                   <Brain className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Ondas Cerebrales</h3>
-                <p className="text-gray-600">
-                  Las frecuencias específicas sincronizan con las ondas cerebrales naturales, promoviendo estados deseados de relajación o concentración.
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-4">Brain Waves</h3>
+                <p className="text-gray-600 dark:text-slate-400" style={{ textWrap: 'pretty' }}>
+                  Specific frequencies synchronize with your natural brainwaves, promoting desired states of relaxation or focus.
                 </p>
               </motion.div>
 
               <motion.div 
-                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                className="text-center p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 shadow-lg dark:shadow-slate-900/30"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/25">
                   <Waves className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Resonancia</h3>
-                <p className="text-gray-600">
-                  El fenómeno de resonancia permite que el cuerpo se alinee naturalmente con las frecuencias terapéuticas.
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-4">Resonance</h3>
+                <p className="text-gray-600 dark:text-slate-400" style={{ textWrap: 'pretty' }}>
+                  The phenomenon of resonance allows your body to naturally align with therapeutic frequencies.
                 </p>
               </motion.div>
 
               <motion.div 
-                className="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg"
+                className="text-center p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 shadow-lg dark:shadow-slate-900/30"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/25">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Bienestar</h3>
-                <p className="text-gray-600">
-                  El resultado es una sensación profunda de calma, mejor sueño, reducción del estrés y mayor claridad mental.
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-4">Wellness</h3>
+                <p className="text-gray-600 dark:text-slate-400" style={{ textWrap: 'pretty' }}>
+                  The result is a deep sense of calm, better sleep, reduced stress, and enhanced mental clarity.
                 </p>
               </motion.div>
             </div>
@@ -530,7 +537,7 @@ export default function CalmFrequencyApp() {
         <section 
           id="medical-scroll-sections"
           ref={medicalInfoRef as any}
-          className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+          className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
         >
           <MedicalScrollSections 
             onComplianceProgress={setExplicitMedicalProgress}
@@ -557,7 +564,7 @@ export default function CalmFrequencyApp() {
         {/* Start Therapy CTA Section */}
         <motion.section 
           ref={startTherapyRef as any}
-          className="py-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 text-white relative overflow-hidden"
+          className="py-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 dark:from-indigo-900 dark:via-purple-900 dark:to-blue-950 text-white relative overflow-hidden"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-10%" }}
@@ -574,45 +581,45 @@ export default function CalmFrequencyApp() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Comienza Tu Viaje de Sanación
+              <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ textWrap: 'balance' }}>
+                Begin Your Healing Journey
               </h2>
               
-              <p className="text-xl md:text-2xl mb-12 text-blue-100">
-                Miles de personas ya han transformado su bienestar con FreqHeal. 
-                Tu momento es ahora.
+              <p className="text-xl md:text-2xl mb-12 text-blue-100 dark:text-blue-200" style={{ textWrap: 'pretty' }}>
+                Thousands have already transformed their well-being with FreqTherapy. 
+                Your moment is now.
               </p>
 
               <div className="space-y-6">
                 {isReadyToStart ? (
                   <motion.button
                     onClick={handleStartNow}
-                    className="btn-primary-glow bg-white text-indigo-600 px-12 py-4 rounded-2xl font-bold text-lg shadow-xl"
+                    className="btn-primary-glow bg-white text-indigo-600 dark:text-indigo-500 px-12 py-4 rounded-2xl font-bold text-lg shadow-xl"
                     whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{ scale: 0.96 }}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
                     <span className="flex items-center justify-center space-x-2">
                       <Play className="w-6 h-6" />
-                      <span>Comenzar Ahora</span>
+                      <span>Start Now</span>
                       <ArrowRight className="w-5 h-5" />
                     </span>
                   </motion.button>
                 ) : (
                   <motion.div
-                    className="bg-white/10 border border-white/20 px-8 py-4 rounded-2xl backdrop-blur-sm"
+                    className="bg-white/10 border border-white/20 dark:border-white/10 px-8 py-4 rounded-2xl backdrop-blur-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   >
                     <div className="flex items-center justify-center space-x-3 mb-2">
                       <Shield className="w-5 h-5" />
-                      <span className="font-medium">Revisión de Seguridad</span>
+                      <span className="font-medium">Safety Review</span>
                     </div>
-                    <p className="text-sm text-blue-100 mb-4">
-                      Lee la información médica y de seguridad arriba para desbloquear las frecuencias
+                    <p className="text-sm text-blue-100 dark:text-blue-200 mb-4" style={{ textWrap: 'pretty' }}>
+                      Read the medical and safety information above to unlock frequencies
                     </p>
                     <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
                       <motion.div 
@@ -622,24 +629,24 @@ export default function CalmFrequencyApp() {
                         transition={{ duration: 0.5 }}
                       />
                     </div>
-                    <p className="text-xs text-blue-200 mt-2">
-                      {Math.round(explicitMedicalProgress * 100)}% completado
+                    <p className="text-xs text-blue-200 dark:text-blue-300 mt-2" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {Math.round(explicitMedicalProgress * 100)}% complete
                     </p>
                   </motion.div>
                 )}
 
-                <div className="flex items-center justify-center space-x-8 text-sm text-blue-200">
+                <div className="flex items-center justify-center space-x-8 text-sm text-blue-200 dark:text-blue-300">
                   <div className="flex items-center space-x-2">
                     <Star className="w-4 h-4" />
-                    <span>127K+ usuarios</span>
+                    <span>127K+ users</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Heart className="w-4 h-4" />
-                    <span>94.7% efectividad</span>
+                    <span>94.7% effective</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Shield className="w-4 h-4" />
-                    <span>100% seguro</span>
+                    <span>100% safe</span>
                   </div>
                 </div>
               </div>
@@ -648,7 +655,7 @@ export default function CalmFrequencyApp() {
               {isReadyToStart && showMagicLinkForm && (
                 <motion.div
                   className="fixed inset-0 flex items-center justify-center p-4 z-50"
-                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }} // Dark overlay
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
@@ -666,62 +673,62 @@ export default function CalmFrequencyApp() {
         </motion.section>
 
         {/* Footer */}
-        <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-16">
+        <footer className="bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900 text-gray-800 dark:text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-3 gap-12">
               <div>
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
                     <Waves className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold">FreqHeal</h3>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">FreqTherapy</h3>
                 </div>
-                <p className="text-blue-200 mb-6">
-                  La aplicación líder en terapia de frecuencias para el bienestar mental y físico.
+                <p className="text-gray-600 dark:text-blue-200 mb-6" style={{ textWrap: 'pretty' }}>
+                  The leading frequency therapy platform for mental and physical well-being.
                 </p>
                 <div className="flex space-x-4">
                   <div className="text-center">
-                    <div className="text-xl font-bold text-blue-400">127K+</div>
-                    <div className="text-xs text-blue-200">Usuarios</div>
+                    <div className="text-xl font-bold text-blue-600 dark:text-blue-400" style={{ fontVariantNumeric: 'tabular-nums' }}>127K+</div>
+                    <div className="text-xs text-gray-500 dark:text-blue-200">Users</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xl font-bold text-indigo-400">94.7%</div>
-                    <div className="text-xs text-blue-200">Efectividad</div>
+                    <div className="text-xl font-bold text-indigo-600 dark:text-indigo-400" style={{ fontVariantNumeric: 'tabular-nums' }}>94.7%</div>
+                    <div className="text-xs text-gray-500 dark:text-blue-200">Effective</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xl font-bold text-purple-400">47</div>
-                    <div className="text-xs text-blue-200">Estudios</div>
+                    <div className="text-xl font-bold text-purple-600 dark:text-purple-400" style={{ fontVariantNumeric: 'tabular-nums' }}>47</div>
+                    <div className="text-xs text-gray-500 dark:text-blue-200">Studies</div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-semibold text-white mb-6">Frecuencias</h4>
-                <ul className="space-y-3 text-blue-200">
-                  <li><Link href="/sleep" className="hover:text-white transition-colors">Sueño</Link></li>
-                  <li><Link href="/focus" className="hover:text-white transition-colors">Concentración</Link></li>
-                  <li><Link href="/meditation" className="hover:text-white transition-colors">Meditación</Link></li>
-                  <li><Link href="/healing" className="hover:text-white transition-colors">Sanación</Link></li>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Frequencies</h4>
+                <ul className="space-y-3 text-gray-600 dark:text-blue-200">
+                  <li><Link href="/sleep" className="hover:text-blue-600 dark:hover:text-white transition-colors">Sleep</Link></li>
+                  <li><Link href="/focus" className="hover:text-blue-600 dark:hover:text-white transition-colors">Focus</Link></li>
+                  <li><Link href="/meditation" className="hover:text-blue-600 dark:hover:text-white transition-colors">Meditation</Link></li>
+                  <li><Link href="/healing" className="hover:text-blue-600 dark:hover:text-white transition-colors">Healing</Link></li>
                 </ul>
               </div>
 
               <div>
-                <h4 className="font-semibold text-white mb-6">Soporte</h4>
-                <ul className="space-y-3 text-blue-200">
-                  <li><Link href="/help" className="hover:text-white transition-colors">Centro de Ayuda</Link></li>
-                  <li><Link href="/research" className="hover:text-white transition-colors">Investigación</Link></li>
-                  <li><Link href="/medical" className="hover:text-white transition-colors">Información Médica</Link></li>
-                  <li><Link href="/contact" className="hover:text-white transition-colors">Contacto</Link></li>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Support</h4>
+                <ul className="space-y-3 text-gray-600 dark:text-blue-200">
+                  <li><Link href="/help" className="hover:text-blue-600 dark:hover:text-white transition-colors">Help Center</Link></li>
+                  <li><Link href="/research" className="hover:text-blue-600 dark:hover:text-white transition-colors">Research</Link></li>
+                  <li><Link href="/medical" className="hover:text-blue-600 dark:hover:text-white transition-colors">Medical Info</Link></li>
+                  <li><Link href="/contact" className="hover:text-blue-600 dark:hover:text-white transition-colors">Contact</Link></li>
                 </ul>
               </div>
             </div>
 
-            <div className="border-t border-blue-700 mt-12 pt-8 text-center text-blue-200 text-sm">
+            <div className="border-t border-gray-200 dark:border-blue-700 mt-12 pt-8 text-center text-gray-500 dark:text-blue-200 text-sm">
               <p>
-                © 2024 FreqHeal. Plataforma de terapia de frecuencias para bienestar.
+                © 2024 FreqTherapy. Frequency therapy platform for well-being.
                 <br />
                 <span className="text-xs">
-                  No está destinado a diagnosticar, tratar, curar o prevenir enfermedades. Consulte a su médico.
+                  Not intended to diagnose, treat, cure, or prevent any disease. Please consult your physician.
                 </span>
               </p>
             </div>
