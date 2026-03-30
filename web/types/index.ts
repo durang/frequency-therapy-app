@@ -152,3 +152,52 @@ export interface SessionIntent {
   recommended_duration: number
   category: FrequencyCategory
 }
+
+// ── Lemon Squeezy Subscription Types ──────────────────────────────
+
+/** Row shape of the `subscriptions` table in Supabase. */
+export interface Subscription {
+  id: string
+  user_id: string | null
+  lemon_squeezy_id: string
+  lemon_squeezy_customer_id: string | null
+  variant_id: string | null
+  status: 'active' | 'cancelled' | 'expired' | 'paused' | 'past_due' | 'on_trial' | 'unpaid'
+  plan_id: string | null
+  current_period_end: string | null
+  cancel_at: string | null
+  update_payment_url: string | null
+  customer_portal_url: string | null
+  created_at: string
+  updated_at: string
+}
+
+/** Lemon Squeezy webhook payload structure (subset of fields we use). */
+export interface LemonSqueezyWebhookPayload {
+  meta: {
+    event_name: string
+    custom_data?: {
+      user_id?: string
+      [key: string]: unknown
+    }
+    [key: string]: unknown
+  }
+  data: {
+    id: string
+    attributes: {
+      status?: string
+      variant_id?: number
+      customer_id?: number
+      user_email?: string
+      renews_at?: string | null
+      ends_at?: string | null
+      urls?: {
+        update_payment_method?: string
+        customer_portal?: string
+        [key: string]: unknown
+      }
+      [key: string]: unknown
+    }
+    [key: string]: unknown
+  }
+}
