@@ -76,21 +76,21 @@ function AuthSuccessContent() {
   const getStatusColor = () => {
     switch (status) {
       case 'success':
-        return 'text-green-600'
+        return 'text-green-600 dark:text-green-400'
       case 'error':
-        return 'text-red-600'
+        return 'text-red-600 dark:text-red-400'
       default:
-        return 'text-quantum-600'
+        return 'text-quantum-600 dark:text-quantum-400'
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4">
-      <Card className="w-full max-w-md p-8 text-center">
+    <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4">
+      <Card className="w-full max-w-md p-8 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
         <CardContent className="space-y-6">
           <div className="text-6xl mb-4">{getStatusIcon()}</div>
           
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             {status === 'checking' && 'Authenticating...'}
             {status === 'success' && 'Welcome back!'}
             {status === 'error' && 'Authentication Error'}
@@ -102,7 +102,7 @@ function AuthSuccessContent() {
           
           {(status === 'checking' || status === 'success') && (
             <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600 dark:border-quantum-400"></div>
             </div>
           )}
         </CardContent>
@@ -114,13 +114,13 @@ function AuthSuccessContent() {
 export default function AuthSuccess() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4">
-        <Card className="w-full max-w-md p-8 text-center">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4">
+        <Card className="w-full max-w-md p-8 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <CardContent className="space-y-6">
             <div className="text-6xl mb-4">⏳</div>
-            <h1 className="text-2xl font-bold text-slate-900">Loading...</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Loading...</h1>
             <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-quantum-600 dark:border-quantum-400"></div>
             </div>
           </CardContent>
         </Card>

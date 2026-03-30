@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { signInWithMagicLink, signIn } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
@@ -58,20 +59,22 @@ export default function LoginPage() {
 
   if (magicLinkSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          {/* Header with ThemeToggle */}
+          <div className="flex justify-between items-center mb-8">
             <Link href="/" className="inline-block">
-              <div className="text-3xl font-bold text-gradient mb-2">
+              <div className="text-3xl font-bold text-gradient">
                 🎵 FreqTherapy
               </div>
             </Link>
+            <ThemeToggle />
           </div>
 
-          <Card className="p-6 text-center">
+          <Card className="p-6 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <div className="text-6xl mb-4">📧</div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-4">Check Your Email</h1>
-            <p className="text-slate-600 mb-6">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Check Your Email</h1>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
               We've sent a magic link to <strong>{email}</strong>. 
               Click the link in your email to sign in.
             </p>
@@ -92,31 +95,35 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* Header with ThemeToggle */}
+        <div className="flex justify-between items-center mb-8">
           <Link href="/" className="inline-block">
-            <div className="text-3xl font-bold text-gradient mb-2">
+            <div className="text-3xl font-bold text-gradient">
               🎵 FreqTherapy
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">Welcome back</h1>
-          <p className="text-slate-600">
+          <ThemeToggle />
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome back</h1>
+          <p className="text-slate-600 dark:text-slate-400">
             Sign in to continue your frequency therapy journey
           </p>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <CardHeader className="p-0 mb-6">
-            <div className="flex rounded-lg bg-slate-100 p-1">
+            <div className="flex rounded-lg bg-slate-100 dark:bg-slate-700 p-1">
               <button
                 type="button"
                 onClick={() => setUsePassword(false)}
                 className={`flex-1 text-sm font-medium rounded-md py-2 px-3 transition-colors ${
                   !usePassword 
-                    ? 'bg-white text-quantum-600 shadow-sm' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-600 text-quantum-600 dark:text-quantum-400 shadow-sm' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Magic Link
@@ -126,8 +133,8 @@ export default function LoginPage() {
                 onClick={() => setUsePassword(true)}
                 className={`flex-1 text-sm font-medium rounded-md py-2 px-3 transition-colors ${
                   usePassword 
-                    ? 'bg-white text-quantum-600 shadow-sm' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-600 text-quantum-600 dark:text-quantum-400 shadow-sm' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Password
@@ -156,7 +163,7 @@ export default function LoginPage() {
                 Send Magic Link
               </Button>
 
-              <p className="text-xs text-center text-slate-500">
+              <p className="text-xs text-center text-slate-500 dark:text-slate-400">
                 We'll send you a secure link to sign in instantly
               </p>
             </form>
@@ -182,10 +189,10 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between">
                 <label className="flex items-center">
-                  <input type="checkbox" className="rounded border-gray-300 text-quantum-600 focus:ring-quantum-500" />
-                  <span className="ml-2 text-sm text-slate-600">Remember me</span>
+                  <input type="checkbox" className="rounded border-gray-300 dark:border-slate-600 text-quantum-600 focus:ring-quantum-500" />
+                  <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">Remember me</span>
                 </label>
-                <Link href="/auth/forgot-password" className="text-sm text-quantum-600 hover:text-quantum-500">
+                <Link href="/auth/forgot-password" className="text-sm text-quantum-600 dark:text-quantum-400 hover:text-quantum-500">
                   Forgot password?
                 </Link>
               </div>
@@ -202,17 +209,17 @@ export default function LoginPage() {
             </form>
           )}
 
-          <p className="mt-6 text-center text-sm text-slate-600">
+          <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
             Don't have an account?{' '}
-            <Link href="/auth/register" className="text-quantum-600 hover:text-quantum-500 font-medium">
+            <Link href="/auth/register" className="text-quantum-600 dark:text-quantum-400 hover:text-quantum-500 font-medium">
               Sign up for free
             </Link>
           </p>
         </Card>
 
         {/* Demo Access */}
-        <Card variant="quantum" className="mt-6 p-4 text-center">
-          <p className="text-sm mb-3">Want to try without signing up?</p>
+        <Card className="mt-6 p-4 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">Want to try without signing up?</p>
           <Link href="/panel?demo=true">
             <Button variant="outline" size="sm" className="w-full">
               🎧 Try Demo Session

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { signUp } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
@@ -68,22 +69,26 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-quantum-50 to-neural-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* Header with ThemeToggle */}
+        <div className="flex justify-between items-center mb-8">
           <Link href="/" className="inline-block">
-            <div className="text-3xl font-bold text-gradient mb-2">
+            <div className="text-3xl font-bold text-gradient">
               🎵 FreqTherapy
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">Start your transformation</h1>
-          <p className="text-slate-600">
+          <ThemeToggle />
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Start your transformation</h1>
+          <p className="text-slate-600 dark:text-slate-400">
             Create your account and begin your personalized frequency therapy journey
           </p>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <form onSubmit={handleSignUp} className="space-y-6">
             <Input
               type="text"
@@ -133,16 +138,16 @@ export default function RegisterPage() {
                 id="acceptTerms"
                 checked={formData.acceptTerms}
                 onChange={handleChange}
-                className="mt-1 rounded border-gray-300 text-quantum-600 focus:ring-quantum-500"
+                className="mt-1 rounded border-gray-300 dark:border-slate-600 text-quantum-600 focus:ring-quantum-500"
                 required
               />
-              <label htmlFor="acceptTerms" className="text-sm text-slate-600">
+              <label htmlFor="acceptTerms" className="text-sm text-slate-600 dark:text-slate-400">
                 I agree to the{' '}
-                <Link href="/terms" className="text-quantum-600 hover:text-quantum-500">
+                <Link href="/terms" className="text-quantum-600 dark:text-quantum-400 hover:text-quantum-500">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy" className="text-quantum-600 hover:text-quantum-500">
+                <Link href="/privacy" className="text-quantum-600 dark:text-quantum-400 hover:text-quantum-500">
                   Privacy Policy
                 </Link>
               </label>
@@ -155,17 +160,17 @@ export default function RegisterPage() {
               loading={loading}
               className="w-full"
             >
-              Create Account & Start Free Trial
+              Create Account
             </Button>
           </form>
 
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-300" />
+                <div className="w-full border-t border-slate-300 dark:border-slate-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">Or continue with</span>
+                <span className="px-2 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400">Or continue with</span>
               </div>
             </div>
 
@@ -189,21 +194,21 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-slate-600">
+          <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
             Already have an account?{' '}
-            <Link href="/auth/login" className="text-quantum-600 hover:text-quantum-500 font-medium">
+            <Link href="/auth/login" className="text-quantum-600 dark:text-quantum-400 hover:text-quantum-500 font-medium">
               Sign in
             </Link>
           </p>
         </Card>
 
-        {/* Trial Benefits */}
-        <Card variant="quantum" className="mt-6 p-4">
-          <h3 className="font-semibold text-center mb-3">✨ Free Trial Includes</h3>
-          <ul className="text-sm space-y-2">
+        {/* Account Benefits */}
+        <Card className="mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <h3 className="font-semibold text-center text-slate-900 dark:text-white mb-3">✨ Your Account Includes</h3>
+          <ul className="text-sm space-y-2 text-slate-700 dark:text-slate-300">
             <li className="flex items-center space-x-2">
               <span className="text-green-500">✓</span>
-              <span>Access to DNA Repair & Sleep frequencies</span>
+              <span>Access to DNA Repair &amp; Sleep frequencies</span>
             </li>
             <li className="flex items-center space-x-2">
               <span className="text-green-500">✓</span>
@@ -215,7 +220,7 @@ export default function RegisterPage() {
             </li>
             <li className="flex items-center space-x-2">
               <span className="text-green-500">✓</span>
-              <span>No commitment • Cancel anytime</span>
+              <span>Cancel anytime</span>
             </li>
           </ul>
         </Card>
