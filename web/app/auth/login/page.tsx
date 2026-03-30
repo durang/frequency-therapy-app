@@ -2,9 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { motion } from 'framer-motion'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { signInWithMagicLink, signIn } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -13,221 +11,176 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [usePassword, setUsePassword] = useState(false)
+  const [magicLinkSent, setMagicLinkSent] = useState(false)
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
-      const { data, error } = await signInWithMagicLink(email)
-
-      if (error) {
-        toast.error(error.message || 'Failed to send magic link')
-      } else {
-        setMagicLinkSent(true)
-        toast.success('Magic link sent! Check your email.')
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred')
-    } finally {
-      setLoading(false)
-    }
+      const { error } = await signInWithMagicLink(email)
+      if (error) toast.error(error.message || 'Failed to send magic link')
+      else { setMagicLinkSent(true); toast.success('Magic link sent! Check your email.') }
+    } catch { toast.error('An unexpected error occurred') }
+    finally { setLoading(false) }
   }
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       const { data, error } = await signIn(email, password)
-
-      if (error) {
-        toast.error(error.message || 'Failed to sign in')
-      } else if (data?.user) {
+      if (error) toast.error(error.message || 'Failed to sign in')
+      else if (data?.user) {
         toast.success('Welcome back!')
-        // Admin goes to panel, regular users to frequencies
         const isAdmin = data.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
         window.location.href = isAdmin ? '/panel' : '/frequencies'
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred')
-    } finally {
-      setLoading(false)
-    }
+    } catch { toast.error('An unexpected error occurred') }
+    finally { setLoading(false) }
   }
 
   if (magicLinkSent) {
     return (
-      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md">
-          {/* Header with ThemeToggle */}
-          <div className="flex justify-between items-center mb-8">
-            <Link href="/" className="inline-block">
-              <div className="text-3xl font-bold text-gradient">
-                🎵 FreqTherapy
-              </div>
-            </Link>
-            <ThemeToggle />
-          </div>
-
-          <Card className="p-6 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <div className="text-6xl mb-4">📧</div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Check Your Email</h1>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
-              We've sent a magic link to <strong>{email}</strong>. 
-              Click the link in your email to sign in.
-            </p>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setMagicLinkSent(false)
-                setEmail('')
-              }}
-              className="w-full"
-            >
-              Try Different Email
-            </Button>
-          </Card>
-        </div>
+      <div className="min-h-screen bg-[#fafaf9] dark:bg-[#0a0a0f] flex items-center justify-center px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm text-center">
+          <div className="text-5xl mb-6">📧</div>
+          <h1 className="text-2xl font-light mb-3" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+            Check your email
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-white/35 mb-8">
+            We sent a magic link to <strong className="text-gray-700 dark:text-white/60">{email}</strong>
+          </p>
+          <button
+            onClick={() => { setMagicLinkSent(false); setEmail('') }}
+            className="text-sm text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            ← Try different email
+          </button>
+        </motion.div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md">
-        {/* Header with ThemeToggle */}
-        <div className="flex justify-between items-center mb-8">
-          <Link href="/" className="inline-block">
-            <div className="text-3xl font-bold text-gradient">
-              🎵 FreqTherapy
-            </div>
-          </Link>
-          <ThemeToggle />
-        </div>
-
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome back</h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Sign in to continue your frequency therapy journey
-          </p>
-        </div>
-
-        <Card className="p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-          <CardHeader className="p-0 mb-6">
-            <div className="flex rounded-lg bg-slate-100 dark:bg-slate-700 p-1">
-              <button
-                type="button"
-                onClick={() => setUsePassword(false)}
-                className={`flex-1 text-sm font-medium rounded-md py-2 px-3 transition-colors ${
-                  !usePassword 
-                    ? 'bg-white dark:bg-slate-600 text-quantum-600 dark:text-quantum-400 shadow-sm' 
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                Magic Link
-              </button>
-              <button
-                type="button"
-                onClick={() => setUsePassword(true)}
-                className={`flex-1 text-sm font-medium rounded-md py-2 px-3 transition-colors ${
-                  usePassword 
-                    ? 'bg-white dark:bg-slate-600 text-quantum-600 dark:text-quantum-400 shadow-sm' 
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                Password
-              </button>
-            </div>
-          </CardHeader>
-
-          {!usePassword ? (
-            <form onSubmit={handleMagicLink} className="space-y-6">
-              <Input
-                type="email"
-                label="Email address"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-
-              <Button
-                type="submit"
-                variant="quantum"
-                size="lg"
-                loading={loading}
-                className="w-full"
-              >
-                Send Magic Link
-              </Button>
-
-              <p className="text-xs text-center text-slate-500 dark:text-slate-400">
-                We'll send you a secure link to sign in instantly
-              </p>
-            </form>
-          ) : (
-            <form onSubmit={handlePasswordLogin} className="space-y-6">
-              <Input
-                type="email"
-                label="Email address"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-
-              <Input
-                type="password"
-                label="Password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input type="checkbox" className="rounded border-gray-300 dark:border-slate-600 text-quantum-600 focus:ring-quantum-500" />
-                  <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">Remember me</span>
-                </label>
-                <Link href="/auth/forgot-password" className="text-sm text-quantum-600 dark:text-quantum-400 hover:text-quantum-500">
-                  Forgot password?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                variant="quantum"
-                size="lg"
-                loading={loading}
-                className="w-full"
-              >
-                Sign In
-              </Button>
-            </form>
-          )}
-
-          <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
-            Don't have an account?{' '}
-            <Link href="/auth/register" className="text-quantum-600 dark:text-quantum-400 hover:text-quantum-500 font-medium">
-              Sign up for free
-            </Link>
-          </p>
-        </Card>
-
-        {/* Demo Access */}
-        <Card className="mt-6 p-4 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-          <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">Want to try without signing up?</p>
-          <Link href="/panel?demo=true">
-            <Button variant="outline" size="sm" className="w-full">
-              🎧 Try Demo Session
-            </Button>
-          </Link>
-        </Card>
+    <div className="min-h-screen bg-[#fafaf9] dark:bg-[#0a0a0f] flex items-center justify-center px-6">
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+            </svg>
+          </div>
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">FreqTherapy</span>
+        </Link>
+        <ThemeToggle />
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-sm"
+      >
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-light mb-2" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+            Welcome back
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-white/35">
+            Sign in to continue your therapy
+          </p>
+        </div>
+
+        {/* Toggle */}
+        <div className="flex bg-gray-100 dark:bg-white/[0.04] rounded-lg p-1 mb-8 border border-gray-200 dark:border-white/[0.06]">
+          <button
+            onClick={() => setUsePassword(false)}
+            className={`flex-1 text-sm py-2 rounded-md transition-all ${
+              !usePassword
+                ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium'
+                : 'text-gray-500 dark:text-white/30'
+            }`}
+          >
+            Magic Link
+          </button>
+          <button
+            onClick={() => setUsePassword(true)}
+            className={`flex-1 text-sm py-2 rounded-md transition-all ${
+              usePassword
+                ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium'
+                : 'text-gray-500 dark:text-white/30'
+            }`}
+          >
+            Password
+          </button>
+        </div>
+
+        {!usePassword ? (
+          <form onSubmit={handleMagicLink} className="space-y-5">
+            <div>
+              <label className="block text-xs text-gray-500 dark:text-white/30 uppercase tracking-wider mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/15 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-sm hover:bg-gray-700 dark:hover:bg-gray-100 transition-all disabled:opacity-50"
+            >
+              {loading ? 'Sending...' : 'Send Magic Link'}
+            </button>
+            <p className="text-xs text-gray-400 dark:text-white/20 text-center">
+              We'll send a secure link to sign in instantly
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={handlePasswordLogin} className="space-y-5">
+            <div>
+              <label className="block text-xs text-gray-500 dark:text-white/30 uppercase tracking-wider mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/15 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 dark:text-white/30 uppercase tracking-wider mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/15 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-sm hover:bg-gray-700 dark:hover:bg-gray-100 transition-all disabled:opacity-50"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+        )}
+
+        <p className="text-sm text-gray-400 dark:text-white/20 text-center mt-8">
+          Don't have an account?{' '}
+          <Link href="/auth/register" className="text-cyan-600 dark:text-cyan-400 hover:underline">
+            Create one
+          </Link>
+        </p>
+      </motion.div>
     </div>
   )
 }
