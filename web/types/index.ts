@@ -122,8 +122,6 @@ export interface SubscriptionPlan {
   features: string[]
   frequency_limit?: number
   session_duration_limit?: number
-  stripe_price_id_monthly: string
-  stripe_price_id_yearly: string
   popular?: boolean
 }
 

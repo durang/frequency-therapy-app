@@ -4,7 +4,18 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { subscriptionPlans } from '@/lib/stripe'
+import { PLANS } from '@/lib/checkout'
+
+// Bridge: T02 will rewrite this page; keep shape compatible for now
+const subscriptionPlans = Object.values(PLANS).map((p) => ({
+  id: p.id as string,
+  name: p.name,
+  description: p.id === 'monthly' ? 'Flexible month-to-month' : 'Best value — save 47%',
+  price_monthly: p.id === 'monthly' ? p.price : p.pricePerMonth,
+  price_yearly: p.id === 'annual' ? p.price : p.price * 12,
+  features: [] as string[],
+  popular: p.id === 'annual',
+}))
 import { Check, Star, Zap, Crown } from 'lucide-react'
 
 export default function PricingPage() {
@@ -138,7 +149,7 @@ export default function PricingPage() {
           {/* Paid Plans */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {subscriptionPlans.map((plan) => {
-              const Icon = planIcons[plan.id as keyof typeof planIcons]
+              const Icon = planIcons[plan.id as keyof typeof planIcons] || Star
               const price = billingPeriod === 'monthly' ? plan.price_monthly : plan.price_yearly / 12
               const yearlyDiscount = billingPeriod === 'yearly' ? Math.round((1 - (plan.price_yearly / 12) / plan.price_monthly) * 100) : 0
 
