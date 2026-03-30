@@ -16,9 +16,9 @@ const Card = ({ className, variant = 'default', glow, children, ...props }: Card
         
         // Variant styles
         {
-          'bg-white border border-slate-200 shadow-lg': variant === 'default',
-          'bg-gradient-to-br from-quantum-50 to-neural-50 border border-quantum-200 shadow-lg shadow-quantum-500/10': variant === 'quantum',
-          'bg-gradient-to-br from-neural-50 to-purple-50 border border-neural-200 shadow-lg shadow-neural-500/10': variant === 'neural',
+          'bg-white border border-slate-200 shadow-lg dark:bg-slate-900 dark:border-slate-700': variant === 'default',
+          'bg-gradient-to-br from-quantum-50 to-neural-50 border border-quantum-200 shadow-lg shadow-quantum-500/10 dark:from-quantum-950 dark:to-neural-950 dark:border-quantum-800': variant === 'quantum',
+          'bg-gradient-to-br from-neural-50 to-purple-50 border border-neural-200 shadow-lg shadow-neural-500/10 dark:from-neural-950 dark:to-purple-950 dark:border-neural-800': variant === 'neural',
           'bg-white/10 backdrop-blur-md border border-white/20 shadow-lg': variant === 'glass',
         },
         
@@ -62,7 +62,7 @@ const CardFooter = ({ className, children, ...props }: HTMLAttributes<HTMLDivEle
 
 const CardTitle = ({ className, children, ...props }: HTMLAttributes<HTMLHeadingElement>) => {
   return (
-    <h3 className={cn('text-xl font-semibold text-slate-900', className)} {...props}>
+    <h3 className={cn('text-xl font-semibold text-slate-900 dark:text-white', className)} {...props}>
       {children}
     </h3>
   )
@@ -70,7 +70,7 @@ const CardTitle = ({ className, children, ...props }: HTMLAttributes<HTMLHeading
 
 const CardDescription = ({ className, children, ...props }: HTMLAttributes<HTMLParagraphElement>) => {
   return (
-    <p className={cn('text-sm text-slate-600 mt-2', className)} {...props}>
+    <p className={cn('text-sm text-slate-600 dark:text-slate-400 mt-2', className)} {...props}>
       {children}
     </p>
   )

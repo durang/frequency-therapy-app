@@ -16,7 +16,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         className={cn(
           // Base styles
-          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]',
+          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]',
           
           // Size variants
           {
@@ -28,10 +28,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Color variants
           {
             'bg-quantum-600 text-white hover:bg-quantum-700 focus:ring-quantum-500 shadow-lg shadow-quantum-500/25': variant === 'primary',
-            'bg-slate-200 text-slate-900 hover:bg-slate-300 focus:ring-slate-500': variant === 'secondary',
+            'bg-slate-200 text-slate-900 hover:bg-slate-300 focus:ring-slate-500 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600': variant === 'secondary',
             'bg-gradient-to-r from-quantum-600 to-neural-600 text-white hover:from-quantum-700 hover:to-neural-700 focus:ring-quantum-500 shadow-lg': variant === 'quantum',
             'bg-gradient-to-r from-neural-600 to-frequency-dna text-white hover:from-neural-700 hover:to-purple-700 focus:ring-neural-500 shadow-lg': variant === 'neural',
-            'border border-quantum-600 text-quantum-600 hover:bg-quantum-50 focus:ring-quantum-500': variant === 'outline',
+            'border border-quantum-600 text-quantum-600 hover:bg-quantum-50 focus:ring-quantum-500 dark:border-quantum-400 dark:text-quantum-400 dark:hover:bg-quantum-950': variant === 'outline',
           },
           
           // Glow effect
