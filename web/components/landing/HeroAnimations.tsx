@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion'
+import { useTheme } from 'next-themes'
 import { 
   Play, 
   Pause,
@@ -58,6 +59,8 @@ export default function HeroAnimations({
 }: HeroAnimationsProps) {
   const containerRef = useRef<HTMLElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
   const [particleSystem, setParticleSystem] = useState<ParticleSystem>({
     particles: [],
     nextId: 0
@@ -222,7 +225,7 @@ export default function HeroAnimations({
           return (
             <motion.div
               key={particle.id}
-              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 dark:from-blue-300 dark:to-purple-300 rounded-full"
               style={{
                 left: particle.x,
                 top: particle.y,
@@ -239,31 +242,39 @@ export default function HeroAnimations({
       
       {/* Floating Orbs with Advanced Physics */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-32 h-32 rounded-full opacity-10"
-            style={{
-              background: `linear-gradient(135deg, 
-                ${i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#06b6d4'}, 
-                ${i % 3 === 0 ? '#1d4ed8' : i % 3 === 1 ? '#7c3aed' : '#0891b2'})`,
-              left: `${15 + (i * 12)}%`,
-              top: `${20 + (i * 8)}%`,
-            }}
-            animate={{
-              x: [0, 30, -20, 0],
-              y: [0, -40, 20, 0],
-              scale: [1, 1.1, 0.9, 1],
-              rotate: [0, 90, -45, 0],
-            }}
-            transition={{
-              duration: 8 + (i * 2),
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5
-            }}
-          />
-        ))}
+        {[...Array(8)].map((_, i) => {
+          const lightColors = ['#3b82f6', '#8b5cf6', '#06b6d4']
+          const darkColors = ['#60a5fa', '#a78bfa', '#22d3ee']
+          const lightEndColors = ['#1d4ed8', '#7c3aed', '#0891b2']
+          const darkEndColors = ['#3b82f6', '#8b5cf6', '#06b6d4']
+          const colors = isDark ? darkColors : lightColors
+          const endColors = isDark ? darkEndColors : lightEndColors
+          return (
+            <motion.div
+              key={i}
+              className="absolute w-32 h-32 rounded-full opacity-10 dark:opacity-15"
+              style={{
+                background: `linear-gradient(135deg, 
+                  ${colors[i % 3]}, 
+                  ${endColors[i % 3]})`,
+                left: `${15 + (i * 12)}%`,
+                top: `${20 + (i * 8)}%`,
+              }}
+              animate={{
+                x: [0, 30, -20, 0],
+                y: [0, -40, 20, 0],
+                scale: [1, 1.1, 0.9, 1],
+                rotate: [0, 90, -45, 0],
+              }}
+              transition={{
+                duration: 8 + (i * 2),
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.5
+              }}
+            />
+          )
+        })}
       </div>
       
       <div 
@@ -292,7 +303,7 @@ export default function HeroAnimations({
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              Encuentra tu
+              Find your
             </motion.span>
             <motion.span 
               className="hero-gradient block mt-4"
@@ -300,7 +311,7 @@ export default function HeroAnimations({
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1, delay: 0.6 }}
             >
-              equilibrio
+              balance
             </motion.span>
           </motion.h1>
           
@@ -323,26 +334,26 @@ export default function HeroAnimations({
           className="mb-16"
         >
           <motion.p 
-            className="text-xl md:text-3xl text-gray-600 mb-8 leading-relaxed font-light max-w-4xl mx-auto"
+            className="text-xl md:text-3xl text-gray-600 dark:text-slate-300 mb-8 leading-relaxed font-light max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.0 }}
           >
-            Terapia de frecuencias{' '}
+            Scientifically-backed frequency therapy{' '}
             <motion.span
-              className="text-blue-600 font-semibold"
+              className="text-blue-600 dark:text-blue-400 font-semibold"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5 }}
             >
-              científicamente respaldada
+              for stress reduction
             </motion.span>
-            {' '}para reducir el estrés, mejorar el sueño y aumentar tu bienestar mental.
+            , better sleep, and enhanced mental well-being.
           </motion.p>
           
           {/* Statistics with countup animation */}
           <motion.div 
-            className="flex items-center justify-center space-x-8 text-sm text-gray-500 mb-8"
+            className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-slate-400 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.8 }}
@@ -352,21 +363,21 @@ export default function HeroAnimations({
               whileHover={{ scale: 1.05 }}
             >
               <Star className="w-4 h-4 text-yellow-500" />
-              <span>127K+ usuarios</span>
+              <span>127K+ users</span>
             </motion.div>
             <motion.div 
               className="flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
             >
               <Heart className="w-4 h-4 text-red-500" />
-              <span>94.7% efectividad</span>
+              <span>94.7% effectiveness</span>
             </motion.div>
             <motion.div 
               className="flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
             >
               <Shield className="w-4 h-4 text-green-500" />
-              <span>100% seguro</span>
+              <span>100% safe</span>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -410,9 +421,15 @@ export default function HeroAnimations({
                         : '8px',
                       background: playingFrequency
                         ? `linear-gradient(to top, 
-                            ${i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#06b6d4'}, 
-                            ${i % 3 === 0 ? '#1d4ed8' : i % 3 === 1 ? '#7c3aed' : '#0891b2'})`
-                        : '#d1d5db'
+                            ${isDark
+                              ? (i % 3 === 0 ? '#60a5fa' : i % 3 === 1 ? '#a78bfa' : '#22d3ee')
+                              : (i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#06b6d4')
+                            }, 
+                            ${isDark
+                              ? (i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#06b6d4')
+                              : (i % 3 === 0 ? '#1d4ed8' : i % 3 === 1 ? '#7c3aed' : '#0891b2')
+                            })`
+                        : isDark ? '#475569' : '#d1d5db'
                     }}
                     animate={{
                       height: playingFrequency 
@@ -433,26 +450,26 @@ export default function HeroAnimations({
             {/* Status Display */}
             <motion.div className="text-center mb-8">
               <motion.p 
-                className="text-lg font-medium text-gray-700 mb-2"
+                className="text-lg font-medium text-gray-700 dark:text-slate-200 mb-2"
                 animate={{ opacity: playingFrequency ? [1, 0.7, 1] : 1 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 {playingFrequency 
-                  ? `🎵 Reproduciendo frecuencia de demostración`
+                  ? `🎵 Playing demo frequency`
                   : isReadyToStart
-                    ? '✨ Listo para comenzar tu viaje de sanación'
-                    : '📋 Revisa la información médica para continuar'
+                    ? '✨ Ready to begin your healing journey'
+                    : '📋 Review medical information to continue'
                 }
               </motion.p>
               
               {playingFrequency && (
                 <motion.div
-                  className="text-sm text-blue-600 font-medium"
+                  className="text-sm text-blue-600 dark:text-blue-400 font-medium"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  Demostración • Frecuencia Segura
+                  Demo • Safe Frequency
                 </motion.div>
               )}
             </motion.div>
@@ -470,8 +487,8 @@ export default function HeroAnimations({
                   onClick={() => handleDemoPlay(freq.id)}
                   className={`p-4 rounded-2xl border-2 transition-all duration-300 ${
                     playingFrequency === freq.id
-                      ? 'border-blue-400 bg-blue-50'
-                      : 'border-gray-200 bg-white/50 hover:border-blue-300'
+                      ? 'border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30'
+                      : 'border-gray-200 bg-white/50 hover:border-blue-300 dark:border-slate-600 dark:bg-slate-800/50 dark:hover:border-blue-400'
                   } ${!isReadyToStart ? 'opacity-60' : ''}`}
                   variants={ctaVariants}
                   initial="hidden"
@@ -489,8 +506,8 @@ export default function HeroAnimations({
                       )}
                     </div>
                     <div className="text-left">
-                      <div className="font-semibold text-gray-900">{freq.name}</div>
-                      <div className="text-xs text-gray-500">{freq.hz} Hz</div>
+                      <div className="font-semibold text-gray-900 dark:text-slate-100">{freq.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">{freq.hz} Hz</div>
                     </div>
                   </div>
                 </motion.button>
@@ -506,32 +523,32 @@ export default function HeroAnimations({
             >
               <motion.button
                 onClick={onMuteToggle}
-                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                {isMuted ? <VolumeX className="w-5 h-5 dark:text-slate-200" /> : <Volume2 className="w-5 h-5 dark:text-slate-200" />}
               </motion.button>
               
               <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-500">Vol:</span>
+                <span className="text-sm text-gray-500 dark:text-slate-400">Vol:</span>
                 <input
                   type="range"
                   min="0"
                   max="100"
                   value={volume}
                   onChange={onVolumeChange}
-                  className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-24 h-2 bg-gray-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer"
                 />
-                <span className="text-sm text-gray-700 font-medium w-8">{volume}%</span>
+                <span className="text-sm text-gray-700 dark:text-slate-200 font-medium w-8">{volume}%</span>
               </div>
               
               <motion.button 
-                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Settings className="w-5 h-5" />
+                <Settings className="w-5 h-5 dark:text-slate-200" />
               </motion.button>
             </motion.div>
           </motion.div>
@@ -554,31 +571,30 @@ export default function HeroAnimations({
               whileHover="hover"
               whileTap="tap"
               onClick={() => {
-                // Navigate to frequency selection or main app
                 console.log('[HeroAnimations] Primary CTA clicked - Start Now')
               }}
             >
               <span className="flex items-center justify-center space-x-3">
                 <Zap className="w-6 h-6" />
-                <span>Comenzar Ahora</span>
+                <span>Start Now</span>
                 <ArrowRight className="w-5 h-5" />
               </span>
             </motion.button>
           ) : (
             <motion.div
-              className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 px-8 py-5 rounded-2xl mx-auto max-w-md"
+              className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-gray-200 dark:border-slate-600 px-8 py-5 rounded-2xl mx-auto max-w-md"
               variants={ctaVariants}
               initial="hidden"
               animate="visible"
             >
               <div className="flex items-center justify-center space-x-3 mb-3">
-                <Shield className="w-5 h-5 text-amber-600" />
-                <span className="font-semibold text-gray-900">Revisión de Seguridad</span>
+                <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <span className="font-semibold text-gray-900 dark:text-slate-100">Safety Review</span>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
-                Completa la revisión médica para acceder a todas las frecuencias
+              <p className="text-sm text-gray-600 dark:text-slate-300 mb-4">
+                Complete the medical review to access all frequencies
               </p>
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden mb-3">
+              <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden mb-3">
                 <motion.div 
                   className="h-full bg-gradient-to-r from-amber-400 to-orange-500"
                   initial={{ width: 0 }}
@@ -598,7 +614,7 @@ export default function HeroAnimations({
                 }}
               >
                 <span className="flex items-center justify-center space-x-2">
-                  <span>Continuar Revisión</span>
+                  <span>Continue Review</span>
                   <ArrowDown className="w-4 h-4" />
                 </span>
               </motion.button>
@@ -613,22 +629,22 @@ export default function HeroAnimations({
             transition={{ delay: 4.0 }}
           >
             <motion.button
-              className="text-gray-600 hover:text-blue-600 transition-colors font-medium underline underline-offset-4"
+              className="text-gray-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors font-medium underline underline-offset-4"
               whileHover={{ scale: 1.05 }}
             >
-              Ver Demostración
+              Watch Demo
             </motion.button>
             <motion.button
-              className="text-gray-600 hover:text-blue-600 transition-colors font-medium underline underline-offset-4"
+              className="text-gray-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors font-medium underline underline-offset-4"
               whileHover={{ scale: 1.05 }}
             >
-              Leer Investigación
+              Read Research
             </motion.button>
             <motion.button
-              className="text-gray-600 hover:text-blue-600 transition-colors font-medium underline underline-offset-4"
+              className="text-gray-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors font-medium underline underline-offset-4"
               whileHover={{ scale: 1.05 }}
             >
-              Testimonios
+              Testimonials
             </motion.button>
           </motion.div>
           
@@ -639,8 +655,8 @@ export default function HeroAnimations({
             animate={{ opacity: 1 }}
             transition={{ delay: 4.5 }}
           >
-            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-            <div className="w-12 h-1 bg-gray-300 rounded-full">
+            <div className="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full"></div>
+            <div className="w-12 h-1 bg-gray-300 dark:bg-slate-600 rounded-full">
               <motion.div
                 className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
                 initial={{ width: "0%" }}
@@ -648,7 +664,7 @@ export default function HeroAnimations({
                 transition={{ duration: 1, delay: 5 }}
               />
             </div>
-            <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+            <div className="w-2 h-2 bg-gray-300 dark:bg-slate-600 rounded-full"></div>
           </motion.div>
         </motion.div>
         
@@ -659,7 +675,7 @@ export default function HeroAnimations({
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           <motion.div
-            className="flex flex-col items-center space-y-2 text-gray-400 hover:text-blue-600 cursor-pointer transition-colors"
+            className="flex flex-col items-center space-y-2 text-gray-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 cursor-pointer transition-colors"
             whileHover={{ scale: 1.1 }}
             onClick={() => {
               const nextSection = document.querySelector('.py-16')
@@ -668,7 +684,7 @@ export default function HeroAnimations({
               }
             }}
           >
-            <span className="text-xs font-medium">Descubre Más</span>
+            <span className="text-xs font-medium">Discover More</span>
             <ArrowDown className="w-5 h-5" />
           </motion.div>
         </motion.div>

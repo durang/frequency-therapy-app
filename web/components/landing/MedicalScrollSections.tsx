@@ -89,11 +89,11 @@ export default function MedicalScrollSections({
               <Shield className="w-8 h-8 text-white" />
             </motion.div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Información Médica <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Esencial</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-100 mb-6">
+            Essential Medical <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">Information</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Tu seguridad es nuestra máxima prioridad. Lee cada sección cuidadosamente para acceder de forma segura a las frecuencias terapéuticas.
+          <p className="text-xl text-gray-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
+            Your safety is our highest priority. Read each section carefully to safely access therapeutic frequencies.
           </p>
           
           {/* Progress indicator */}
@@ -105,10 +105,10 @@ export default function MedicalScrollSections({
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-gray-600">Progreso de Seguridad</span>
-              <span className="text-sm font-bold text-blue-600">{Math.round(calculateProgress() * 100)}%</span>
+              <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Safety Progress</span>
+              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{Math.round(calculateProgress() * 100)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
               <motion.div 
                 className={`h-full ${allAcknowledged ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-purple-500'}`}
                 initial={{ width: 0 }}
@@ -122,7 +122,7 @@ export default function MedicalScrollSections({
         {/* Section 1: FDA Medical Device Disclaimer */}
         <MedicalSection
           icon={Shield}
-          title="Aviso FDA - Dispositivo Médico"
+          title="FDA Notice — Medical Device"
           colorScheme="red"
           acknowledgmentKey="notMedicalDevice"
           acknowledged={acknowledged.notMedicalDevice}
@@ -130,19 +130,19 @@ export default function MedicalScrollSections({
           delay={0.1}
         >
           <div className="space-y-4">
-            <p className="text-lg font-semibold text-red-900">
-              <strong>FreqHeal NO es un dispositivo médico aprobado por la FDA.</strong>
+            <p className="text-lg font-semibold text-red-900 dark:text-red-200">
+              <strong>FreqTherapy is NOT an FDA-approved medical device.</strong>
             </p>
-            <p className="text-red-800 leading-relaxed">
-              Esta plataforma está diseñada para propósitos de bienestar, investigación y educación únicamente. 
-              La tecnología de terapia de frecuencias no ha sido evaluada por la Administración de Alimentos 
-              y Medicamentos de los EE.UU. (FDA) como dispositivo médico para el diagnóstico, tratamiento, 
-              cura o prevención de cualquier enfermedad o condición médica.
+            <p className="text-red-800 dark:text-red-300 leading-relaxed">
+              This platform is designed for wellness, research, and educational purposes only. 
+              Frequency therapy technology has not been evaluated by the U.S. Food and Drug 
+              Administration (FDA) as a medical device for the diagnosis, treatment, 
+              cure, or prevention of any disease or medical condition.
             </p>
-            <div className="bg-red-100 border-l-4 border-red-400 p-4 rounded-r-lg">
-              <p className="text-red-800 text-sm">
-                <strong>Importante:</strong> Los efectos reportados por los usuarios son subjetivos y no constituyen 
-                evidencia médica de eficacia terapéutica.
+            <div className="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-400 dark:border-red-500 p-4 rounded-r-lg">
+              <p className="text-red-800 dark:text-red-300 text-sm">
+                <strong>Important:</strong> Effects reported by users are subjective and do not constitute 
+                medical evidence of therapeutic efficacy.
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function MedicalScrollSections({
         {/* Section 2: Medical Supervision Required */}
         <MedicalSection
           icon={Stethoscope}
-          title="Supervisión Médica Requerida"
+          title="Medical Supervision Required"
           colorScheme="blue"
           acknowledgmentKey="consultPhysician"
           acknowledged={acknowledged.consultPhysician}
@@ -159,31 +159,31 @@ export default function MedicalScrollSections({
           delay={0.2}
         >
           <div className="space-y-4">
-            <p className="text-lg font-semibold text-blue-900">
-              <strong>Siempre consulta a tu proveedor de salud</strong> antes de comenzar la terapia de frecuencias.
+            <p className="text-lg font-semibold text-blue-900 dark:text-blue-200">
+              <strong>Always consult your healthcare provider</strong> before starting frequency therapy.
             </p>
-            <p className="text-blue-800 leading-relaxed">
-              Los protocolos de grado clínico deben administrarse únicamente bajo supervisión médica calificada. 
-              Esto es particularmente importante si estás embarazada, amamantando, tienes historial de convulsiones, 
-              condiciones cardíacas, trastornos psiquiátricos, o tomas medicamentos que afectan el sistema nervioso.
+            <p className="text-blue-800 dark:text-blue-300 leading-relaxed">
+              Clinical-grade protocols should only be administered under qualified medical supervision. 
+              This is particularly important if you are pregnant, breastfeeding, have a history of seizures, 
+              heart conditions, psychiatric disorders, or take medications that affect the nervous system.
             </p>
             <div className="grid md:grid-cols-2 gap-4 mt-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-blue-900 mb-2">Condiciones que Requieren Supervisión</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Embarazo o lactancia</li>
-                  <li>• Trastornos del estado de ánimo</li>
-                  <li>• Medicación neurológica</li>
-                  <li>• Condiciones cardíacas</li>
+              <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Conditions Requiring Supervision</h4>
+                <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+                  <li>• Pregnancy or breastfeeding</li>
+                  <li>• Mood disorders</li>
+                  <li>• Neurological medication</li>
+                  <li>• Heart conditions</li>
                 </ul>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-blue-900 mb-2">Consulta Antes de Usar</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Médico de cabecera</li>
-                  <li>• Neurólogo (si aplica)</li>
-                  <li>• Psiquiatra (si aplica)</li>
-                  <li>• Cardiólogo (si aplica)</li>
+              <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Consult Before Use</h4>
+                <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+                  <li>• Primary care physician</li>
+                  <li>• Neurologist (if applicable)</li>
+                  <li>• Psychiatrist (if applicable)</li>
+                  <li>• Cardiologist (if applicable)</li>
                 </ul>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function MedicalScrollSections({
         {/* Section 3: Important Contraindications */}
         <MedicalSection
           icon={AlertTriangle}
-          title="Contraindicaciones Importantes"
+          title="Important Contraindications"
           colorScheme="yellow"
           acknowledgmentKey="contraindications"
           acknowledged={acknowledged.contraindications}
@@ -201,43 +201,43 @@ export default function MedicalScrollSections({
           delay={0.3}
         >
           <div className="space-y-4">
-            <p className="text-lg font-semibold text-yellow-900">
-              <strong>NO uses FreqHeal si tienes alguna de estas condiciones:</strong>
+            <p className="text-lg font-semibold text-yellow-900 dark:text-yellow-200">
+              <strong>DO NOT use FreqTherapy if you have any of these conditions:</strong>
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-200">
-                <h4 className="font-semibold text-yellow-900 mb-3 flex items-center">
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 p-5 rounded-xl border border-yellow-200 dark:border-yellow-700">
+                <h4 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-3 flex items-center">
                   <Brain className="w-5 h-5 mr-2" />
-                  Neurológicas
+                  Neurological
                 </h4>
-                <ul className="text-yellow-800 space-y-2 text-sm">
-                  <li>• Epilepsia activa o trastornos convulsivos</li>
-                  <li>• Lesión cerebral traumática reciente</li>
-                  <li>• Trastornos psiquiátricos severos sin supervisión</li>
-                  <li>• Abuso activo de sustancias o abstinencia</li>
+                <ul className="text-yellow-800 dark:text-yellow-300 space-y-2 text-sm">
+                  <li>• Active epilepsy or seizure disorders</li>
+                  <li>• Recent traumatic brain injury</li>
+                  <li>• Severe unsupervised psychiatric disorders</li>
+                  <li>• Active substance abuse or withdrawal</li>
                 </ul>
               </div>
               
-              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-200">
-                <h4 className="font-semibold text-yellow-900 mb-3 flex items-center">
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 p-5 rounded-xl border border-yellow-200 dark:border-yellow-700">
+                <h4 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-3 flex items-center">
                   <Heart className="w-5 h-5 mr-2" />
-                  Cardiovasculares y Otras
+                  Cardiovascular &amp; Other
                 </h4>
-                <ul className="text-yellow-800 space-y-2 text-sm">
-                  <li>• Marcapasos o dispositivos cardíacos implantados</li>
-                  <li>• Embarazo (primer trimestre) o embarazo de alto riesgo</li>
-                  <li>• Implantes cocleares</li>
-                  <li>• Sensibilidad extrema al sonido</li>
+                <ul className="text-yellow-800 dark:text-yellow-300 space-y-2 text-sm">
+                  <li>• Pacemaker or implanted cardiac devices</li>
+                  <li>• Pregnancy (first trimester) or high-risk pregnancy</li>
+                  <li>• Cochlear implants</li>
+                  <li>• Extreme sound sensitivity</li>
                 </ul>
               </div>
             </div>
 
-            <div className="bg-orange-100 border border-orange-300 p-5 rounded-lg">
-              <h4 className="font-semibold text-orange-900 mb-2">⚠️ Detén Inmediatamente Si Experimentas:</h4>
-              <p className="text-orange-800 text-sm">
-                Mareos, náuseas, dolores de cabeza, ansiedad extrema, palpitaciones cardíacas, 
-                o cualquier reacción adversa. Contacta a tu médico si los síntomas persisten.
+            <div className="bg-orange-100 dark:bg-orange-900/30 border border-orange-300 dark:border-orange-700 p-5 rounded-lg">
+              <h4 className="font-semibold text-orange-900 dark:text-orange-200 mb-2">⚠️ Stop Immediately If You Experience:</h4>
+              <p className="text-orange-800 dark:text-orange-300 text-sm">
+                Dizziness, nausea, headaches, extreme anxiety, heart palpitations, 
+                or any adverse reaction. Contact your doctor if symptoms persist.
               </p>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function MedicalScrollSections({
         {/* Section 4: Results and Legal Disclaimer */}
         <MedicalSection
           icon={BookOpen}
-          title="Limitaciones y Descargo Legal"
+          title="Limitations &amp; Legal Disclaimer"
           colorScheme="gray"
           acknowledgmentKey="noGuarantees"
           acknowledged={acknowledged.noGuarantees}
@@ -255,37 +255,37 @@ export default function MedicalScrollSections({
         >
           <div className="space-y-4">
             <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-gray-50 p-5 rounded-xl">
-                <h4 className="font-semibold text-gray-900 mb-2">Resultados Individuales</h4>
-                <p className="text-gray-700 text-sm">
-                  <strong>Los resultados pueden variar.</strong> Aunque los estudios clínicos muestran resultados prometedores, 
-                  FreqHeal no puede garantizar resultados específicos para usuarios individuales.
+              <div className="bg-gray-50 dark:bg-slate-700/50 p-5 rounded-xl">
+                <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-2">Individual Results</h4>
+                <p className="text-gray-700 dark:text-slate-300 text-sm">
+                  <strong>Results may vary.</strong> While clinical studies show promising results, 
+                  FreqTherapy cannot guarantee specific results for individual users.
                 </p>
               </div>
               
-              <div className="bg-gray-50 p-5 rounded-xl">
-                <h4 className="font-semibold text-gray-900 mb-2">Complemento, No Sustituto</h4>
-                <p className="text-gray-700 text-sm">
-                  <strong>No reemplaza el cuidado médico.</strong> La terapia de frecuencias debe complementar, 
-                  no reemplazar, el tratamiento médico convencional.
+              <div className="bg-gray-50 dark:bg-slate-700/50 p-5 rounded-xl">
+                <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-2">Complement, Not Substitute</h4>
+                <p className="text-gray-700 dark:text-slate-300 text-sm">
+                  <strong>Does not replace medical care.</strong> Frequency therapy should complement, 
+                  not replace, conventional medical treatment.
                 </p>
               </div>
               
-              <div className="bg-gray-50 p-5 rounded-xl">
-                <h4 className="font-semibold text-gray-900 mb-2">Propósitos de Investigación</h4>
-                <p className="text-gray-700 text-sm">
-                  Algunas frecuencias se proporcionan para investigación y educación, 
-                  y deben usarse solo bajo supervisión apropiada.
+              <div className="bg-gray-50 dark:bg-slate-700/50 p-5 rounded-xl">
+                <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-2">Research Purposes</h4>
+                <p className="text-gray-700 dark:text-slate-300 text-sm">
+                  Some frequencies are provided for research and education, 
+                  and should only be used under appropriate supervision.
                 </p>
               </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-5 rounded-r-lg">
-              <h4 className="font-semibold text-blue-900 mb-2">Responsabilidad del Usuario</h4>
-              <p className="text-blue-800 text-sm leading-relaxed">
-                Al usar FreqHeal, reconoces que entiendes estas limitaciones y aceptas usar la plataforma 
-                de manera responsable y bajo tu propio riesgo. Siempre busca consejo médico profesional 
-                para condiciones de salud específicas.
+            <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 p-5 rounded-r-lg">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">User Responsibility</h4>
+              <p className="text-blue-800 dark:text-blue-300 text-sm leading-relaxed">
+                By using FreqTherapy, you acknowledge that you understand these limitations and agree to use the platform 
+                responsibly and at your own risk. Always seek professional medical advice 
+                for specific health conditions.
               </p>
             </div>
           </div>
@@ -306,16 +306,16 @@ export default function MedicalScrollSections({
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold mb-3">🚨 Información de Emergencia</h3>
+              <h3 className="text-xl font-bold mb-3">🚨 Emergency Information</h3>
               <p className="text-red-100 leading-relaxed">
-                Si experimentas cualquier reacción adversa durante o después de usar la terapia de frecuencias, 
-                <strong> discontinúa el uso inmediatamente</strong> y contacta a tu proveedor de salud. 
-                Para emergencias médicas, llama al 911 (EE.UU.) o a los servicios de emergencia locales.
+                If you experience any adverse reaction during or after using frequency therapy, 
+                <strong> discontinue use immediately</strong> and contact your healthcare provider. 
+                For medical emergencies, call 911 (U.S.) or your local emergency services.
               </p>
               <div className="mt-4 text-sm text-red-200">
                 <p>
-                  <strong>Contacto médico:</strong> medical@freqheal.com | 
-                  <strong> Versión:</strong> 2.0 | <strong>Actualizado:</strong> Marzo 2024
+                  <strong>Medical contact:</strong> medical@freqtherapy.com | 
+                  <strong> Version:</strong> 2.0 | <strong>Updated:</strong> March 2024
                 </p>
               </div>
             </div>
@@ -330,10 +330,10 @@ export default function MedicalScrollSections({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, type: "spring" }}
           >
-            <div className="inline-flex items-center space-x-3 bg-green-50 border-2 border-green-200 px-8 py-4 rounded-2xl">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-              <span className="font-semibold text-green-900">
-                ✅ Revisión de Seguridad Completada - ¡Puedes acceder a las frecuencias!
+            <div className="inline-flex items-center space-x-3 bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700 px-8 py-4 rounded-2xl">
+              <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+              <span className="font-semibold text-green-900 dark:text-green-200">
+                ✅ Safety Review Complete — You can now access the frequencies!
               </span>
             </div>
           </motion.div>
@@ -377,31 +377,31 @@ function MedicalSection({
 
   const colorMap = {
     red: {
-      bg: 'from-red-50 to-red-100/50',
-      border: 'border-red-200',
+      bg: 'from-red-50 to-red-100/50 dark:from-red-950/40 dark:to-red-900/20',
+      border: 'border-red-200 dark:border-red-800',
       icon: 'bg-red-600',
-      text: 'text-red-900',
+      text: 'text-red-900 dark:text-red-200',
       checkbox: 'text-red-600'
     },
     blue: {
-      bg: 'from-blue-50 to-blue-100/50',
-      border: 'border-blue-200',
+      bg: 'from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20',
+      border: 'border-blue-200 dark:border-blue-800',
       icon: 'bg-blue-600',
-      text: 'text-blue-900',
+      text: 'text-blue-900 dark:text-blue-200',
       checkbox: 'text-blue-600'
     },
     yellow: {
-      bg: 'from-yellow-50 to-yellow-100/50',
-      border: 'border-yellow-200',
+      bg: 'from-yellow-50 to-yellow-100/50 dark:from-yellow-950/40 dark:to-yellow-900/20',
+      border: 'border-yellow-200 dark:border-yellow-800',
       icon: 'bg-yellow-600',
-      text: 'text-yellow-900',
+      text: 'text-yellow-900 dark:text-yellow-200',
       checkbox: 'text-yellow-600'
     },
     gray: {
-      bg: 'from-gray-50 to-gray-100/50',
-      border: 'border-gray-200',
+      bg: 'from-gray-50 to-gray-100/50 dark:from-slate-800/40 dark:to-slate-700/20',
+      border: 'border-gray-200 dark:border-slate-700',
       icon: 'bg-gray-600',
-      text: 'text-gray-900',
+      text: 'text-gray-900 dark:text-slate-200',
       checkbox: 'text-gray-600'
     }
   }
@@ -409,10 +409,10 @@ function MedicalSection({
   const colors = colorMap[colorScheme]
 
   const acknowledgmentText = {
-    notMedicalDevice: "Entiendo que FreqHeal no es un dispositivo médico aprobado por la FDA",
-    consultPhysician: "Consultaré con mi proveedor de salud antes de usar la terapia de frecuencias",
-    contraindications: "He leído y entiendo las contraindicaciones",
-    noGuarantees: "Entiendo las limitaciones y usaré la plataforma de manera responsable"
+    notMedicalDevice: "I understand that FreqTherapy is not an FDA-approved medical device",
+    consultPhysician: "I will consult with my healthcare provider before using frequency therapy",
+    contraindications: "I have read and understand the contraindications",
+    noGuarantees: "I understand the limitations and will use the platform responsibly"
   }
 
   return (
@@ -457,7 +457,7 @@ function MedicalSection({
               
               {/* Acknowledgment Checkbox */}
               <motion.div
-                className="mt-8 p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/50"
+                className="mt-8 p-6 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-white/50 dark:border-slate-600/50"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.6, delay: delay + 0.4 }}
@@ -476,13 +476,13 @@ function MedicalSection({
                 
                 {acknowledged && (
                   <motion.div
-                    className="mt-3 flex items-center space-x-2 text-green-700"
+                    className="mt-3 flex items-center space-x-2 text-green-700 dark:text-green-400"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
                   >
                     <CheckCircle className="w-5 h-5" />
-                    <span className="text-sm font-medium">Confirmado</span>
+                    <span className="text-sm font-medium">Confirmed</span>
                   </motion.div>
                 )}
               </motion.div>
