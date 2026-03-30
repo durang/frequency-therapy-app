@@ -60,7 +60,7 @@ class GlobalAudioManager {
         while (hFreq < 150) hFreq *= 2
         harm.frequency.setValueAtTime(hFreq, ctx.currentTime)
         hGain.gain.setValueAtTime(0, ctx.currentTime)
-        hGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 5)
+        hGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 5)
         harm.connect(hGain)
         hGain.connect(ctx.destination)
         harm.start()
@@ -68,7 +68,7 @@ class GlobalAudioManager {
         this.harmonicGain = hGain
       }
 
-      const volume = hz < 50 ? 0.25 : hz < 200 ? 0.15 : 0.10
+      const volume = hz < 50 ? 0.40 : hz < 200 ? 0.22 : 0.14
       gain.gain.setValueAtTime(0, ctx.currentTime)
       gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 5)
       gain.connect(ctx.destination)

@@ -32,22 +32,28 @@ export default function ProtocolDetailPage() {
     if (!protocol) return
     const p = startProtocol(protocol.id)
     setProgress(p)
+    // Navigate to first session immediately
+    const firstSession = protocol.phases[0]?.sessions[0]
+    if (firstSession) {
+      handleStartSession(0, 0, firstSession.frequencyId, firstSession.duration)
+    }
   }
 
   const handleStartSession = (phaseIndex: number, sessionIndex: number, freqId: string, duration: number) => {
     if (!protocol) return
     
-    // Start protocol if not started
-    if (!progress) {
-      const p = startProtocol(protocol.id)
-      setProgress(p)
+    // Ensure protocol is started
+    let currentProgress = progress
+    if (!currentProgress) {
+      currentProgress = startProtocol(protocol.id)
+      setProgress(currentProgress)
     }
     
     // Store pending session in sessionStorage — will be logged when user returns
     const freqName = frequencies.find(f => f.id === freqId)?.name || 'Unknown'
     sessionStorage.setItem('pending-session', JSON.stringify({
       protocolId: protocol.id,
-      day: progress?.currentDay || 1,
+      day: currentProgress.currentDay || 1,
       phase: phaseIndex,
       sessionIndex,
       frequencyId: freqId,

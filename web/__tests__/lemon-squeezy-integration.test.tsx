@@ -182,7 +182,7 @@ describe('S05: Lemon Squeezy Integration', () => {
 
     it('returns the base URL when no params are provided', () => {
       const url = buildCheckoutUrl('monthly')
-      expect(url).toBe('https://freqtherapy.lemonsqueezy.com/checkout/buy/monthly')
+      expect(url).toBe('https://morphiclabs.lemonsqueezy.com/checkout/buy/9010f980-603c-4d95-8454-9bd2aa947586')
     })
 
     it('appends user_id when provided', () => {
