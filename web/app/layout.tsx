@@ -8,6 +8,7 @@ import { ClientAccessibilityControls } from '@/components/ui/ClientAccessibility
 import { ClientEmergencyHandler } from '@/components/ui/ClientEmergencyHandler'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { reportWebVitals } from '@/lib/performance-monitoring'
+import MiniPlayer from '@/components/ui/MiniPlayer'
 
 // Optimized font loading
 const inter = Inter({ 
@@ -99,6 +100,9 @@ export default function RootLayout({
         <ThemeProvider>
         {/* Client-side accessibility and emergency controls */}
         <ClientAccessibilityControls />
+
+        {/* Global Mini Player — shows when audio is playing */}
+        <MiniPlayer />
 
         {/* Main Content */}
         <main id="main-content">

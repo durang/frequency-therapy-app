@@ -130,9 +130,11 @@ export default function FrequenciesPage() {
         <div className="flex gap-6 items-start">
           {/* Frequency grid — always fills available space */}
           <div className={`flex-1 grid gap-4 ${
-            selectedFreq
-              ? 'grid-cols-1 sm:grid-cols-2'
-              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            filtered.length <= 2
+              ? 'grid-cols-1'
+              : selectedFreq
+                ? 'grid-cols-1 sm:grid-cols-2'
+                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
           }`}>
             {filtered.map((freq, i) => {
               const tier = tierConfig[freq.tier]

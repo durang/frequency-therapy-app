@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { frequencies } from '@/lib/frequencies'
+import { audioManager } from '@/lib/audioManager'
 
 const featured = frequencies.filter(f => f.tier === 'free').slice(0, 3)
 
@@ -188,41 +189,23 @@ function Features() {
 /* ─── Frequency Preview with audio play ────────────────── */
 function FrequencyPreview() {
   const [playingId, setPlayingId] = useState<string | null>(null)
-  const [audioCtx, setAudioCtx] = useState<AudioContext | null>(null)
-  const [oscNode, setOscNode] = useState<OscillatorNode | null>(null)
+
+  // Sync with global audio manager
+  useEffect(() => {
+    if (!audioManager) return
+    return audioManager.subscribe(state => {
+      if (!state.isPlaying) setPlayingId(null)
+    })
+  }, [])
 
   const togglePlay = (freq: typeof frequencies[0]) => {
-    // Stop current
-    if (oscNode) {
-      try { oscNode.stop(); oscNode.disconnect() } catch {}
-      setOscNode(null)
-    }
-    if (audioCtx) {
-      try { audioCtx.close() } catch {}
-      setAudioCtx(null)
-    }
-
     if (playingId === freq.id) {
+      audioManager?.stop()
       setPlayingId(null)
       return
     }
-
-    // Play new
-    try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(freq.hz_value, ctx.currentTime)
-      gain.gain.setValueAtTime(0, ctx.currentTime)
-      gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 1)
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.start()
-      setAudioCtx(ctx)
-      setOscNode(osc)
-      setPlayingId(freq.id)
-    } catch {}
+    audioManager?.play(freq.name, freq.hz_value)
+    setPlayingId(freq.id)
   }
 
   return (
