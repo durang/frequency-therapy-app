@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { frequencies } from '@/lib/frequencies'
 import { useSubscription } from '@/lib/useSubscription'
 import { useAuth } from '@/lib/authState'
@@ -14,6 +14,13 @@ export default function ExperiencePage() {
   const { isActive: isSubscribed, isLoading } = useSubscription()
   const [frequency, setFrequency] = useState<typeof frequencies[0] | null>(null)
 
+  // Check demo mode synchronously from URL on every render (no useEffect delay)
+  const isDemoMode = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    const urlParams = new URLSearchParams(window.location.search)
+    return urlParams.get('demo') === 'true'
+  }, [])
+
   useEffect(() => {
     const id = params.id as string
     const found = frequencies.find(f => f.id === id)
@@ -23,15 +30,6 @@ export default function ExperiencePage() {
       router.push('/frequencies')
     }
   }, [params.id, router])
-
-  // Check if URL has demo param (for development only)
-  const [isDemoMode, setIsDemoMode] = useState(false)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      setIsDemoMode(urlParams.get('demo') === 'true')
-    }
-  }, [])
 
   if (!frequency || isLoading) {
     return (
@@ -45,10 +43,10 @@ export default function ExperiencePage() {
   const hasFullAccess = isSubscribed || isDemoMode || isSuperadmin
   const isFreeUser = !hasFullAccess
 
-  // If free user tries to access a non-free frequency, redirect to pricing
+  // If free user tries to access a non-free frequency, redirect
   if (isFreeUser && frequency.tier !== 'free') {
-    router.push('/pricing?from=experience')
-    return null
+    // Use useEffect for redirect to avoid React warnings
+    return <RedirectToPricing />
   }
 
   return (
@@ -57,5 +55,18 @@ export default function ExperiencePage() {
       onExit={() => router.push('/frequencies')}
       isFreeUser={isFreeUser}
     />
+  )
+}
+
+// Separate component to handle redirect cleanly
+function RedirectToPricing() {
+  const router = useRouter()
+  useEffect(() => {
+    router.push('/pricing?from=experience')
+  }, [router])
+  return (
+    <div className="min-h-screen bg-[#fafaf9] dark:bg-[#0a0a0f] flex items-center justify-center">
+      <p className="text-gray-400 dark:text-white/30 text-sm">This frequency requires a subscription. Redirecting...</p>
+    </div>
   )
 }

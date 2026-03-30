@@ -198,7 +198,7 @@ export default function MedicalDisclaimer({ isVisible, onAccept, onDecline }: Me
           </div>
 
           <p className="text-xs text-gray-500 text-center mt-4">
-            Last updated: March 2024 | Version 1.2 | 
+            Last updated: March 2026 | Version 1.2 | 
             For questions about this disclaimer, contact: medical@freqtherapy.com
           </p>
         </CardContent>

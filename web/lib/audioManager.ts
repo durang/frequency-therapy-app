@@ -83,29 +83,38 @@ class GlobalAudioManager {
   }
 
   stop() {
-    if (this.gain && this.ctx) {
+    // Capture current references before clearing
+    const ctx = this.ctx
+    const osc = this.oscillator
+    const harm = this.harmonic
+    const gain = this.gain
+    const hGain = this.harmonicGain
+
+    // Clear references immediately to prevent race conditions
+    this.oscillator = null
+    this.harmonic = null
+    this.gain = null
+    this.harmonicGain = null
+    this.ctx = null
+
+    if (gain && ctx) {
       try {
-        this.gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.5)
-        if (this.harmonicGain) {
-          this.harmonicGain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.5)
+        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.5)
+        if (hGain) {
+          hGain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.5)
         }
       } catch {}
 
       setTimeout(() => {
         try {
-          this.oscillator?.stop()
-          this.oscillator?.disconnect()
-          this.harmonic?.stop()
-          this.harmonic?.disconnect()
-          this.gain?.disconnect()
-          this.harmonicGain?.disconnect()
-          this.ctx?.close()
+          osc?.stop()
+          osc?.disconnect()
+          harm?.stop()
+          harm?.disconnect()
+          gain?.disconnect()
+          hGain?.disconnect()
+          ctx?.close()
         } catch {}
-        this.oscillator = null
-        this.harmonic = null
-        this.gain = null
-        this.harmonicGain = null
-        this.ctx = null
       }, 600)
     }
 

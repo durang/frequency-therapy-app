@@ -315,7 +315,7 @@ export default function MedicalScrollSections({
               <div className="mt-4 text-sm text-red-200">
                 <p>
                   <strong>Medical contact:</strong> medical@freqtherapy.com | 
-                  <strong> Version:</strong> 2.0 | <strong>Updated:</strong> March 2024
+                  <strong> Version:</strong> 2.0 | <strong>Updated:</strong> March 2026
                 </p>
               </div>
             </div>

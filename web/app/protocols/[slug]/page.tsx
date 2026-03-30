@@ -37,9 +37,15 @@ export default function ProtocolDetailPage() {
   const handleStartSession = (phaseIndex: number, sessionIndex: number, freqId: string, duration: number) => {
     if (!protocol) return
     
-    // Log session
+    // Start protocol if not started
+    if (!progress) {
+      const p = startProtocol(protocol.id)
+      setProgress(p)
+    }
+    
+    // Store pending session in sessionStorage — will be logged when user returns
     const freqName = frequencies.find(f => f.id === freqId)?.name || 'Unknown'
-    const p = logSession(protocol.id, {
+    sessionStorage.setItem('pending-session', JSON.stringify({
       protocolId: protocol.id,
       day: progress?.currentDay || 1,
       phase: phaseIndex,
@@ -47,12 +53,26 @@ export default function ProtocolDetailPage() {
       frequencyId: freqId,
       frequencyName: freqName,
       duration,
-    })
-    setProgress(p)
+    }))
     
     // Navigate to experience
     router.push(`/experience/${freqId}`)
   }
+
+  // Log pending session when user returns from experience
+  useEffect(() => {
+    const pending = sessionStorage.getItem('pending-session')
+    if (pending && protocol) {
+      try {
+        const session = JSON.parse(pending)
+        if (session.protocolId === protocol.id) {
+          const p = logSession(protocol.id, session)
+          setProgress(p)
+          sessionStorage.removeItem('pending-session')
+        }
+      } catch {}
+    }
+  }, [protocol])
 
   if (!protocol) {
     return (
@@ -301,8 +321,19 @@ export default function ProtocolDetailPage() {
                 <button
                   onClick={() => {
                     const phase = protocol.phases[currentPhase]
-                    if (phase?.sessions[0]) {
-                      handleStartSession(currentPhase, 0, phase.sessions[0].frequencyId, phase.sessions[0].duration)
+                    if (phase) {
+                      // Find the first session not completed today
+                      const todayStr = new Date().toDateString()
+                      const nextSessionIdx = phase.sessions.findIndex((s, si) => 
+                        !progress?.completedSessions.some(
+                          cs => cs.phase === currentPhase && cs.sessionIndex === si && new Date(cs.completedAt).toDateString() === todayStr
+                        )
+                      )
+                      const idx = nextSessionIdx >= 0 ? nextSessionIdx : 0
+                      const session = phase.sessions[idx]
+                      if (session) {
+                        handleStartSession(currentPhase, idx, session.frequencyId, session.duration)
+                      }
                     }
                   }}
                   className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-sm hover:bg-gray-700 dark:hover:bg-gray-100 transition-all"

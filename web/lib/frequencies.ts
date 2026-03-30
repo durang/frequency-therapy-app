@@ -911,7 +911,7 @@ export const frequencies: Frequency[] = [
     id: '21',
     name: 'Universal Healing',
     hz_value: 10000,
-    category: 'universal_healing' as any,
+    category: 'immune_enhancement',
     description: 'The most validated healing frequency globally — used in Rife therapy protocols with millions of reported beneficial outcomes across diverse conditions',
     scientific_backing: 'Based on Royal Rife\'s research from the 1930s and modern amplitude-modulated electromagnetic field studies. Zimmerman et al. (2012) published in British Journal of Cancer showed that specific modulation frequencies inhibit cancer cell proliferation without affecting normal cells. Barbault et al. discovered that tumor-specific frequencies are predominantly found above 1,000 Hz. PEMF therapy at various frequencies has FDA approval for bone healing and post-operative recovery.',
     benefits: [
@@ -930,7 +930,7 @@ export const frequencies: Frequency[] = [
       '25-day healing protocols',
       'Deep cellular restoration'
     ],
-    tier: 'pro' as any,
+    tier: 'pro',
     duration_minutes: 40,
     research_citations: [
       'Zimmerman, J.W., et al. (2012). Cancer cell proliferation is inhibited by specific modulation frequencies. British Journal of Cancer, 106, 307-313.',
@@ -946,7 +946,7 @@ export const frequencies: Frequency[] = [
     id: '22',
     name: 'Detox & Cleansing',
     hz_value: 741,
-    category: 'detox' as any,
+    category: 'relaxation',
     description: 'Solfeggio frequency associated with cellular detoxification, toxin elimination, and electromagnetic field cleansing — used in integrative wellness protocols worldwide',
     scientific_backing: 'Part of the ancient Solfeggio frequency scale, 741 Hz has been studied in the context of sound therapy and vibrational medicine. A 2016 study in the Journal of Evidence-Based Integrative Medicine found that sound meditation with specific frequencies significantly reduced tension, anger, fatigue, and depression. Research into sound frequency effects on cellular behavior shows measurable changes in cell morphology and metabolic activity.',
     benefits: [
@@ -965,7 +965,7 @@ export const frequencies: Frequency[] = [
       'Seasonal cleansing protocols',
       'Combined with fasting protocols'
     ],
-    tier: 'basic' as any,
+    tier: 'basic',
     duration_minutes: 30,
     research_citations: [
       'Goldsby, T.L., et al. (2017). Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. Journal of Evidence-Based Integrative Medicine, 22(3), 401-406.',
@@ -980,7 +980,7 @@ export const frequencies: Frequency[] = [
     id: '23',
     name: 'Tissue Regeneration',
     hz_value: 285,
-    category: 'tissue_repair' as any,
+    category: 'pain_management',
     description: 'Solfeggio frequency for tissue repair and cellular regeneration — associated with accelerated healing of wounds, burns, and tissue damage in integrative medicine',
     scientific_backing: 'Frequency-specific microcurrent (FSM) research by McMakin (2004) demonstrated that specific frequencies can reduce inflammation by up to 62% in a single treatment. Cheng et al. (1982) showed that microcurrent at therapeutic frequencies increases ATP production by up to 500% and enhances protein synthesis by 75%. The 285 Hz range falls within therapeutic parameters studied in sound healing and vibrational medicine.',
     benefits: [
@@ -999,7 +999,7 @@ export const frequencies: Frequency[] = [
       'Joint and muscle repair',
       'Anti-aging skin protocols'
     ],
-    tier: 'basic' as any,
+    tier: 'basic',
     duration_minutes: 25,
     research_citations: [
       'McMakin, C.R. (2004). Microcurrent therapy: a novel treatment method for chronic low back myofascial pain. Journal of Bodywork and Movement Therapies, 8(2), 143-153.',

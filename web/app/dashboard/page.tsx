@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useAuth } from '@/lib/authState'
 import { useSubscription } from '@/lib/useSubscription'
+import { frequencies } from '@/lib/frequencies'
 
 export default function DashboardPage() {
   const { user, initializing, isSuperadmin } = useAuth()
@@ -103,7 +104,7 @@ export default function DashboardPage() {
             <div className="p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]">
               <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-3">Access</p>
               <p className="text-2xl font-light mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                {isActive || isSuperadmin ? '20' : '2'}
+                {isActive || isSuperadmin ? frequencies.length.toString() : frequencies.filter(f => f.tier === 'free').length.toString()}
               </p>
               <p className="text-xs text-gray-400 dark:text-white/20">
                 {isActive || isSuperadmin ? 'All frequencies unlocked' : 'Free frequencies available'}
