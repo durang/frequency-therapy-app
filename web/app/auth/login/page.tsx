@@ -47,8 +47,9 @@ export default function LoginPage() {
         toast.error(error.message || 'Failed to sign in')
       } else if (data?.user) {
         toast.success('Welcome back!')
-        // Redirect handled by auth state change
-        window.location.href = '/panel'
+        // Admin goes to panel, regular users to frequencies
+        const isAdmin = data.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+        window.location.href = isAdmin ? '/panel' : '/frequencies'
       }
     } catch (error) {
       toast.error('An unexpected error occurred')

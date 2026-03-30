@@ -542,8 +542,9 @@ export const useAuth = () => {
     hasSubscriptionTier: authUtils.hasSubscriptionTier,
     getUserMetadata: authUtils.getUserMetadata,
     
-    // Superadmin
-    isSuperadmin: user?.id === SUPERADMIN_USER.id,
+    // Superadmin — URL param OR admin email match
+    isSuperadmin: user?.id === SUPERADMIN_USER.id || 
+      (!!user?.email && typeof window !== 'undefined' && user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL),
   }
 }
 
