@@ -33,7 +33,7 @@ export default function PanelPage() {
   // Show loading state during initialization
   if (initializing && !isDemoMode && !isSuperadminMode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-quantum-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-white text-lg">Initializing panel...</p>
@@ -45,7 +45,7 @@ export default function PanelPage() {
   // Show login redirect if not authenticated
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center">
           <p className="text-white text-lg mb-4">Redirecting to login...</p>
           <div className="w-12 h-12 border-4 border-quantum-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
