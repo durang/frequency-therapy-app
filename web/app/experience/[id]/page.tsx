@@ -6,9 +6,6 @@ import { frequencies } from '@/lib/frequencies'
 import { useSubscription } from '@/lib/useSubscription'
 import ImmersiveExperience from '@/components/immersive/ImmersiveExperience'
 
-// Free-tier frequency IDs (Anxiety Liberation 432Hz, Gamma Focus 40Hz)
-const FREE_FREQUENCY_IDS = ['2', '3']
-
 export default function ExperiencePage() {
   const params = useParams()
   const router = useRouter()
@@ -46,7 +43,7 @@ export default function ExperiencePage() {
   const isFreeUser = !isSubscribed && !isBypass
 
   // If free user tries to access a non-free frequency, redirect to pricing
-  if (isFreeUser && !FREE_FREQUENCY_IDS.includes(frequency.id)) {
+  if (isFreeUser && frequency.tier !== 'free') {
     router.push('/pricing?from=experience')
     return null
   }

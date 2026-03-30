@@ -134,7 +134,7 @@ export default function PricingPage() {
             onClick={() => handleCheckout(billing)}
             className="w-full py-3.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-sm hover:bg-gray-700 dark:hover:bg-gray-100 transition-all mb-8"
           >
-            Start Free Trial
+            Get Started
           </button>
 
           {/* Features */}

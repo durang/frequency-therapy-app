@@ -128,9 +128,33 @@ function Hero() {
 /* ─── Features ────────────────────────────────────────────── */
 function Features() {
   const features = [
-    { icon: '🎵', title: 'Immersive Frequencies', description: 'Fullscreen sessions with ambient visuals and a teleprompter that explains the science as you listen.' },
-    { icon: '🫁', title: 'Breathing Guide', description: 'Configurable inhale-hold-exhale patterns with visual animation. 4-7-8, box breathing, and custom.' },
-    { icon: '🧠', title: 'Clinically Researched', description: '20 frequencies backed by peer-reviewed studies. Each one explains its mechanism and contraindications.' },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-600 dark:text-cyan-400">
+          <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+        </svg>
+      ),
+      title: 'Immersive Frequencies',
+      description: 'Fullscreen sessions with ambient visuals and a teleprompter that explains the science as you listen.',
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-600 dark:text-teal-400">
+          <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+        </svg>
+      ),
+      title: 'Breathing Guide',
+      description: 'Configurable inhale-hold-exhale patterns with visual animation. 4-7-8, box breathing, and custom.',
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-indigo-600 dark:text-indigo-400">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      ),
+      title: 'Clinically Researched',
+      description: '20 frequencies backed by peer-reviewed studies. Each one explains its mechanism and contraindications.',
+    },
   ]
 
   return (
@@ -146,7 +170,7 @@ function Features() {
           {features.map((f, i) => (
             <motion.div key={f.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-50px' }} transition={{ delay: i * 0.15, duration: 0.6 }}
               className="group p-8 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08] transition-all duration-500">
-              <div className="text-3xl mb-5">{f.icon}</div>
+              <div className="mb-5">{f.icon}</div>
               <h3 className="text-lg font-medium mb-3 text-gray-900 dark:text-white/90">{f.title}</h3>
               <p className="text-sm text-gray-500 dark:text-white/35 leading-relaxed">{f.description}</p>
             </motion.div>
