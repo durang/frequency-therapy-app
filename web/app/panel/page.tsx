@@ -7,27 +7,31 @@ import { PanelLayout } from '@/components/panel/PanelLayout'
 import '../../styles/panel-responsive.css'
 
 export default function PanelPage() {
-  const { user, initializing } = useAuth()
+  const { user, initializing, isSuperadmin } = useAuth()
   const router = useRouter()
   const [isDemoMode, setIsDemoMode] = useState(false)
+  const [isSuperadminMode, setIsSuperadminMode] = useState(false)
 
-  // Check for demo mode
+  // Check for demo mode and superadmin mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search)
       setIsDemoMode(urlParams.get('demo') === 'true')
+      setIsSuperadminMode(urlParams.get('superadmin') === 'true')
     }
   }, [])
 
+  const hasAccess = !!user || isDemoMode || isSuperadminMode
+
   useEffect(() => {
-    if (!initializing && !user && !isDemoMode) {
-      // Redirect to login if not authenticated and not in demo mode
+    if (!initializing && !hasAccess) {
+      // Redirect to login if not authenticated and not in demo/superadmin mode
       router.push('/auth/login?from=panel')
     }
-  }, [user, initializing, router, isDemoMode])
+  }, [user, initializing, router, hasAccess])
 
   // Show loading state during initialization
-  if (initializing && !isDemoMode) {
+  if (initializing && !isDemoMode && !isSuperadminMode) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -38,8 +42,8 @@ export default function PanelPage() {
     )
   }
 
-  // Show login redirect if not authenticated and not in demo mode
-  if (!user && !isDemoMode) {
+  // Show login redirect if not authenticated
+  if (!hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -52,12 +56,17 @@ export default function PanelPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {isDemoMode && (
+      {isSuperadmin && (
+        <div className="bg-purple-600/90 text-white text-center py-2 px-4 text-sm font-medium">
+          🔑 Superadmin Mode — Clinical tier, all features unlocked
+        </div>
+      )}
+      {isDemoMode && !isSuperadmin && (
         <div className="bg-yellow-600/90 text-white text-center py-2 px-4 text-sm">
           🧪 Demo Mode Active - Full functionality without authentication
         </div>
       )}
-      <PanelLayout demoMode={isDemoMode} />
+      <PanelLayout demoMode={isDemoMode || isSuperadminMode} />
     </div>
   )
 }

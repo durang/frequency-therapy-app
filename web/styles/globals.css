@@ -4,24 +4,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───── Design System Tokens ───── */
+:root {
+  /* Surfaces */
+  --surface-primary: #f8fafc;     /* slate-50 */
+  --surface-secondary: #f1f5f9;   /* slate-100 */
+  --surface-elevated: #ffffff;     /* white */
+  --surface-overlay: rgba(255, 255, 255, 0.8);
+
+  /* Text */
+  --text-primary: #0f172a;        /* slate-900 */
+  --text-secondary: #475569;      /* slate-600 */
+  --text-muted: #94a3b8;          /* slate-400 */
+
+  /* Borders */
+  --border-default: #e2e8f0;      /* slate-200 */
+  --border-subtle: #f1f5f9;       /* slate-100 */
+
+  /* Accent */
+  --accent-primary: #0284c7;      /* quantum-600 */
+  --accent-hover: #0369a1;        /* quantum-700 */
+}
+
+.dark {
+  /* Surfaces */
+  --surface-primary: #0f172a;     /* slate-900 */
+  --surface-secondary: #1e293b;   /* slate-800 */
+  --surface-elevated: #1e293b;    /* slate-800 */
+  --surface-overlay: rgba(15, 23, 42, 0.8);
+
+  /* Text */
+  --text-primary: #f1f5f9;        /* slate-100 */
+  --text-secondary: #94a3b8;      /* slate-400 */
+  --text-muted: #64748b;          /* slate-500 */
+
+  /* Borders */
+  --border-default: #334155;      /* slate-700 */
+  --border-subtle: #1e293b;       /* slate-800 */
+
+  /* Accent */
+  --accent-primary: #38bdf8;      /* quantum-400 */
+  --accent-hover: #0ea5e9;        /* quantum-500 */
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    background-color: var(--surface-primary);
+    color: var(--text-primary);
+    @apply antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
   
   * {
-    @apply border-slate-200;
+    border-color: var(--border-default);
   }
 }
 
 @layer components {
   .quantum-card {
-    @apply bg-white rounded-xl shadow-lg border border-slate-200/50 backdrop-blur-sm;
+    @apply bg-white rounded-xl shadow-lg border border-slate-200/50 backdrop-blur-sm dark:bg-slate-900 dark:border-slate-700/50;
   }
   
   .frequency-button {
@@ -33,7 +78,7 @@
   }
   
   .frequency-button-secondary {
-    @apply bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-300;
+    @apply bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600;
   }
   
   .neural-glow {

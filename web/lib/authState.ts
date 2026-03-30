@@ -443,6 +443,65 @@ export const authUtils = {
 }
 
 // Hook for React components to easily access auth state
+// ============================================================
+// Superadmin Mode — development bypass
+// Activated via ?superadmin=true URL param
+// Creates a fake authenticated session with clinical tier
+// ============================================================
+
+const SUPERADMIN_USER: User = {
+  id: 'superadmin-dev-001',
+  email: 'admin@freqtherapy.com',
+  subscription_tier: 'clinical',
+  created_at: new Date().toISOString(),
+  profile: {
+    id: 'profile-superadmin-001',
+    user_id: 'superadmin-dev-001',
+    full_name: 'Super Admin',
+    frequency_preferences: [],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+}
+
+const SUPERADMIN_SESSION = {
+  access_token: 'superadmin-fake-access-token',
+  refresh_token: 'superadmin-fake-refresh-token',
+  expires_in: 86400 * 365,
+  expires_at: Math.floor(Date.now() / 1000) + 86400 * 365,
+  token_type: 'bearer' as const,
+  user: {
+    id: 'superadmin-dev-001',
+    email: 'admin@freqtherapy.com',
+    created_at: new Date().toISOString(),
+    aud: 'authenticated',
+    role: 'authenticated',
+    app_metadata: {},
+    user_metadata: {},
+  },
+} as unknown as Session
+
+function isSuperadminMode(): boolean {
+  if (typeof window === 'undefined') return false
+  const params = new URLSearchParams(window.location.search)
+  return params.get('superadmin') === 'true'
+}
+
+function activateSuperadmin(): void {
+  const state = useAuthStore.getState()
+  if (state.user?.id === SUPERADMIN_USER.id) return // Already active
+  
+  console.log('🔑 [AuthState] SUPERADMIN mode activated — clinical tier, all access')
+  useAuthStore.setState({
+    user: SUPERADMIN_USER,
+    supabaseUser: SUPERADMIN_SESSION.user as unknown as SupabaseUser,
+    session: SUPERADMIN_SESSION,
+    loading: false,
+    initializing: false,
+    error: null,
+  })
+}
+
 export const useAuth = () => {
   const user = useAuthStore((state) => state.user)
   const supabaseUser = useAuthStore((state) => state.supabaseUser)
@@ -454,6 +513,11 @@ export const useAuth = () => {
   const signOut = useAuthStore((state) => state.signOut)
   const initializeAuth = useAuthStore((state) => state.initializeAuth)
   const clearError = useAuthStore((state) => state.clearError)
+
+  // Activate superadmin if URL param present
+  if (typeof window !== 'undefined' && isSuperadminMode() && (!user || user.id !== SUPERADMIN_USER.id)) {
+    activateSuperadmin()
+  }
   
   return {
     // State
@@ -477,6 +541,9 @@ export const useAuth = () => {
     // Utilities
     hasSubscriptionTier: authUtils.hasSubscriptionTier,
     getUserMetadata: authUtils.getUserMetadata,
+    
+    // Superadmin
+    isSuperadmin: user?.id === SUPERADMIN_USER.id,
   }
 }
 

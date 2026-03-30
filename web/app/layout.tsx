@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import { generateMedicalMetadata, generateMedicalSchema, generateHealthAppSchema } from '@/lib/medicalMetadata'
 import { ClientAccessibilityControls } from '@/components/ui/ClientAccessibilityControls'
 import { ClientEmergencyHandler } from '@/components/ui/ClientEmergencyHandler'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { reportWebVitals } from '@/lib/performance-monitoring'
 
 // Optimized font loading
@@ -94,6 +95,7 @@ export default function RootLayout({
         className={`${inter.className} antialiased`}
         suppressHydrationWarning
       >
+        <ThemeProvider>
         {/* Client-side accessibility and emergency controls */}
         <ClientAccessibilityControls />
 
@@ -146,6 +148,7 @@ export default function RootLayout({
             top: '80px', // Below skip links
           }}
         />
+        </ThemeProvider>
 
         {/* Global Keyboard Shortcuts Handler */}
         <script
