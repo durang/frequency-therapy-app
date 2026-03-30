@@ -4,11 +4,13 @@ import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { frequencies } from '@/lib/frequencies'
 import { useSubscription } from '@/lib/useSubscription'
+import { useAuth } from '@/lib/authState'
 import ImmersiveExperience from '@/components/immersive/ImmersiveExperience'
 
 export default function ExperiencePage() {
   const params = useParams()
   const router = useRouter()
+  const { user, isSuperadmin } = useAuth()
   const { isActive: isSubscribed, isLoading } = useSubscription()
   const [frequency, setFrequency] = useState<typeof frequencies[0] | null>(null)
 
@@ -33,14 +35,15 @@ export default function ExperiencePage() {
 
   if (!frequency || isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafaf9] dark:bg-[#0a0a0f] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
       </div>
     )
   }
 
-  // Determine if user is free (not subscribed and not bypassing)
-  const isFreeUser = !isSubscribed && !isBypass
+  // Admin and subscribers get full access
+  const hasFullAccess = isSubscribed || isBypass || isSuperadmin
+  const isFreeUser = !hasFullAccess
 
   // If free user tries to access a non-free frequency, redirect to pricing
   if (isFreeUser && frequency.tier !== 'free') {

@@ -53,18 +53,21 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
         const harmonic = ctx.createOscillator()
         const harmonicGain = ctx.createGain()
         harmonic.type = 'sine'
-        // Use 3rd or 5th harmonic to make it audible
-        const harmonicFreq = frequency.hz_value < 20 ? frequency.hz_value * 8 : frequency.hz_value * 4
+        // Scale harmonic higher for very low frequencies
+        let harmonicFreq = frequency.hz_value * 4
+        if (frequency.hz_value < 10) harmonicFreq = frequency.hz_value * 20
+        else if (frequency.hz_value < 20) harmonicFreq = frequency.hz_value * 12
+        else if (frequency.hz_value < 50) harmonicFreq = frequency.hz_value * 6
         harmonic.frequency.setValueAtTime(harmonicFreq, ctx.currentTime)
         harmonicGain.gain.setValueAtTime(0, ctx.currentTime)
-        harmonicGain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 5)
+        harmonicGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 5)
         harmonic.connect(harmonicGain)
         harmonicGain.connect(ctx.destination)
         harmonic.start()
       }
 
       // 5-second fade-in — louder for low frequencies
-      const volume = frequency.hz_value < 100 ? 0.15 : 0.08
+      const volume = frequency.hz_value < 50 ? 0.25 : frequency.hz_value < 200 ? 0.15 : 0.10
       gain.gain.setValueAtTime(0, ctx.currentTime)
       gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 5)
 

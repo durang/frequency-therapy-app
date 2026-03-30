@@ -33,8 +33,7 @@ export default function LoginPage() {
       if (error) toast.error(error.message || 'Failed to sign in')
       else if (data?.user) {
         toast.success('Welcome back!')
-        const isAdmin = data.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
-        window.location.href = isAdmin ? '/panel' : '/frequencies'
+        window.location.href = '/frequencies'
       }
     } catch { toast.error('An unexpected error occurred') }
     finally { setLoading(false) }

@@ -478,7 +478,7 @@ function Footer() {
           </div>
         </div>
         <div className="pt-8 border-t border-gray-100 dark:border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-400 dark:text-white/15">© 2024 FreqTherapy. Not intended to diagnose, treat, cure, or prevent any disease.</p>
+          <p className="text-xs text-gray-400 dark:text-white/15">© 2026 FreqTherapy. Not intended to diagnose, treat, cure, or prevent any disease.</p>
           <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-white/15">
             <span>127K+ users</span><span>·</span><span>47 studies</span>
           </div>

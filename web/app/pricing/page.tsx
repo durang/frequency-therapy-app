@@ -185,7 +185,7 @@ export default function PricingPage() {
             ← Back to home
           </Link>
           <p className="text-xs text-gray-400 dark:text-white/15">
-            © 2024 FreqTherapy
+            © 2026 FreqTherapy
           </p>
         </div>
       </footer>
