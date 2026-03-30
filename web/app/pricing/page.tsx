@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { PLANS, FEATURES } from '@/lib/checkout' // lemonsqueezy plan config
+import { PLANS, FEATURES, buildCheckoutUrl } from '@/lib/checkout'
+import type { Plan } from '@/lib/checkout'
 import { Check } from 'lucide-react'
 
 const FAQ_ITEMS = [
@@ -30,6 +31,21 @@ export default function PricingPage() {
 
   const activePlan = PLANS[billing]
   const otherPlan = billing === 'monthly' ? PLANS.annual : PLANS.monthly
+
+  const handleCheckout = useCallback((planId: 'monthly' | 'annual') => {
+    // Ensure Lemon.js is initialised (idempotent if already called)
+    window.createLemonSqueezy?.()
+
+    // TODO: pass real user id/email from auth context once available
+    const url = buildCheckoutUrl(planId)
+
+    if (window.LemonSqueezy?.Url?.Open) {
+      window.LemonSqueezy.Url.Open(url)
+    } else {
+      // Fallback: open in new tab if Lemon.js failed to load
+      window.open(url, '_blank')
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-[var(--surface-primary)]">
@@ -110,6 +126,7 @@ export default function PricingPage() {
               plan={PLANS.monthly}
               isActive={billing === 'monthly'}
               onSelect={() => setBilling('monthly')}
+              onCheckout={handleCheckout}
             />
 
             {/* Annual Card */}
@@ -117,6 +134,7 @@ export default function PricingPage() {
               plan={PLANS.annual}
               isActive={billing === 'annual'}
               onSelect={() => setBilling('annual')}
+              onCheckout={handleCheckout}
             />
           </div>
 
@@ -166,12 +184,12 @@ export default function PricingPage() {
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
               7-day free trial · Cancel anytime · 30-day money-back guarantee
             </p>
-            <a
-              href={activePlan.checkoutUrl}
+            <button
+              onClick={() => handleCheckout(activePlan.id)}
               className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-[var(--accent-primary)] text-white font-medium text-lg hover:opacity-90 transition-opacity shadow-lg"
             >
               Start your free trial
-            </a>
+            </button>
           </div>
         </div>
       </main>
@@ -185,9 +203,10 @@ interface PlanCardProps {
   plan: typeof PLANS.monthly
   isActive: boolean
   onSelect: () => void
+  onCheckout: (planId: 'monthly' | 'annual') => void
 }
 
-function PlanCard({ plan, isActive, onSelect }: PlanCardProps) {
+function PlanCard({ plan, isActive, onSelect, onCheckout }: PlanCardProps) {
   const isAnnual = plan.id === 'annual'
 
   return (
@@ -237,9 +256,11 @@ function PlanCard({ plan, isActive, onSelect }: PlanCardProps) {
       </div>
 
       {/* CTA */}
-      <a
-        href={plan.checkoutUrl}
-        onClick={(e) => e.stopPropagation()}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          onCheckout(plan.id)
+        }}
         className={`block w-full text-center py-3 rounded-lg font-medium transition-all ${
           isActive
             ? 'bg-[var(--accent-primary)] text-white hover:opacity-90 shadow-md'
@@ -247,7 +268,7 @@ function PlanCard({ plan, isActive, onSelect }: PlanCardProps) {
         }`}
       >
         Start free trial
-      </a>
+      </button>
     </div>
   )
 }

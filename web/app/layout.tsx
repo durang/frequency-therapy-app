@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display, Instrument_Serif } from 'next/font/google'
+import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
 import { generateMedicalMetadata, generateMedicalSchema, generateHealthAppSchema } from '@/lib/medicalMetadata'
 import { ClientAccessibilityControls } from '@/components/ui/ClientAccessibilityControls'
@@ -192,6 +193,12 @@ export default function RootLayout({
               document.head.appendChild(style);
             `,
           }}
+        />
+
+        {/* Lemon Squeezy overlay checkout script */}
+        <Script
+          src="https://app.lemonsqueezy.com/js/lemon.js"
+          strategy="afterInteractive"
         />
       </body>
     </html>

@@ -53,3 +53,33 @@ export const FEATURES = [
   'Visual therapy patterns',
   'Dark & light theme support',
 ] as const
+
+/**
+ * Build a parameterised Lemon Squeezy checkout URL.
+ *
+ * Appends `checkout[custom][user_id]` and `checkout[email]` query
+ * parameters so the webhook can link the subscription back to the
+ * authenticated user.
+ */
+export function buildCheckoutUrl(
+  planId: 'monthly' | 'annual',
+  userId?: string,
+  email?: string,
+): string {
+  const base = CHECKOUT_URLS[planId]
+  const params = new URLSearchParams()
+
+  if (userId) {
+    params.set('checkout[custom][user_id]', userId)
+  }
+  if (email) {
+    params.set('checkout[email]', email)
+  }
+
+  const qs = params.toString()
+  if (!qs) return base
+
+  // Handle URLs that may already contain a query string
+  const separator = base.includes('?') ? '&' : '?'
+  return `${base}${separator}${qs}`
+}
