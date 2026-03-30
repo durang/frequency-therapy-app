@@ -18,15 +18,10 @@ export default function PricingPage() {
       ? `${url}?checkout[custom][user_id]=${user.id}&checkout[email]=${user.email}`
       : url
 
-    // Check if Lemon.js is loaded
+    // Check if Lemon.js is loaded for overlay checkout
     if (typeof window !== 'undefined' && (window as any).LemonSqueezy?.Url?.Open) {
       (window as any).LemonSqueezy.Url.Open(checkoutUrl)
     } else {
-      // Fallback: show message if checkout URLs are not configured yet
-      if (url.includes('lemonsqueezy.com/checkout/buy/')) {
-        alert('Payment processing is being configured. Please check back soon or contact us for early access.')
-        return
-      }
       window.open(checkoutUrl, '_blank')
     }
   }

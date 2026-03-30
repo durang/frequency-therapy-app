@@ -18,8 +18,8 @@ export interface Plan {
 
 /** Lemon Squeezy checkout URLs — replace with real variant URLs before launch. */
 export const CHECKOUT_URLS = {
-  monthly: 'https://freqtherapy.lemonsqueezy.com/checkout/buy/monthly',
-  annual: 'https://freqtherapy.lemonsqueezy.com/checkout/buy/annual',
+  monthly: 'https://morphiclabs.lemonsqueezy.com/checkout/buy/9010f980-603c-4d95-8454-9bd2aa947586',
+  annual: 'https://morphiclabs.lemonsqueezy.com/checkout/buy/54be9e9c-84af-41d2-af28-9275b08ebe17',
 } as const
 
 export const PLANS: Record<'monthly' | 'annual', Plan> = {
