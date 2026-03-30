@@ -45,7 +45,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
   const currentSection = currentIndex >= 0 ? sections[currentIndex] : null
 
   return (
-    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-20 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
+    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-6 pt-20 pb-60 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
       {/* Frequency title — always visible, moves up when content appears */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

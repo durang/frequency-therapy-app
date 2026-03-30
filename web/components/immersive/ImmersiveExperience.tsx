@@ -190,10 +190,12 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
             dimmed={dimmed}
           />
 
-          {/* Breathing guide — fixed at bottom center */}
-          <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-20">
-            <BreathingGuide isActive={breathingActive && isPlaying} />
-          </div>
+          {/* Breathing guide — fixed at bottom, above controls */}
+          {breathingActive && isPlaying && (
+            <div className="fixed bottom-44 left-1/2 -translate-x-1/2 z-20">
+              <BreathingGuide isActive={true} />
+            </div>
+          )}
 
           {/* Controls — bottom bar */}
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
