@@ -50,15 +50,14 @@ class GlobalAudioManager {
       osc.start()
       this.oscillator = osc
 
-      // Harmonic for low frequencies
+      // Harmonic for low frequencies — ensure minimum 150 Hz audible harmonic
       if (hz < 100) {
         const harm = ctx.createOscillator()
         const hGain = ctx.createGain()
         harm.type = 'sine'
+        // Calculate harmonic that's at least 150 Hz (clearly audible on any speaker)
         let hFreq = hz * 4
-        if (hz < 10) hFreq = hz * 20
-        else if (hz < 20) hFreq = hz * 12
-        else if (hz < 50) hFreq = hz * 6
+        while (hFreq < 150) hFreq *= 2
         harm.frequency.setValueAtTime(hFreq, ctx.currentTime)
         hGain.gain.setValueAtTime(0, ctx.currentTime)
         hGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 5)

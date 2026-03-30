@@ -83,7 +83,7 @@ function Hero() {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: 'easeOut' }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.08] text-xs text-gray-600 dark:text-white/50 mb-10 tracking-wide">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            20 therapeutic frequencies · Clinically researched
+            23 therapeutic frequencies · Clinically researched
           </div>
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light leading-[0.95] tracking-tight mb-8"
