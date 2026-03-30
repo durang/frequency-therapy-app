@@ -1,6 +1,6 @@
 /**
- * Landing Page Test Suite — Updated for M002 scroll-story redesign
- * Tests the current CalmFrequencyApp with progressive medical compliance
+ * Landing Page Test Suite — Updated for M003 S02 dark-premium redesign
+ * Tests CalmFrequencyApp with English content and FreqTherapy branding
  */
 import React from 'react'
 import { render, screen } from '@testing-library/react'
@@ -38,18 +38,29 @@ jest.mock('lucide-react', () => {
   })
 })
 
+// Mock next-themes
+jest.mock('next-themes', () => ({
+  useTheme: () => ({ theme: 'light', resolvedTheme: 'light', setTheme: jest.fn() }),
+  ThemeProvider: ({ children }: any) => children,
+}))
+
 // Mock scroll story hooks
 jest.mock('@/lib/scrollStory', () => ({
   useScrollStory: () => ({
     currentSection: 'hero',
     scrollProgress: 0,
     isReady: false,
-    sectionsViewed: [],
+    sectionsRead: [],
     medicalComplianceProgress: 0,
-    hasCompletedMedicalReview: false,
+    isReadyToStart: false,
+    sections: [],
+    markSectionAsRead: jest.fn(),
+    fps: 60,
   }),
   useScrollSection: () => ({ ref: { current: null }, isInView: false }),
   useScrollProgress: () => ({ progress: 0 }),
+  defaultScrollSections: [],
+  validateMedicalCompliance: () => ({ isValid: false, missingRequirements: [] }),
 }))
 
 // Mock disclaimer state
@@ -115,7 +126,7 @@ jest.mock('@/components/landing/MedicalScrollSections', () => {
     default: function MockMedicalScrollSections() {
       return <div data-testid="medical-sections">
         <span>FDA Disclaimer</span>
-        <span>supervisión médica</span>
+        <span>medical supervision</span>
       </div>
     }
   }
@@ -130,42 +141,46 @@ jest.mock('@/components/auth/MagicLinkForm', () => {
   }
 })
 
+jest.mock('@/components/ui/ThemeToggle', () => ({
+  ThemeToggle: () => <button data-testid="theme-toggle">Toggle Theme</button>
+}))
+
 // Import after mocks
 import CalmFrequencyApp from '@/app/calm-page'
 
-describe('Landing Page — M002 Scroll-Story Design', () => {
-  test('renders header with FreqHeal branding', () => {
+describe('Landing Page — M003 S02 FreqTherapy Branding', () => {
+  test('renders header with FreqTherapy branding', () => {
     render(<CalmFrequencyApp />)
-    const headings = screen.getAllByText('FreqHeal')
+    const headings = screen.getAllByText('FreqTherapy')
     expect(headings.length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('Terapia de Frecuencias')).toBeInTheDocument()
+    expect(screen.getByText('Frequency Therapy')).toBeInTheDocument()
   })
 
   test('renders hero section with main heading', () => {
     render(<CalmFrequencyApp />)
-    expect(screen.getByText('Encuentra tu')).toBeInTheDocument()
-    expect(screen.getByText(/equilibrio/)).toBeInTheDocument()
+    expect(screen.getByText('Find your')).toBeInTheDocument()
+    expect(screen.getByText(/balance/)).toBeInTheDocument()
   })
 
   test('renders hero description about frequency therapy', () => {
     render(<CalmFrequencyApp />)
-    expect(screen.getByText(/Terapia de frecuencias científicamente respaldada/)).toBeInTheDocument()
+    expect(screen.getByText(/Scientifically backed frequency therapy/)).toBeInTheDocument()
   })
 
   test('renders CTA or safety review section in hero', () => {
     render(<CalmFrequencyApp />)
-    // With isReady=false (mock default), shows safety review instead of "Comenzar Ahora"
-    expect(screen.getByText(/Revisión de Seguridad/)).toBeInTheDocument()
+    // With isReadyToStart=false (mock default), shows safety review instead of "Start Now"
+    expect(screen.getByText(/Safety Review/)).toBeInTheDocument()
   })
 
   test('renders social proof section', () => {
     render(<CalmFrequencyApp />)
-    expect(screen.getByText(/Miles de personas ya han transformado/)).toBeInTheDocument()
+    expect(screen.getByText(/Thousands have already transformed/)).toBeInTheDocument()
   })
 
   test('renders footer with copyright', () => {
     render(<CalmFrequencyApp />)
-    expect(screen.getByText(/FreqHeal.*Plataforma de terapia de frecuencias/)).toBeInTheDocument()
+    expect(screen.getByText(/FreqTherapy.*Frequency therapy platform/)).toBeInTheDocument()
   })
 
   test('renders without crashing', () => {
