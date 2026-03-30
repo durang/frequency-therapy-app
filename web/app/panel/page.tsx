@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/lib/authState'
+import { useSubscription } from '@/lib/useSubscription'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PanelLayout } from '@/components/panel/PanelLayout'
@@ -8,6 +9,7 @@ import '../../styles/panel-responsive.css'
 
 export default function PanelPage() {
   const { user, initializing, isSuperadmin } = useAuth()
+  const { isActive, isLoading } = useSubscription()
   const router = useRouter()
   const [isDemoMode, setIsDemoMode] = useState(false)
   const [isSuperadminMode, setIsSuperadminMode] = useState(false)
@@ -21,17 +23,25 @@ export default function PanelPage() {
     }
   }, [])
 
-  const hasAccess = !!user || isDemoMode || isSuperadminMode
+  const isBypassMode = isDemoMode || isSuperadminMode
+  const hasAccess = (!!user && isActive) || isBypassMode
 
+  // Redirect unauthenticated users to login
   useEffect(() => {
-    if (!initializing && !hasAccess) {
-      // Redirect to login if not authenticated and not in demo/superadmin mode
+    if (!initializing && !user && !isBypassMode) {
       router.push('/auth/login?from=panel')
     }
-  }, [user, initializing, router, hasAccess])
+  }, [user, initializing, router, isBypassMode])
 
-  // Show loading state during initialization
-  if (initializing && !isDemoMode && !isSuperadminMode) {
+  // Redirect authenticated but non-subscribed users to pricing
+  useEffect(() => {
+    if (!initializing && !isLoading && user && !isActive && !isBypassMode) {
+      router.push('/pricing?from=panel')
+    }
+  }, [user, initializing, isLoading, isActive, router, isBypassMode])
+
+  // Show loading state while auth or subscription resolves
+  if ((initializing || isLoading) && !isBypassMode) {
     return (
       <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center">
@@ -42,12 +52,12 @@ export default function PanelPage() {
     )
   }
 
-  // Show login redirect if not authenticated
+  // Show redirect state if not authorized
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-[var(--surface-primary)] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-white text-lg mb-4">Redirecting to login...</p>
+          <p className="text-white text-lg mb-4">Redirecting...</p>
           <div className="w-12 h-12 border-4 border-quantum-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>

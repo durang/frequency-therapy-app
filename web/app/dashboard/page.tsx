@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import AdvancedDashboard from '@/components/dashboard/advanced-dashboard'
 import { useAuth, useAuthStore } from '@/lib/authState'
+import { useSubscription } from '@/lib/useSubscription'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { Brain, Play, Settings, Star, TrendingUp, Zap, LogOut, User, Calendar, Activity } from 'lucide-react'
+import { Brain, Play, Settings, Star, TrendingUp, Zap, LogOut, User, Calendar, Activity, ExternalLink, ArrowUpRight } from 'lucide-react'
 
 // Quick access frequency cards
 const quickFrequencies = [
@@ -54,6 +56,9 @@ export default function DashboardPage() {
     initializeAuth,
     getUserMetadata 
   } = useAuth()
+
+  // Subscription state
+  const { subscription, isActive: subscriptionActive, isLoading: subscriptionLoading } = useSubscription()
 
   // Initialize auth on component mount
   useEffect(() => {
@@ -145,17 +150,59 @@ export default function DashboardPage() {
     router.push(`/panel?frequency=${frequencyId}&quick=true`)
   }
 
-  const getTierBadge = (tier: string) => {
-    const styles = {
-      free: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-      basic: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-      pro: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-      clinical: 'bg-gold-100 text-gold-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+  const getSubscriptionBadge = () => {
+    if (subscriptionLoading) {
+      return (
+        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 animate-pulse">
+          Loading…
+        </span>
+      )
     }
+
+    if (subscriptionActive && subscription) {
+      const planLabel = subscription.variant_id ? 'Pro' : 'Active'
+      return (
+        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+          ✓ {planLabel}
+        </span>
+      )
+    }
+
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${styles[tier as keyof typeof styles]}`}>
-        {tier.toUpperCase()}
-      </span>
+      <Link
+        href="/pricing"
+        className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 hover:bg-purple-100 hover:text-purple-800 dark:hover:bg-purple-900/30 dark:hover:text-purple-300 transition-colors"
+      >
+        Free · Upgrade
+      </Link>
+    )
+  }
+
+  const getSubscriptionDetails = () => {
+    if (!subscriptionActive || !subscription) return null
+
+    const renewalDate = subscription.current_period_end
+      ? new Date(subscription.current_period_end).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : null
+
+    return (
+      <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+        {renewalDate && <span>Renews {renewalDate}</span>}
+        {subscription.customer_portal_url && (
+          <a
+            href={subscription.customer_portal_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-quantum-primary hover:underline"
+          >
+            Manage <ExternalLink className="w-3 h-3" />
+          </a>
+        )}
+      </div>
     )
   }
 
@@ -183,7 +230,7 @@ export default function DashboardPage() {
                   {greeting}, {user.profile?.full_name?.split(' ')[0] || user.email.split('@')[0]}!
                 </h1>
                 <div className="flex items-center gap-3 mt-1">
-                  {getTierBadge(user.subscription_tier)}
+                  {getSubscriptionBadge()}
                   <span className="text-sm text-slate-600 dark:text-slate-400">
                     🔥 {userStats.streakDays} day streak
                   </span>
@@ -192,6 +239,7 @@ export default function DashboardPage() {
                     Joined {userStats.joinDate}
                   </span>
                 </div>
+                {getSubscriptionDetails()}
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -268,7 +316,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <User className="w-4 h-4" />
-                        <span>{user.subscription_tier.toUpperCase()} Member</span>
+                        <span>{subscriptionActive ? 'Active Subscriber' : 'Free'} Member</span>
                       </div>
                     </div>
                   </div>

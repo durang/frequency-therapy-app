@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { useAuth } from '@/lib/authState'
 import { PLANS, FEATURES, buildCheckoutUrl } from '@/lib/checkout'
 import type { Plan } from '@/lib/checkout'
 import { Check } from 'lucide-react'
@@ -28,6 +29,7 @@ const FAQ_ITEMS = [
 
 export default function PricingPage() {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
+  const { user } = useAuth()
 
   const activePlan = PLANS[billing]
   const otherPlan = billing === 'monthly' ? PLANS.annual : PLANS.monthly
@@ -36,8 +38,7 @@ export default function PricingPage() {
     // Ensure Lemon.js is initialised (idempotent if already called)
     window.createLemonSqueezy?.()
 
-    // TODO: pass real user id/email from auth context once available
-    const url = buildCheckoutUrl(planId)
+    const url = buildCheckoutUrl(planId, user?.id, user?.email)
 
     if (window.LemonSqueezy?.Url?.Open) {
       window.LemonSqueezy.Url.Open(url)
@@ -45,7 +46,7 @@ export default function PricingPage() {
       // Fallback: open in new tab if Lemon.js failed to load
       window.open(url, '_blank')
     }
-  }, [])
+  }, [user])
 
   return (
     <div className="min-h-screen bg-[var(--surface-primary)]">
@@ -61,18 +62,34 @@ export default function PricingPage() {
 
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Link
-                href="/auth/login"
-                className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/auth/register"
-                className="text-sm font-medium px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity"
-              >
-                Get Started
-              </Link>
+              {user ? (
+                <>
+                  <span className="text-sm text-[var(--text-secondary)] hidden sm:inline truncate max-w-[180px]">
+                    {user.email}
+                  </span>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity"
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className="text-sm font-medium px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
