@@ -402,14 +402,27 @@ export default function FrequenciesPage() {
           {/* Detail panel */}
           <AnimatePresence>
             {selectedFreq && (
-              <motion.div
-                ref={detailRef}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                className="hidden lg:block w-[380px] flex-shrink-0 sticky top-20 h-fit p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]"
-              >
+              <>
+                {/* Mobile backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+                  onClick={() => setSelectedFreq(null)}
+                />
+                <motion.div
+                  ref={detailRef}
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 100 }}
+                  transition={{ duration: 0.3 }}
+                  className="fixed inset-x-0 bottom-0 z-40 max-h-[85vh] overflow-y-auto rounded-t-3xl p-6 border-t border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#12121a] shadow-2xl lg:relative lg:inset-auto lg:z-auto lg:max-h-none lg:rounded-2xl lg:rounded-t-2xl lg:border lg:shadow-none lg:w-[380px] lg:flex-shrink-0 lg:sticky lg:top-20 lg:h-fit"
+                >
+                  {/* Mobile drag handle */}
+                  <div className="flex justify-center mb-3 lg:hidden">
+                    <div className="w-10 h-1 rounded-full bg-gray-200 dark:bg-white/10" />
+                  </div>
                 <button onClick={() => setSelectedFreq(null)} className="absolute top-4 right-4 text-gray-300 dark:text-white/15 hover:text-gray-500 dark:hover:text-white/40 transition-colors">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                 </button>
@@ -491,6 +504,7 @@ export default function FrequenciesPage() {
                   Read Full Article →
                 </Link>
               </motion.div>
+              </>
             )}
           </AnimatePresence>
         </div>

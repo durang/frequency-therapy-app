@@ -135,7 +135,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
           }} />
 
           {/* Top bar */}
-          <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-5">
+          <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5">
             <button onClick={handleExit} className="group flex items-center gap-2 text-white/30 hover:text-white/70 transition-colors duration-500" aria-label="Exit">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:rotate-90 transition-transform duration-500">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -169,18 +169,23 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
 
           {/* Breathing guide */}
           {breathingActive && isPlaying && (
-            <div className="fixed bottom-44 left-1/2 -translate-x-1/2 z-20">
-              <BreathingGuide isActive={true} />
+            <div className="fixed bottom-36 sm:bottom-44 left-1/2 -translate-x-1/2 z-20 scale-75 sm:scale-100">
+              <BreathingGuide isActive={true} recommendedConfig={frequency.breathing} />
+              {frequency.breathing?.reason && (
+                <p className="text-center text-[10px] text-white/20 mt-2 max-w-[280px] mx-auto leading-relaxed">
+                  {frequency.breathing.reason}
+                </p>
+              )}
             </div>
           )}
 
           {/* Bottom controls */}
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+          <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3">
             <button onClick={() => setBreathingActive(!breathingActive)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs tracking-widest uppercase transition-all duration-300 ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border text-[10px] sm:text-xs tracking-widest uppercase transition-all duration-300 ${
                 breathingActive ? 'border-cyan-500/20 text-cyan-400/60 bg-cyan-500/5' : 'border-white/[0.06] text-white/20 bg-white/[0.02]'
               }`}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="sm:w-[14px] sm:h-[14px]"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
               Breathe
             </button>
             {breathingActive && (
@@ -193,10 +198,10 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
               </button>
             )}
             <button onClick={() => setDimmed(!dimmed)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs tracking-widest uppercase transition-all duration-300 ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border text-[10px] sm:text-xs tracking-widest uppercase transition-all duration-300 ${
                 dimmed ? 'border-amber-500/20 text-amber-400/60 bg-amber-500/5' : 'border-white/[0.06] text-white/20 bg-white/[0.02]'
               }`}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="sm:w-[14px] sm:h-[14px]"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
               {dimmed ? 'Lights On' : 'Lights Off'}
             </button>
           </div>

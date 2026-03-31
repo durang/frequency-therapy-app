@@ -46,7 +46,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Resonates with DNA molecular structure, activating repair enzymes and enhancing cellular communication pathways',
     contraindications: ['Pregnancy (first trimester)', 'Active cancer treatment', 'Pacemaker users'],
-    dosage: '20-30 minutes daily, preferably morning hours for optimal circadian alignment'
+    dosage: '20-30 minutes daily, preferably morning hours for optimal circadian alignment',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Steady equal breathing maximizes cellular oxygenation for DNA repair enzyme activation' }
   },
   // TIER 1: FREE - Scientific Gateway Frequencies (2 free per D039)
   {
@@ -93,7 +94,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Creates harmonic resonance with cellular structures, activates GABA pathways, reduces amygdala hyperactivity',
     contraindications: ['Severe depression with psychotic features', 'Acute bipolar episodes'],
-    dosage: '20-30 minutes during anxiety episodes, preventive use 2x daily'
+    dosage: '20-30 minutes during anxiety episodes, preventive use 2x daily',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale stimulates the vagus nerve, reducing cortisol and activating parasympathetic response' }
   },
   {
     id: '3',
@@ -139,7 +141,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Entrains cortical gamma oscillations, optimizes neural synchronization, enhances thalamo-cortical binding',
     contraindications: ['Epilepsy', 'Severe ADHD with medication', 'Recent concussion'],
-    dosage: '30-45 minutes during peak performance needs, avoid within 4 hours of sleep'
+    dosage: '30-45 minutes during peak performance needs, avoid within 4 hours of sleep',
+    breathing: { inhale: 4, hold: 4, exhale: 4, reason: 'Box breathing synchronizes autonomic nervous system for sustained cognitive performance' }
   },
   {
     id: '4',
@@ -185,7 +188,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Entrains slow wave sleep, activates glymphatic clearance, stimulates growth hormone release',
     contraindications: ['Sleep apnea without treatment', 'Narcolepsy', 'Recent sleep medication changes'],
-    dosage: '45-60 minutes during sleep hours, use with sleep hygiene protocols'
+    dosage: '45-60 minutes during sleep hours, use with sleep hygiene protocols',
+    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Dr. Weil 4-7-8 technique — extended hold saturates blood with oxygen, long exhale triggers sleep onset' }
   },
   {
     id: '5',
@@ -231,7 +235,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Synchronizes with Earth\'s electromagnetic field, entrains circadian pacemaker, optimizes pineal function',
     contraindications: ['Pacemaker users', 'Severe arrhythmias', 'Electromagnetic sensitivity'],
-    dosage: '25-35 minutes daily, optimal timing 2 hours before natural bedtime'
+    dosage: '25-35 minutes daily, optimal timing 2 hours before natural bedtime',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming extended exhale harmonizes with the natural electromagnetic rhythm of the Earth' }
   },
 
   // TIER 2: BASIC ($19.99) - Advanced Therapeutic Suite
@@ -279,7 +284,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Activates descending pain inhibition, stimulates endorphin release, reduces pro-inflammatory cytokines',
     contraindications: ['Acute abdominal pain', 'Undiagnosed pain conditions', 'Pregnancy complications'],
-    dosage: '30-40 minutes, 2-3 times daily for chronic conditions'
+    dosage: '30-40 minutes, 2-3 times daily for chronic conditions',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Long exhale activates endorphin release and reduces pain perception through vagal tone' }
   },
   {
     id: '7',
@@ -325,7 +331,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Entrains cardiac rhythms, balances sympathetic/parasympathetic activity, optimizes baroreceptor sensitivity',
     contraindications: ['Severe arrhythmias', 'Recent cardiac surgery', 'Unstable angina'],
-    dosage: '15-25 minutes, preferably morning and evening sessions'
+    dosage: '15-25 minutes, preferably morning and evening sessions',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Cardiac coherence ratio — 5s inhale, 3s hold matches heart rate variability optimization' }
   },
   {
     id: '8',
@@ -371,7 +378,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Stimulates dopaminergic neurons, enhances tyrosine hydroxylase activity, optimizes reward pathway function',
     contraindications: ['Bipolar disorder (manic phase)', 'Psychotic disorders', 'Recent stimulant use'],
-    dosage: '20-30 minutes morning use, avoid evening application to prevent sleep disruption'
+    dosage: '20-30 minutes morning use, avoid evening application to prevent sleep disruption',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing ratio with longer inhale increases norepinephrine and dopamine release' }
   },
   {
     id: '9',
@@ -417,7 +425,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Enhances tryptophan hydroxylase activity, increases serotonin synthesis, modulates limbic system activity',
     contraindications: ['Serotonin syndrome risk', 'MAOI medications', 'Recent SSRI changes'],
-    dosage: '25-35 minutes daily, preferably consistent timing for circadian optimization'
+    dosage: '25-35 minutes daily, preferably consistent timing for circadian optimization',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Gentle extended exhale promotes serotonin synthesis through parasympathetic activation' }
   },
   {
     id: '10',
@@ -463,7 +472,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Stimulates GABAergic interneurons, enhances GABA synthesis, promotes cortical inhibition',
     contraindications: ['Severe depression', 'Cognitive impairment', 'GABA medication interactions'],
-    dosage: '15-25 minutes for acute relaxation, evening use for sleep preparation'
+    dosage: '15-25 minutes for acute relaxation, evening use for sleep preparation',
+    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Deep hold and extended exhale maximize GABA receptor activation for deep relaxation' }
   },
 
   // TIER 3: PRO ($39.99) - Advanced Clinical Protocols
@@ -511,7 +521,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Activates BDNF pathways, promotes synaptic plasticity, enhances neural stem cell differentiation',
     contraindications: ['Active seizure disorders', 'Recent neurosurgery', 'Brain tumor history'],
-    dosage: '40-60 minutes, requires medical supervision for neurological conditions'
+    dosage: '40-60 minutes, requires medical supervision for neurological conditions',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Slow steady breathing ensures optimal neural oxygenation for regenerative processes' }
   },
   {
     id: '12',
@@ -557,7 +568,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Theoretical influence on telomerase enzyme complex, DNA methylation patterns, cellular senescence pathways',
     contraindications: ['Cancer history', 'Pregnancy', 'Under 25 years old', 'Growth disorders'],
-    dosage: 'Requires clinical supervision, individualized protocols based on biomarker assessment'
+    dosage: 'Requires clinical supervision, individualized protocols based on biomarker assessment',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Stress-reducing breathing pattern shown to slow telomere shortening in clinical studies' }
   },
   {
     id: '13',
@@ -603,7 +615,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Activates sympathetic immune pathways, enhances cytokine production, optimizes immune cell trafficking',
     contraindications: ['Active autoimmune flares', 'Immunosuppressive therapy', 'Organ transplant recipients'],
-    dosage: '35-45 minutes daily, timing adjusted for circadian immune function optimization'
+    dosage: '35-45 minutes daily, timing adjusted for circadian immune function optimization',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal-phase breathing activates the immune system through balanced autonomic stimulation' }
   },
   {
     id: '14',
@@ -649,7 +662,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Modulates hypothalamic-pituitary axis, influences circadian hormone rhythms, optimizes feedback loops',
     contraindications: ['Hormone-sensitive cancers', 'Pregnancy', 'Recent hormone therapy changes'],
-    dosage: '30-40 minutes, optimal timing varies by individual circadian hormone patterns'
+    dosage: '30-40 minutes, optimal timing varies by individual circadian hormone patterns',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern optimizes hypothalamic-pituitary-adrenal axis regulation' }
   },
   {
     id: '15',
@@ -695,7 +709,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Stimulates mitochondrial membrane potential, enhances electron transport chain efficiency, promotes biogenesis',
     contraindications: ['Mitochondrial DNA disorders', 'Severe cardiac conditions', 'Recent metabolic medication changes'],
-    dosage: '25-35 minutes morning use for sustained energy enhancement'
+    dosage: '25-35 minutes morning use for sustained energy enhancement',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing pattern increases mitochondrial oxygen supply and ATP production' }
   },
 
   // TIER 4: CLINICAL ($79.99) - Medical-Grade Frequencies
@@ -743,7 +758,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Activates Wnt signaling pathways, promotes stem cell self-renewal, enhances differentiation potential',
     contraindications: ['Active malignancy', 'Immunocompromised states', 'Pregnancy'],
-    dosage: 'Clinical supervision required, protocol individualized based on condition severity'
+    dosage: 'Clinical supervision required, protocol individualized based on condition severity',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Deep steady oxygenation supports stem cell mobilization and tissue repair signaling' }
   },
   {
     id: '17',
@@ -789,7 +805,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Potential influence on chromatin remodeling, histone modifications, transcription factor activity',
     contraindications: ['Genetic counseling required', 'Family history assessment needed', 'Age restrictions apply'],
-    dosage: 'Highly individualized protocols based on genetic testing and clinical assessment'
+    dosage: 'Highly individualized protocols based on genetic testing and clinical assessment',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming pattern reduces epigenetic stress markers that suppress beneficial gene expression' }
   },
   {
     id: '18',
@@ -835,7 +852,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Theoretical quantum field interactions, possible influence on microtubule quantum processes',
     contraindications: ['Requires specialized monitoring', 'Research protocol participation only'],
-    dosage: 'Experimental protocols under strict clinical research supervision'
+    dosage: 'Experimental protocols under strict clinical research supervision',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal coherent breathing creates electromagnetic harmony supporting quantum biological processes' }
   },
 
   // Additional specialized frequencies
@@ -881,7 +899,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Stimulates endothelial nitric oxide synthase, promotes vasodilation, enhances blood flow',
     contraindications: ['Bleeding disorders', 'Recent vascular surgery', 'Severe hypotension'],
-    dosage: '20-30 minutes daily, optimal timing with physical activity'
+    dosage: '20-30 minutes daily, optimal timing with physical activity',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Longer inhale phase promotes vasodilation and increases circulatory oxygen delivery' }
   },
   {
     id: '20',
@@ -925,7 +944,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Activates sympathetic nervous system, enhances thyroid function, promotes lipolysis',
     contraindications: ['Hyperthyroidism', 'Eating disorders', 'Cardiovascular instability'],
-    dosage: '15-25 minutes morning use, combine with lifestyle interventions'
+    dosage: '15-25 minutes morning use, combine with lifestyle interventions',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing inhale-dominant pattern increases metabolic rate through sympathetic activation' }
   },
   // NEW: Star frequencies based on global research validation
   {
@@ -962,7 +982,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'High-frequency electromagnetic stimulation creates resonant interaction with cellular structures. Research suggests specific frequencies can selectively affect cellular proliferation rates. The 10,000 Hz range generates harmonic sidebands that interact with biological tissue at multiple frequency levels simultaneously.',
     contraindications: ['Pacemaker or implanted electrical devices', 'Pregnancy', 'Active seizure disorders', 'Do not replace prescribed medical treatment'],
-    dosage: '40 minutes per session, 2-3 times daily for optimal results. Minimum 25 consecutive days for protocol completion. Listen at comfortable volume with headphones.'
+    dosage: '40 minutes per session, 2-3 times daily for optimal results. Minimum 25 consecutive days for protocol completion. Listen at comfortable volume with headphones.',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Balanced breathing creates whole-body coherence for multi-system healing support' }
   },
   {
     id: '22',
@@ -997,7 +1018,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'Sound frequencies at 741 Hz create vibrational patterns that influence cellular water structure and metabolic processes. The frequency is thought to stimulate the body\'s natural detoxification pathways and support elimination of environmental toxins through enhanced cellular communication.',
     contraindications: ['Severe kidney disease', 'Active dialysis treatment', 'Pregnancy (first trimester)'],
-    dosage: '20-30 minutes per session, 1-2 times daily. Best used in morning on empty stomach. Combine with adequate hydration for optimal detox support.'
+    dosage: '20-30 minutes per session, 1-2 times daily. Best used in morning on empty stomach. Combine with adequate hydration for optimal detox support.',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale promotes lymphatic drainage and toxin elimination through diaphragmatic movement' }
   },
   {
     id: '23',
@@ -1032,7 +1054,8 @@ export const frequencies: Frequency[] = [
     ],
     mechanism: 'The 285 Hz frequency stimulates cellular repair mechanisms through resonant interaction with tissue structures. Research suggests this frequency range enhances ATP production and protein synthesis at the cellular level, supporting the body\'s natural regenerative processes.',
     contraindications: ['Active bleeding disorders', 'Open wounds (use adjacent, not directly on)', 'Pregnancy'],
-    dosage: '20-25 minutes per session, 2 times daily. Apply during rest periods for maximum cellular repair. Combine with adequate nutrition and sleep.'
+    dosage: '20-25 minutes per session, 2 times daily. Apply during rest periods for maximum cellular repair. Combine with adequate nutrition and sleep.',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern maximizes growth hormone release during tissue repair' }
   }
 ]
 

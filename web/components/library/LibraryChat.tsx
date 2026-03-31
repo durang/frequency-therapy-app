@@ -74,6 +74,18 @@ function renderMarkdown(text: string) {
       continue
     }
 
+    // Headings: ## or ### — strip the hashes, render as styled text
+    const headingMatch = line.match(/^#{1,4}\s+(.+)/)
+    if (headingMatch) {
+      flushList()
+      elements.push(
+        <p key={`h-${i}`} className="text-sm font-semibold text-gray-800 dark:text-white/70 mt-3 mb-1">
+          {headingMatch[1].replace(/[#]/g, '').trim()}
+        </p>
+      )
+      continue
+    }
+
     // Regular text
     flushList()
     if (line.trim()) {

@@ -45,7 +45,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
   const currentSection = currentIndex >= 0 ? sections[currentIndex] : null
 
   return (
-    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-6 pt-20 pb-60 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
+    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-6 pt-20 pb-40 sm:pb-60 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
       {/* Frequency title — always visible, moves up when content appears */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -58,7 +58,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
           {hzValue} Hz
         </p>
         <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-white/90 leading-none"
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-white/90 leading-none"
           style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
         >
           {frequencyName}
@@ -72,7 +72,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
       </motion.div>
 
       {/* Current section — only ONE visible at a time, fades in/out */}
-      <div className="max-w-xl mx-auto text-center h-32 flex items-center justify-center">
+      <div className="max-w-xl mx-auto text-center min-h-[6rem] sm:h-32 flex items-center justify-center">
         <AnimatePresence mode="wait">
           {currentSection && (
             <motion.div
@@ -89,7 +89,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
                   {currentSection.label}
                 </p>
               )}
-              <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light"
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-white/50 font-light"
                  style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
                 {currentSection.text}
               </p>

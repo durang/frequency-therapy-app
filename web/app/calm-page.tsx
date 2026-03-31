@@ -262,7 +262,7 @@ function Features() {
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6">
           {features.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-50px' }} transition={{ delay: i * 0.15, duration: 0.6 }}
+            <motion.div key={f.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 }}
               className="group p-8 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08] transition-all duration-500">
               <div className="mb-5">{f.icon}</div>
               <h3 className="text-lg font-medium mb-3 text-gray-900 dark:text-white/90">{f.title}</h3>

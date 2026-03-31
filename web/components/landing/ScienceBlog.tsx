@@ -72,9 +72,23 @@ export default function ScienceBlog() {
         const track = trackRef.current!
         const container = containerRef.current!
         const scrollWidth = track.scrollWidth - container.offsetWidth
+        const isMobile = window.innerWidth < 768
 
         ctx = gsap.context(() => {
-          // Pin the section and scroll cards horizontally
+          if (isMobile) {
+            // Mobile: just fade cards in, no pin/horizontal scroll (native scroll handles it)
+            gsap.fromTo(
+              track.querySelectorAll('.science-card'),
+              { opacity: 0, y: 30 },
+              {
+                opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out',
+                scrollTrigger: { trigger: container, start: 'top 85%', once: true },
+              }
+            )
+            return
+          }
+
+          // Desktop: pin and scroll horizontally
           gsap.to(track, {
             x: -scrollWidth,
             ease: 'none',
@@ -154,13 +168,12 @@ export default function ScienceBlog() {
         </div>
       </div>
 
-      {/* Scrollable card track — GSAP pins this and scrolls horizontally */}
-      <div ref={containerRef} className="relative h-[80vh] min-h-[600px]">
+      {/* Scrollable card track — GSAP pins this on desktop, native scroll on mobile */}
+      <div ref={containerRef} className="relative md:h-[80vh] md:min-h-[600px]">
         <div
           ref={trackRef}
-          className={`flex gap-6 pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))] pr-[40vw] h-full items-center ${
-            !gsapLoaded ? 'overflow-x-auto snap-x snap-mandatory pb-4' : ''
-          }`}
+          className={`flex gap-6 pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))] pr-8 md:pr-[40vw] items-center overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-4 md:pb-0 h-full`}
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {articles.map((freq, i) => (
             <Link

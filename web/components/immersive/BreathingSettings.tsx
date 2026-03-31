@@ -46,7 +46,7 @@ export default function BreathingSettings({ isOpen, onClose, onConfigChange }: B
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-80 bg-[#12121a]/95 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-2xl"
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-[calc(100vw-2rem)] max-w-80 bg-[#12121a]/95 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 sm:p-6 shadow-2xl"
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-5">

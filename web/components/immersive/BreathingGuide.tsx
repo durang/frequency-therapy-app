@@ -47,20 +47,27 @@ function saveConfig(config: BreathingConfig) {
 
 interface BreathingGuideProps {
   isActive: boolean
+  recommendedConfig?: BreathingConfig
 }
 
-export default function BreathingGuide({ isActive }: BreathingGuideProps) {
-  const [config, setConfig] = useState<BreathingConfig>(DEFAULT_CONFIG)
+export default function BreathingGuide({ isActive, recommendedConfig }: BreathingGuideProps) {
+  const [config, setConfig] = useState<BreathingConfig>(recommendedConfig || DEFAULT_CONFIG)
   const [phase, setPhase] = useState<Phase>('inhale')
   const [progress, setProgress] = useState(0) // 0..1 within current phase
   const [cycleCount, setCycleCount] = useState(0)
   const animRef = useRef<number>(0)
   const phaseTimeRef = useRef(0)
 
-  // Load config from localStorage on mount
+  // Load config: use recommended if no user override exists in localStorage
   useEffect(() => {
-    setConfig(loadConfig())
-  }, [])
+    const stored = loadConfig()
+    const hasUserOverride = typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)
+    if (hasUserOverride) {
+      setConfig(stored)
+    } else if (recommendedConfig) {
+      setConfig(recommendedConfig)
+    }
+  }, [recommendedConfig])
 
   // Main animation loop
   useEffect(() => {

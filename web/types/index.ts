@@ -69,6 +69,12 @@ export interface Frequency {
   mechanism?: string
   contraindications?: string[]
   dosage?: string
+  breathing?: {
+    inhale: number
+    hold: number
+    exhale: number
+    reason: string
+  }
 }
 
 export type FrequencyCategory = 
