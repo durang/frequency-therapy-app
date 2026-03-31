@@ -84,10 +84,14 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
     return audioManager.subscribe(state => setIsPlaying(state.isPlaying))
   }, [])
 
-  // CRITICAL: Stop audio and save real duration when component unmounts
+  // CRITICAL: Stop audio and save real duration when component unmounts unexpectedly
+  // (e.g. browser back button — handleExit already does graceful fade for normal exit)
   useEffect(() => {
     return () => {
-      audioManager?.stop()
+      // Only hard-stop if audio is still playing (handleExit wasn't called)
+      if (audioManager?.state.isPlaying) {
+        audioManager.fadeOutAndStop(0.5)
+      }
       saveRealDuration()
     }
   }, [saveRealDuration])
@@ -102,9 +106,13 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
 
   const handleExit = useCallback(() => {
     setIsExiting(true)
-    audioManager?.stop()
     saveRealDuration()
-    setTimeout(onExit, 800)
+    // Graceful 2s audio fade-out, then navigate away
+    if (audioManager) {
+      audioManager.fadeOutAndStop(2).then(() => onExit())
+    } else {
+      setTimeout(onExit, 800)
+    }
   }, [onExit, saveRealDuration])
 
   // Escape key
