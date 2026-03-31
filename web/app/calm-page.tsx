@@ -132,14 +132,16 @@ function Hero() {
   )
 }
 
-/* ─── Features with proper icons ──────────────────────────── */
+/* ─── Features with frequency-wave icons ──────────────────── */
 function Features() {
   const features = [
     {
       icon: (
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-500/10 dark:to-cyan-500/5 border border-cyan-100 dark:border-cyan-500/10 flex items-center justify-center">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-600 dark:text-cyan-400">
-            <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+          {/* Frequency wave — smooth sine wave */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-cyan-600 dark:text-cyan-400">
+            <path d="M2 12c1-3 2.5-6 4.5-6s3.5 6 5.5 6 3.5-6 5.5-6 3.5 3 4.5 6" />
+            <circle cx="12" cy="12" r="1.5" fill="currentColor" opacity="0.3" />
           </svg>
         </div>
       ),
@@ -149,8 +151,9 @@ function Features() {
     {
       icon: (
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-500/10 dark:to-teal-500/5 border border-teal-100 dark:border-teal-500/10 flex items-center justify-center">
+          {/* Breathing — expanding concentric circles */}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-600 dark:text-teal-400">
-            <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+            <circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="6" opacity="0.5" /><circle cx="12" cy="12" r="9" opacity="0.25" />
           </svg>
         </div>
       ),
@@ -160,8 +163,9 @@ function Features() {
     {
       icon: (
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-500/10 dark:to-indigo-500/5 border border-indigo-100 dark:border-indigo-500/10 flex items-center justify-center">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-indigo-600 dark:text-indigo-400">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          {/* Clinical heartbeat — ECG/EKG line */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600 dark:text-indigo-400">
+            <path d="M2 12h4l2-4 3 8 2-6 2 4h7" />
           </svg>
         </div>
       ),
