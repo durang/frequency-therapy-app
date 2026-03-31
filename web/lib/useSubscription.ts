@@ -87,6 +87,7 @@ export function useSubscription(): UseSubscriptionResult {
     }
   }, [fetchSubscription])
 
+  // Admin with clinical tier from auth store bypasses subscription check
   const isActive = subscription?.status === 'active'
 
   return { subscription, isActive, isLoading, error }

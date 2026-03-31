@@ -35,8 +35,9 @@ const tierConfig = {
 
 export default function FrequenciesPage() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isSuperadmin } = useAuth()
   const { isActive: hasSubscription, isLoading: subLoading } = useSubscription()
+  const hasFullAccess = hasSubscription || isSuperadmin || user?.subscription_tier === 'clinical'
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [selectedFreq, setSelectedFreq] = useState<Frequency | null>(null)
@@ -344,7 +345,7 @@ export default function FrequenciesPage() {
               const tier = tierConfig[freq.tier]
               const isSelected = selectedFreq?.id === freq.id
               const matchedFields = matchedFieldsMap.get(freq.id) || []
-              const isLocked = freq.tier !== 'free' && !hasSubscription && !subLoading
+              const isLocked = freq.tier !== 'free' && !hasFullAccess && !subLoading
 
               return (
                 <motion.button
@@ -466,7 +467,7 @@ export default function FrequenciesPage() {
                 )}
 
                 {(() => {
-                  const detailLocked = selectedFreq.tier !== 'free' && !hasSubscription && !subLoading
+                  const detailLocked = selectedFreq.tier !== 'free' && !hasFullAccess && !subLoading
                   return detailLocked ? (
                     <Link
                       href="/pricing?from=frequencies"
