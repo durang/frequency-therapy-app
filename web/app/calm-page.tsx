@@ -28,11 +28,11 @@ export default function LandingPage() {
       <Hero />
       <PainPoints />
       <Features />
+      <ScienceBlog />
       <FrequencyPreview />
       <Testimonials />
       <Breathing />
       <ScienceProof />
-      <ScienceBlog />
       <PricingSection />
       <FinalCTA />
       <Footer />
