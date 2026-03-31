@@ -93,7 +93,7 @@ function ApiKeyMissingCard() {
         file:
       </p>
       <div className="w-full rounded-lg bg-black/30 border border-white/10 px-3 py-2 text-left text-xs font-mono text-white/60">
-        OPENAI_API_KEY=sk-...
+        DEEPSEEK_API_KEY=sk-...
       </div>
       <p className="mt-3 text-[11px] text-white/30">
         This feature is optional — the panel works fine without it.
@@ -124,6 +124,7 @@ export function ChatSidebar({ isMobile = false, onClose }: ChatSidebarProps) {
     if (
       error &&
       (error.message?.includes('API key') ||
+        error.message?.includes('DEEPSEEK') ||
         error.message?.includes('OPENAI') ||
         error.message?.includes('503'))
     ) {

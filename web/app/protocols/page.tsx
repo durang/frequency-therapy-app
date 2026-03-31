@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { protocols } from '@/lib/protocols'
 import { useAuth } from '@/lib/authState'
+import { ProtocolChat } from '@/components/library/ProtocolChat'
+import { ProtocolTimeline } from '@/components/library/ProtocolTimeline'
 
 export default function ProtocolsPage() {
   const { user } = useAuth()
@@ -24,6 +26,7 @@ export default function ProtocolsPage() {
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/frequencies" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Frequencies</Link>
+            <Link href="/pricing" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link>
             <ThemeToggle />
             {user ? (
               <Link href="/dashboard" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
@@ -35,7 +38,7 @@ export default function ProtocolsPage() {
       </nav>
 
       {/* Header */}
-      <div className="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center">
+      <div className="max-w-5xl mx-auto px-6 pt-20 pb-8 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <p className="text-xs tracking-[0.25em] uppercase text-cyan-600 dark:text-cyan-400/60 mb-4 font-medium">25-day programs</p>
           <h1 className="text-4xl md:text-6xl font-light tracking-tight mb-4" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
@@ -47,11 +50,18 @@ export default function ProtocolsPage() {
         </motion.div>
       </div>
 
+      {/* ─── AI Protocol Advisor ─────────────────────────────────── */}
+      <div className="max-w-3xl mx-auto px-6 mb-12">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
+          <ProtocolChat />
+        </motion.div>
+      </div>
+
       {/* How it works */}
       <div className="max-w-4xl mx-auto px-6 mb-16">
         <div className="grid grid-cols-3 gap-4">
           {[
-            { num: '1', label: 'Choose your protocol', desc: 'Select based on your condition or goal' },
+            { num: '1', label: 'Choose your protocol', desc: 'Ask the AI or browse below' },
             { num: '2', label: 'Follow daily sessions', desc: '2-3 sessions per day, 15-40 minutes each' },
             { num: '3', label: 'Complete 25 days', desc: 'Consistency is the key to results' },
           ].map((step, i) => (
@@ -65,8 +75,29 @@ export default function ProtocolsPage() {
         </div>
       </div>
 
+      {/* ─── 25-Day Journey Timeline ─────────────────────────── */}
+      <div className="max-w-3xl mx-auto px-6 mb-20">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
+          <div className="text-center mb-8">
+            <p className="text-xs tracking-[0.25em] uppercase text-cyan-600 dark:text-cyan-400/60 mb-2 font-medium">The Science of Consistency</p>
+            <h2 className="text-2xl md:text-3xl font-light" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+              Your 25-Day Journey
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-white/30 mt-2 max-w-md mx-auto">
+              Every protocol follows this proven progression. Your brain needs time to adapt and respond — here&apos;s what happens at each stage.
+            </p>
+          </div>
+          <div className="p-8 rounded-3xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]">
+            <ProtocolTimeline />
+          </div>
+        </motion.div>
+      </div>
+
       {/* Protocols grid */}
       <div className="max-w-5xl mx-auto px-6 pb-24">
+        <h2 className="text-xl font-light text-gray-900 dark:text-white/60 mb-6 text-center" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          All Protocols
+        </h2>
         <div className="grid md:grid-cols-2 gap-5">
           {protocols.map((protocol, i) => (
             <motion.div key={protocol.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i, duration: 0.5 }}>
@@ -91,6 +122,16 @@ export default function ProtocolsPage() {
                 </h2>
 
                 <p className="text-sm text-gray-500 dark:text-white/30 leading-relaxed mb-4 line-clamp-2">{protocol.description}</p>
+
+                {/* Expected outcomes preview */}
+                <div className="space-y-1 mb-4">
+                  {protocol.expectedOutcomes.slice(0, 2).map((outcome, j) => (
+                    <div key={j} className="flex items-start gap-1.5">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-emerald-500 mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+                      <span className="text-xs text-gray-400 dark:text-white/25">{outcome}</span>
+                    </div>
+                  ))}
+                </div>
 
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-gray-400 dark:text-white/20">{protocol.condition.split(',')[0]}</p>

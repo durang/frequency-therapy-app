@@ -4,19 +4,28 @@ import {
   stepCountIs,
   type UIMessage,
 } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { createOpenAI } from '@ai-sdk/openai'
 import { frequencyTools } from '@/lib/chatTools'
+import { protocolTools } from '@/lib/protocolTools'
 
 export const maxDuration = 30
 
-const SYSTEM_PROMPT = `You are a friendly, knowledgeable frequency therapy assistant embedded in the FreqTherapy panel.
-You help users discover and activate healing frequencies for their wellness goals.
+// DeepSeek V3 via OpenAI-compatible endpoint
+const deepseek = createOpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY || '',
+  baseURL: 'https://api.deepseek.com/v1',
+})
+
+const SYSTEM_PROMPT = `You are a friendly, knowledgeable frequency therapy advisor embedded in FreqTherapy.
+You help users discover frequencies and protocols for their wellness goals.
 
 CAPABILITIES:
 - Recommend frequencies based on user goals (relaxation, focus, sleep, pain relief, energy, healing, etc.)
+- Recommend 25-day healing protocols for structured long-term goals
 - Activate specific frequencies on the 4-channel panel
 - Adjust panel settings (volume, playback control)
-- Explain the science and benefits behind each frequency
+- Explain the science and benefits behind each frequency and protocol
+- Provide links to frequency articles and protocol pages
 
 AVAILABLE FREQUENCY CATEGORIES:
 - DNA Repair (528 Hz) — cellular healing and genetic optimization
@@ -40,44 +49,70 @@ AVAILABLE FREQUENCY CATEGORIES:
 - Vascular Health (62 Hz) — circulation improvement
 - Metabolism (95 Hz) — metabolic rate and weight management
 
+AVAILABLE PROTOCOLS (25-day structured programs):
+- Deep Sleep Protocol — delta + Schumann frequencies for insomnia and sleep quality
+- Anxiety Relief Protocol — 432 Hz + 528 Hz for anxiety and stress reduction
+- Peak Focus Protocol — 40 Hz gamma stimulation for concentration and cognitive enhancement
+- Pain & Recovery Protocol — solfeggio frequencies (174 Hz, 285 Hz) for pain and tissue repair
+- Detox & Cleansing Protocol — 741 Hz + 10000 Hz for cellular detoxification
+- Universal Healing Protocol — 10000 Hz + 528 Hz comprehensive healing program
+
 RULES:
-1. ALWAYS use the recommend_frequency tool when users ask for suggestions — never guess frequencies from memory.
-2. The panel supports up to 4 simultaneous channels. Never recommend more than 4 frequencies at once.
-3. When a user confirms they want a frequency, use activate_frequency to load it onto the panel.
-4. Be concise and friendly. Give brief explanations unless the user asks for details.
-5. You understand both English and Spanish (and other languages). Respond in the language the user uses.
-6. If the user says something vague like "I feel stressed" or "quiero relajarme", interpret it as a frequency recommendation request.
-7. When adjusting volume or playback, use the adjust_panel tool.
-8. Some frequencies require higher subscription tiers (free, basic, pro, clinical). Mention the tier if relevant.
+1. ALWAYS use the recommend_frequency tool when users ask for frequency suggestions — never guess from memory.
+2. ALWAYS use the recommend_protocol tool when users ask about programs, protocols, or long-term goals.
+3. The panel supports up to 4 simultaneous channels. Never recommend more than 4 frequencies at once.
+4. When a user confirms they want a frequency, use activate_frequency to load it onto the panel.
+5. Be concise and friendly. Give brief explanations unless the user asks for details.
+6. You understand both English and Spanish (and other languages). Respond in the language the user uses.
+7. If the user says something vague like "I feel stressed" or "quiero relajarme", interpret it as a recommendation request.
+8. When recommending, explain WHY each frequency/protocol is right for their specific situation.
+9. Ask follow-up questions to personalize recommendations: "Is this acute or chronic?", "When does it happen most?"
+10. Suggest session duration and time of day based on the frequency's recommended use.
+11. When recommending protocols, link to the protocol page: /protocols/[slug]
+12. When recommending frequencies, link to the frequency article: /frequencies/[slug]
+13. Remind users that frequency therapy complements (not replaces) medical treatment.
+14. If the user has session history (provided in context), reference their past experiences to make better recommendations.
+15. When protocols are relevant, suggest them ALONGSIDE individual frequencies — give the user both options.
 
 PERSONALITY:
-- Warm, encouraging, and knowledgeable
+- Warm, encouraging, and genuinely knowledgeable
 - Use simple language — avoid jargon unless explaining science
-- Suggest session durations based on the frequency's recommended time
-- Remind users that frequency therapy complements (not replaces) medical treatment`
+- Be specific with recommendations — say WHY this frequency works for their case
+- Ask clarifying questions before recommending (acute vs chronic, time of day, etc.)
+- When citing science, keep it brief: "UCLA study: 73% cortisol reduction" not a paragraph
+- Suggest combinations and protocols, not just single frequencies`
 
 export async function POST(req: Request) {
-  // Check for API key before attempting any OpenAI calls
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('[chat-api] OPENAI_API_KEY is not configured')
+  if (!process.env.DEEPSEEK_API_KEY) {
+    console.error('[chat-api] DEEPSEEK_API_KEY is not configured')
     return Response.json(
-      { error: 'OPENAI_API_KEY not configured' },
+      { error: 'DEEPSEEK_API_KEY not configured' },
       { status: 503 }
     )
   }
 
   try {
-    const { messages }: { messages: UIMessage[] } = await req.json()
+    const body = await req.json()
+    const { messages, userProfile }: { messages: UIMessage[]; userProfile?: string } = body
 
     console.log(
       `[chat-api] Received ${messages.length} messages, last role: ${messages[messages.length - 1]?.role}`
     )
 
+    // Build system prompt with optional user profile context
+    let systemPrompt = SYSTEM_PROMPT
+    if (userProfile) {
+      systemPrompt += `\n\n--- USER CONTEXT ---\n${userProfile}\n--- END USER CONTEXT ---\nUse this context to personalize recommendations. Reference their past sessions when relevant.`
+    }
+
     const result = streamText({
-      model: openai('gpt-4o-mini'),
-      system: SYSTEM_PROMPT,
+      model: deepseek('deepseek-chat'),
+      system: systemPrompt,
       messages: await convertToModelMessages(messages),
-      tools: frequencyTools,
+      tools: {
+        ...frequencyTools,
+        ...protocolTools,
+      },
       stopWhen: stepCountIs(3),
     })
 
@@ -85,7 +120,6 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('[chat-api] Error processing chat request:', error)
 
-    // Handle JSON parse errors (malformed request body)
     if (error instanceof SyntaxError) {
       return Response.json(
         { error: 'Invalid request body' },

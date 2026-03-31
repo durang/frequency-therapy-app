@@ -10,12 +10,17 @@ import { useSubscription } from '@/lib/useSubscription'
 import { frequencies } from '@/lib/frequencies'
 import { protocols } from '@/lib/protocols'
 import { getAllProgress, ProtocolProgress } from '@/lib/protocolProgress'
+import { useSessionHistory } from '@/lib/sessionHistory'
+import { ProtocolTimeline } from '@/components/library/ProtocolTimeline'
 
 export default function DashboardPage() {
   const { user, initializing, isSuperadmin, signOut } = useAuth()
   const { subscription, isActive, isLoading } = useSubscription()
   const router = useRouter()
   const [activeProtocols, setActiveProtocols] = useState<ProtocolProgress[]>([])
+  const { getInsights, getRecentSessions } = useSessionHistory()
+  const insights = getInsights()
+  const recentSessions = getRecentSessions(5)
 
   useEffect(() => {
     if (!initializing && !user) router.push('/auth/login?from=dashboard')
@@ -139,15 +144,151 @@ export default function DashboardPage() {
             </div>
             <div className="p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] text-center">
               <p className="text-2xl font-light" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                {activeProtocols.reduce((sum, p) => sum + p.totalMinutes, 0)}
+                {Math.max(insights.totalMinutes, activeProtocols.reduce((sum, p) => sum + p.totalMinutes, 0))}
               </p>
               <p className="text-[10px] text-gray-400 dark:text-white/20 mt-1">Minutes</p>
             </div>
             <div className="p-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] text-center">
               <p className="text-2xl font-light" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                {Math.max(...activeProtocols.map(p => p.streak), 0)}
+                {Math.max(insights.streakDays, ...activeProtocols.map(p => p.streak), 0)}
               </p>
-              <p className="text-[10px] text-gray-400 dark:text-white/20 mt-1">Best Streak</p>
+              <p className="text-[10px] text-gray-400 dark:text-white/20 mt-1">
+                {insights.streakDays > 0 ? '🔥 Streak' : 'Best Streak'}
+              </p>
+            </div>
+          </div>
+
+          {/* ─── SELLING FEATURE 1: Wellness Journey Visualization ─── */}
+          {activeProtocols.length > 0 && (
+            <div className="mb-10">
+              <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Your Healing Journey</p>
+              {activeProtocols.map(prog => {
+                const proto = protocols.find(p => p.id === prog.protocolId)
+                if (!proto) return null
+                return (
+                  <div key={prog.protocolId} className="p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02] mb-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-2xl">{proto.icon}</span>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-900 dark:text-white/70">{proto.name}</h3>
+                        <p className="text-xs text-gray-400 dark:text-white/25">
+                          {prog.completed ? '✅ Completed!' : `Day ${prog.currentDay} of ${proto.duration_days}`}
+                        </p>
+                      </div>
+                    </div>
+                    <ProtocolTimeline currentDay={prog.currentDay} />
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-[10px] text-gray-400 dark:text-white/20">
+                        <span>🔥 {prog.streak} day streak</span>
+                        <span>{prog.completedSessions.length} sessions</span>
+                        <span>{prog.totalMinutes} min total</span>
+                      </div>
+                      <Link href={`/protocols/${proto.slug}`}
+                        className="text-xs text-cyan-600 dark:text-cyan-400/60 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors">
+                        Continue →
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* ─── SELLING FEATURE 2: Personal Frequency Insights ──── */}
+          {insights.totalSessions > 0 && (
+            <div className="mb-10">
+              <p className="text-xs text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Your Frequency Insights</p>
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Most Effective */}
+                {insights.mostEffectiveFrequency && (
+                  <div className="p-5 rounded-2xl border border-emerald-200 dark:border-emerald-500/15 bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-500/[0.04]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-400/10 flex items-center justify-center">
+                        <span className="text-sm">✨</span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400/60 uppercase tracking-wider">Your Best Frequency</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white/70">{insights.mostEffectiveFrequency.frequencyName}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-white/30">
+                      <span>{insights.mostEffectiveFrequency.frequencyHz} Hz</span>
+                      <span>·</span>
+                      <span>{insights.mostEffectiveFrequency.avgRating.toFixed(1)}⭐ avg</span>
+                      <span>·</span>
+                      <span>{insights.mostEffectiveFrequency.totalSessions} sessions</span>
+                    </div>
+                    {insights.mostEffectiveFrequency.helpedWith.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {insights.mostEffectiveFrequency.helpedWith.map(h => (
+                          <span key={h} className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400/60">{h}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Improvement Areas */}
+                {insights.improvementAreas.length > 0 && (
+                  <div className="p-5 rounded-2xl border border-cyan-200 dark:border-cyan-500/15 bg-gradient-to-br from-cyan-50 to-transparent dark:from-cyan-500/[0.04]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-400/10 flex items-center justify-center">
+                        <span className="text-sm">📊</span>
+                      </div>
+                      <p className="text-[10px] text-cyan-600 dark:text-cyan-400/60 uppercase tracking-wider">Your Focus Areas</p>
+                    </div>
+                    <div className="space-y-2">
+                      {insights.improvementAreas.slice(0, 4).map(area => (
+                        <div key={area.area} className="flex items-center justify-between">
+                          <span className="text-xs text-gray-700 dark:text-white/50 capitalize">{area.area}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-20 h-1.5 bg-gray-100 dark:bg-white/[0.06] rounded-full overflow-hidden">
+                              <div className="h-full bg-cyan-400 rounded-full" style={{ width: `${(area.avgRating / 5) * 100}%` }} />
+                            </div>
+                            <span className="text-[10px] text-gray-400 dark:text-white/20 tabular-nums w-8">{area.avgRating}⭐</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ─── SELLING FEATURE 3: AI-Powered Next Session ──────── */}
+          <div className="mb-10 p-6 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-gradient-to-br from-white to-cyan-50/30 dark:from-white/[0.02] dark:to-cyan-500/[0.02] overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-100/50 to-transparent dark:from-cyan-400/5 rounded-bl-[80px]" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                    <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26z" />
+                  </svg>
+                </div>
+                <p className="text-xs text-cyan-600 dark:text-cyan-400/60 uppercase tracking-wider font-medium">AI Recommendation</p>
+              </div>
+              <h3 className="text-lg font-light text-gray-900 dark:text-white/80 mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                {new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening'} — ready for your session?
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-white/35 mb-4">
+                {insights.totalSessions > 0
+                  ? `Based on your ${insights.totalSessions} sessions, here's what I suggest for ${new Date().getHours() < 12 ? 'this morning' : new Date().getHours() < 17 ? 'this afternoon' : 'tonight'}.`
+                  : 'Tell me how you feel and I\'ll find the perfect frequency for you.'}
+              </p>
+              <div className="flex items-center gap-3">
+                <Link href="/frequencies"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26z" />
+                  </svg>
+                  Ask AI
+                </Link>
+                <Link href="/frequencies"
+                  className="text-xs text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-white/50 transition-colors">
+                  Browse frequencies →
+                </Link>
+              </div>
             </div>
           </div>
 

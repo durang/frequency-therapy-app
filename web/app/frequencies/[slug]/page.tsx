@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { frequencies } from '@/lib/frequencies'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { BreakthroughStory } from '@/components/library/BreakthroughStory'
 
 export default function FrequencyArticlePage() {
   const params = useParams()
@@ -283,6 +284,14 @@ export default function FrequencyArticlePage() {
             </motion.section>
           )}
         </div>
+
+        {/* ─── Breakthrough Story ─── */}
+        <BreakthroughStory
+          frequencySlug={freq.slug}
+          frequencyName={freq.name}
+          frequencyHz={freq.hz_value}
+          frequencyId={freq.id}
+        />
 
         {/* ─── Final CTA ─── */}
         <div className="pb-16">
