@@ -1,7 +1,7 @@
 import { Frequency } from '@/types'
 
 export const frequencies: Frequency[] = [
-  // TIER 1: FREE - Scientific Gateway Frequencies
+  // DNA Repair — moved to basic tier per D039
   {
     id: '1',
     name: 'DNA Repair',
@@ -26,7 +26,7 @@ export const frequencies: Frequency[] = [
       'Immune system boost',
       'Chronic fatigue recovery'
     ],
-    tier: 'free',
+    tier: 'basic',
     duration_minutes: 20,
     research_citations: [
       'Horowitz, L. G. (2024). DNA Resonance and 528 Hz: Clinical Evidence. Nature Biotechnology, 42(3), 234-241.',
@@ -48,6 +48,7 @@ export const frequencies: Frequency[] = [
     contraindications: ['Pregnancy (first trimester)', 'Active cancer treatment', 'Pacemaker users'],
     dosage: '20-30 minutes daily, preferably morning hours for optimal circadian alignment'
   },
+  // TIER 1: FREE - Scientific Gateway Frequencies (2 free per D039)
   {
     id: '2',
     name: 'Anxiety Liberation',
@@ -164,7 +165,7 @@ export const frequencies: Frequency[] = [
       'Brain health maintenance',
       'Aging-related sleep decline'
     ],
-    tier: 'free',
+    tier: 'basic',
     duration_minutes: 60,
     research_citations: [
       'Johns Hopkins Sleep Center (2024). Delta Wave Enhancement and Sleep Quality. Sleep Medicine Reviews, 73, 101-118.',
@@ -210,7 +211,7 @@ export const frequencies: Frequency[] = [
       'EMF protection',
       'Natural wellness'
     ],
-    tier: 'free',
+    tier: 'basic',
     duration_minutes: 30,
     research_citations: [
       'NASA Ames Research (2023). Schumann Resonance and Human Circadian Biology. Space Medicine Research, 45(3), 178-194.',

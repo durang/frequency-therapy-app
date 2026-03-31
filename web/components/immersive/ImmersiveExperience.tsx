@@ -126,7 +126,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
         >
           <AmbientCanvas frequency={frequency.hz_value} isPlaying={isPlaying} />
 
-          <FreemiumTimer isActive={isFreeUser && isPlaying} limitSeconds={300} onExpired={stopAudio} />
+          <FreemiumTimer isActive={isFreeUser && isPlaying} limitSeconds={300} onExpired={() => audioManager?.fadeOutAndStop(2)} />
 
           {/* Noise texture */}
           <div className="fixed inset-0 pointer-events-none opacity-[0.03]" style={{

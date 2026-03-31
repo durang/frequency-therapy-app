@@ -122,6 +122,39 @@ class GlobalAudioManager {
     this.notify()
     console.log('🔇 Audio: Stopped')
   }
+
+  /** Gracefully fade audio to silence over `durationSeconds` (default 2s), then fully stop. */
+  fadeOutAndStop(durationSeconds = 2): Promise<void> {
+    return new Promise(resolve => {
+      const ctx = this.ctx
+      const gain = this.gain
+      const hGain = this.harmonicGain
+
+      if (!gain || !ctx) {
+        this.stop()
+        resolve()
+        return
+      }
+
+      try {
+        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + durationSeconds)
+        if (hGain) {
+          hGain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + durationSeconds)
+        }
+      } catch {
+        this.stop()
+        resolve()
+        return
+      }
+
+      console.log(`🔉 Audio: Fading out over ${durationSeconds}s`)
+
+      setTimeout(() => {
+        this.stop()
+        resolve()
+      }, durationSeconds * 1000 + 100)
+    })
+  }
 }
 
 // Singleton
