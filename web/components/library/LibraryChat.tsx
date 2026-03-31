@@ -27,6 +27,76 @@ const CHAT_SUGGESTIONS = [
   { emoji: '🧬', label: 'Healing', prompt: 'Quiero acelerar mi recuperación y sanación' },
 ]
 
+// ─── Simple markdown renderer ──────────────────────────────────────────
+function renderMarkdown(text: string) {
+  // Split into lines for processing
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  let listItems: string[] = []
+  
+  const flushList = () => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ol key={`list-${elements.length}`} className="list-decimal list-inside space-y-1.5 my-2">
+          {listItems.map((item, i) => (
+            <li key={i} className="text-sm leading-relaxed">
+              <span dangerouslySetInnerHTML={{ __html: formatInline(item) }} />
+            </li>
+          ))}
+        </ol>
+      )
+      listItems = []
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    
+    // Numbered list item: "1. **text**" or "1. text"
+    const listMatch = line.match(/^\d+\.\s+(.+)/)
+    if (listMatch) {
+      listItems.push(listMatch[1])
+      continue
+    }
+
+    // Bullet list item
+    const bulletMatch = line.match(/^[-•]\s+(.+)/)
+    if (bulletMatch) {
+      flushList()
+      elements.push(
+        <div key={`bullet-${i}`} className="flex items-start gap-2 my-1">
+          <span className="text-cyan-400 mt-1 text-xs">•</span>
+          <span className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatInline(bulletMatch[1]) }} />
+        </div>
+      )
+      continue
+    }
+
+    // Regular text
+    flushList()
+    if (line.trim()) {
+      elements.push(
+        <p key={`p-${i}`} className="text-sm leading-relaxed my-1" dangerouslySetInnerHTML={{ __html: formatInline(line) }} />
+      )
+    } else if (i > 0 && i < lines.length - 1) {
+      elements.push(<div key={`br-${i}`} className="h-1" />)
+    }
+  }
+  flushList()
+
+  return <>{elements}</>
+}
+
+function formatInline(text: string): string {
+  // Bold: **text** → <strong>
+  let result = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-white/90">$1</strong>')
+  // Italic: *text* → <em>
+  result = result.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
+  // Code: `text` → <code>
+  result = result.replace(/`(.+?)`/g, '<code class="px-1 py-0.5 rounded bg-gray-100 dark:bg-white/5 text-xs">$1</code>')
+  return result
+}
+
 // ─── Tier badges ───────────────────────────────────────────────────────
 const tierColors: Record<string, string> = {
   free: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10',
@@ -48,7 +118,7 @@ function ChatFrequencyCard({ freq, isPrimary, onSelect }: {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-xl border p-4 transition-all cursor-pointer group ${
+      className={`rounded-xl border p-4 transition-all ${
         isPrimary
           ? 'border-cyan-500/30 dark:border-cyan-500/20 bg-cyan-50/50 dark:bg-cyan-500/[0.06]'
           : 'border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:border-gray-300 dark:hover:border-white/[0.12]'
@@ -84,9 +154,6 @@ function ChatFrequencyCard({ freq, isPrimary, onSelect }: {
             )}
             {freq.duration_minutes && (
               <span className="text-[10px] text-gray-400 dark:text-white/25">⏱ {freq.duration_minutes} min</span>
-            )}
-            {fullFreq?.benefits?.[0] && (
-              <span className="text-[10px] text-gray-400 dark:text-white/25 truncate">✓ {fullFreq.benefits[0]}</span>
             )}
           </div>
         </div>
@@ -176,12 +243,11 @@ interface LibraryChatProps {
 export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: LibraryChatProps) {
   const [input, setInput] = useState('')
   const [hasStarted, setHasStarted] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const processedToolCalls = useRef<Set<string>>(new Set())
-  const { addChatEntry } = useSessionHistory()
-
-  const { getProfileSummaryForAI } = useSessionHistory()
+  const { addChatEntry, getProfileSummaryForAI } = useSessionHistory()
 
   const { messages, sendMessage, status } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -194,9 +260,12 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
     }
   }, [initialMessage, hasStarted, sendMessage])
 
-  // Auto-scroll
+  // Auto-scroll WITHIN the chat container (not the page)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const container = scrollContainerRef.current
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
   }, [messages, isLoading])
 
   // Focus input
@@ -221,7 +290,6 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
           if (result?.success && toolName === 'recommend_frequency') {
             const freqs = result.frequencies as Array<{ id: string; name: string; hz_value: number }> | undefined
             if (freqs?.length) {
-              // Find first user message for context
               const firstUserMsg = messages.find(m => m.role === 'user')
               const userText = firstUserMsg?.parts.find(p => p.type === 'text')
               addChatEntry({
@@ -279,10 +347,9 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
         </button>
       </div>
 
-      {/* Messages */}
-      <div className="max-h-[500px] overflow-y-auto px-5 py-4">
+      {/* Messages — scrolls within this container, NOT the page */}
+      <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto px-5 py-4 scroll-smooth">
         {!hasStarted ? (
-          /* Welcome state with suggestions */
           <div className="text-center py-4">
             <p className="text-sm text-gray-600 dark:text-white/50 mb-1">
               Tell me how you feel, and I&apos;ll find the perfect frequency for you.
@@ -303,19 +370,20 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
             </div>
           </div>
         ) : (
-          /* Conversation */
           <div className="space-y-4">
             {messages.map((message: UIMessage) => (
               <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[90%] ${
                   message.role === 'user'
                     ? 'rounded-2xl rounded-br-md px-4 py-2.5 bg-gray-900 dark:bg-white/10 text-white text-sm'
-                    : 'text-sm text-gray-700 dark:text-white/70'
+                    : 'text-gray-700 dark:text-white/70'
                 }`}>
                   {message.parts.map((part, idx) => {
                     if (part.type === 'text') {
                       return (
-                        <p key={idx} className="whitespace-pre-wrap leading-relaxed">{part.text}</p>
+                        <div key={idx}>
+                          {renderMarkdown(part.text)}
+                        </div>
                       )
                     }
                     if (isToolUIPart(part) && part.state === 'output-available') {

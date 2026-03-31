@@ -14,6 +14,44 @@ import { useSessionHistory } from '@/lib/sessionHistory'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
+// ─── Simple markdown renderer ──────────────────────────────────────────
+function renderSimpleMarkdown(text: string) {
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  let listItems: string[] = []
+  
+  const flushList = () => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ol key={`list-${elements.length}`} className="list-decimal list-inside space-y-1.5 my-2">
+          {listItems.map((item, i) => (
+            <li key={i} className="text-sm leading-relaxed">
+              <span dangerouslySetInnerHTML={{ __html: fmtInline(item) }} />
+            </li>
+          ))}
+        </ol>
+      )
+      listItems = []
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const listMatch = line.match(/^\d+\.\s+(.+)/)
+    if (listMatch) { listItems.push(listMatch[1]); continue }
+    flushList()
+    if (line.trim()) {
+      elements.push(<p key={`p-${i}`} className="text-sm leading-relaxed my-1" dangerouslySetInnerHTML={{ __html: fmtInline(line) }} />)
+    }
+  }
+  flushList()
+  return <>{elements}</>
+}
+
+function fmtInline(t: string): string {
+  return t.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-white/90">$1</strong>')
+}
+
 // ─── Goal suggestions ──────────────────────────────────────────────────
 const GOAL_SUGGESTIONS = [
   { emoji: '🌙', label: 'Better sleep', prompt: 'I want to fix my sleep — I have insomnia and wake up tired' },
@@ -211,6 +249,7 @@ export function ProtocolChat() {
   const [input, setInput] = useState('')
   const [hasStarted, setHasStarted] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { getProfileSummaryForAI } = useSessionHistory()
@@ -219,7 +258,10 @@ export function ProtocolChat() {
   const isLoading = status === 'streaming' || status === 'submitted'
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const container = scrollContainerRef.current
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
   }, [messages, isLoading])
 
   const handleSubmit = useCallback((e: FormEvent) => {
@@ -301,7 +343,7 @@ export function ProtocolChat() {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="border-t border-gray-100 dark:border-white/[0.04] max-h-[600px] overflow-y-auto px-5 py-4">
+            <div ref={scrollContainerRef} className="border-t border-gray-100 dark:border-white/[0.04] max-h-[600px] overflow-y-auto px-5 py-4 scroll-smooth">
               <div className="space-y-4 max-w-2xl mx-auto">
                 {messages.map((message: UIMessage) => (
                   <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -312,7 +354,7 @@ export function ProtocolChat() {
                     }`}>
                       {message.parts.map((part, idx) => {
                         if (part.type === 'text') {
-                          return <p key={idx} className="whitespace-pre-wrap leading-relaxed">{part.text}</p>
+                          return <div key={idx}>{renderSimpleMarkdown(part.text)}</div>
                         }
                         if (isToolUIPart(part) && part.state === 'output-available') {
                           return <ProtocolToolResult key={idx} toolName={getToolName(part)} output={part.output} />
