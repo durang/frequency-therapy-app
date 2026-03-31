@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Frequency } from '@/types'
 import { audioManager } from '@/lib/audioManager'
@@ -23,6 +23,59 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
   const [breathingSettingsOpen, setBreathingSettingsOpen] = useState(false)
   const [dimmed, setDimmed] = useState(false)
 
+  // ── Real-time playback duration tracking ──────────────────────
+  const playStartRef = useRef<number | null>(null)
+  const accumulatedSecondsRef = useRef(0)
+  const [elapsedDisplay, setElapsedDisplay] = useState(0) // seconds, for UI
+
+  // When playback starts/stops, track accumulated real time
+  useEffect(() => {
+    if (isPlaying) {
+      playStartRef.current = Date.now()
+    } else if (playStartRef.current) {
+      const elapsed = (Date.now() - playStartRef.current) / 1000
+      accumulatedSecondsRef.current += elapsed
+      playStartRef.current = null
+    }
+  }, [isPlaying])
+
+  // Update elapsed display every second while playing
+  useEffect(() => {
+    if (!isPlaying) return
+    const interval = setInterval(() => {
+      const current = playStartRef.current ? (Date.now() - playStartRef.current) / 1000 : 0
+      setElapsedDisplay(Math.floor(accumulatedSecondsRef.current + current))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [isPlaying])
+
+  // Save real duration to sessionStorage on unmount or exit
+  const saveRealDuration = useCallback(() => {
+    // Include any currently-playing segment
+    let totalSeconds = accumulatedSecondsRef.current
+    if (playStartRef.current) {
+      totalSeconds += (Date.now() - playStartRef.current) / 1000
+    }
+    const realMinutes = Math.round(totalSeconds / 60)
+
+    // Save to sessionStorage for protocol tracking to pick up
+    const pendingRaw = sessionStorage.getItem('pending-session')
+    if (pendingRaw) {
+      try {
+        const pending = JSON.parse(pendingRaw)
+        pending.duration = Math.max(realMinutes, 1) // at least 1 minute if they played at all
+        pending.realDuration = true // flag that this is real, not estimated
+        sessionStorage.setItem('pending-session', JSON.stringify(pending))
+      } catch {}
+    }
+
+    // Also save standalone for non-protocol sessions
+    sessionStorage.setItem('last-session-real-minutes', String(realMinutes))
+    sessionStorage.setItem('last-session-frequency-id', frequency.id)
+
+    console.log(`⏱ [ImmersiveExperience] Real playback: ${realMinutes} min (${Math.round(totalSeconds)}s)`)
+  }, [frequency.id])
+
   const teleprompterSections = buildSections(frequency)
 
   // Subscribe to global audio state
@@ -31,10 +84,13 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
     return audioManager.subscribe(state => setIsPlaying(state.isPlaying))
   }, [])
 
-  // CRITICAL: Stop audio when component unmounts (navigating away)
+  // CRITICAL: Stop audio and save real duration when component unmounts
   useEffect(() => {
-    return () => { audioManager?.stop() }
-  }, [])
+    return () => {
+      audioManager?.stop()
+      saveRealDuration()
+    }
+  }, [saveRealDuration])
 
   const startAudio = useCallback(() => {
     audioManager?.play(frequency.name, frequency.hz_value)
@@ -47,8 +103,9 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
   const handleExit = useCallback(() => {
     setIsExiting(true)
     audioManager?.stop()
+    saveRealDuration()
     setTimeout(onExit, 800)
-  }, [onExit])
+  }, [onExit, saveRealDuration])
 
   // Escape key
   useEffect(() => {
@@ -97,6 +154,9 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
               <button onClick={stopAudio} className="flex items-center gap-2 text-white/20 hover:text-white/50 transition-colors">
                 <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/60 animate-pulse" />
                 <span className="text-xs tracking-widest uppercase">Playing</span>
+                <span className="text-xs text-white/15 tabular-nums ml-1">
+                  {Math.floor(elapsedDisplay / 60)}:{String(elapsedDisplay % 60).padStart(2, '0')}
+                </span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="ml-1 opacity-0 hover:opacity-100">
                   <rect x="6" y="6" width="12" height="12" rx="1" />
                 </svg>

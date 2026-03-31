@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { frequencies } from '@/lib/frequencies'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { BreakthroughStory } from '@/components/library/BreakthroughStory'
+import { ConnectedFrequencies } from '@/components/library/ConnectedFrequencies'
 
 export default function FrequencyArticlePage() {
   const params = useParams()
@@ -283,6 +284,8 @@ export default function FrequencyArticlePage() {
               </div>
             </motion.section>
           )}
+          {/* Section: Connected Frequencies */}
+          <ConnectedFrequencies frequencySlug={freq.slug} frequencyName={freq.name} />
         </div>
 
         {/* ─── Breakthrough Story ─── */}

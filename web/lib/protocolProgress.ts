@@ -69,7 +69,7 @@ export function startProtocol(protocolId: string): ProtocolProgress {
 }
 
 /** Minimum minutes a session must last to count as "completed" */
-const MIN_SESSION_MINUTES = 5
+const MIN_SESSION_MINUTES = 1
 
 export function logSession(protocolId: string, session: Omit<SessionLog, 'completedAt'>): ProtocolProgress {
   const all = loadAll()
@@ -80,9 +80,23 @@ export function logSession(protocolId: string, session: Omit<SessionLog, 'comple
     progress = allNew[protocolId]
   }
 
+  // Use real duration from sessionStorage if available (set by ImmersiveExperience)
+  let realDuration = session.duration
+  if (typeof window !== 'undefined') {
+    const realMinutesStr = sessionStorage.getItem('last-session-real-minutes')
+    const realFreqId = sessionStorage.getItem('last-session-frequency-id')
+    if (realMinutesStr && realFreqId === session.frequencyId) {
+      realDuration = parseInt(realMinutesStr, 10) || session.duration
+      // Clear after use
+      sessionStorage.removeItem('last-session-real-minutes')
+      sessionStorage.removeItem('last-session-frequency-id')
+      console.log(`📋 Using real playback duration: ${realDuration} min (protocol expected: ${session.duration} min)`)
+    }
+  }
+
   // Only count sessions where user actually listened for the minimum duration
-  if (session.duration < MIN_SESSION_MINUTES) {
-    console.log(`📋 Session too short (${session.duration}min < ${MIN_SESSION_MINUTES}min minimum) — not counted`)
+  if (realDuration < MIN_SESSION_MINUTES) {
+    console.log(`📋 Session too short (${realDuration}min < ${MIN_SESSION_MINUTES}min minimum) — not counted`)
     return progress
   }
 
@@ -99,11 +113,12 @@ export function logSession(protocolId: string, session: Omit<SessionLog, 'comple
 
   const log: SessionLog = {
     ...session,
+    duration: realDuration, // use real playback time, not protocol estimate
     completedAt: new Date().toISOString(),
   }
 
   progress.completedSessions.push(log)
-  progress.totalMinutes += session.duration
+  progress.totalMinutes += realDuration
 
   // Update streak
   const lastDate = progress.lastSessionDate ? new Date(progress.lastSessionDate).toDateString() : ''
