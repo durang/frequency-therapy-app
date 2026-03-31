@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { frequencies } from '@/lib/frequencies'
 import { audioManager } from '@/lib/audioManager'
 import { youtubeTestimonials } from '@/lib/testimonials'
+import { useAuth } from '@/lib/authState'
 import ScienceBlog from '@/components/landing/ScienceBlog'
 
 const featured = [
@@ -42,6 +43,8 @@ export default function LandingPage() {
 
 /* ─── Navigation ─────────────────────────────────────────── */
 function Nav() {
+  const { user } = useAuth()
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#fafaf9]/80 dark:bg-[#0a0a0f]/80 border-b border-gray-200/50 dark:border-white/[0.04]">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -58,7 +61,11 @@ function Nav() {
           <Link href="/frequencies" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Frequencies</Link>
           <Link href="/protocols" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Protocols</Link>
           <Link href="/pricing" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link>
-          <Link href="/auth/login" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
+          {user ? (
+            <Link href="/dashboard" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
+          ) : (
+            <Link href="/auth/login" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
+          )}
           <ThemeToggle />
           <Link href="/frequencies" className="text-sm px-5 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors font-medium">
             Try Free
