@@ -1,0 +1,22 @@
+# FreqTherapy — robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://freqtherapy.com/sitemap.xml
+
+# Block admin & auth pages from indexing
+Disallow: /panel
+Disallow: /auth/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /profile
+
+# Allow crawlers to see all public content
+Allow: /frequencies/
+Allow: /protocols/
+Allow: /pricing
+Allow: /about
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

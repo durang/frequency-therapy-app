@@ -3,7 +3,8 @@ import type { Metadata } from 'next'
 import { Inter, Playfair_Display, Instrument_Serif } from 'next/font/google'
 import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
-import { generateMedicalMetadata, generateMedicalSchema, generateHealthAppSchema } from '@/lib/medicalMetadata'
+import { generateMedicalMetadata } from '@/lib/medicalMetadata'
+import { organizationSchema, webApplicationSchema, faqSchema } from '@/lib/seo'
 import { ClientAccessibilityControls } from '@/components/ui/ClientAccessibilityControls'
 import { ClientEmergencyHandler } from '@/components/ui/ClientEmergencyHandler'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
@@ -43,8 +44,34 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const medicalSchema = generateMedicalSchema()
-  const healthAppSchema = generateHealthAppSchema()
+  const orgSchema = organizationSchema()
+  const appSchema = webApplicationSchema()
+  const homepageFaq = faqSchema([
+    {
+      q: 'What is frequency therapy?',
+      a: 'Frequency therapy uses specific sound tones (measured in Hz) to influence brainwave patterns through brainwave entrainment. Different frequencies promote different states — delta (1-4 Hz) for deep sleep, theta (4-8 Hz) for meditation, alpha (8-14 Hz) for relaxation, and gamma (30-100 Hz) for focus.',
+    },
+    {
+      q: 'Are binaural beats scientifically proven?',
+      a: 'Brainwave entrainment — the brain synchronizing to external audio stimuli — is well-documented in auditory neuroscience since the 1970s via EEG studies. The Frequency Following Response (FFR) is consistently replicated. Research continues on specific therapeutic applications.',
+    },
+    {
+      q: 'What frequency helps with anxiety?',
+      a: '432 Hz is the most commonly studied frequency for anxiety. Research suggests it may activate the parasympathetic nervous system and promote calm. FreqTherapy offers a free 432 Hz session.',
+    },
+    {
+      q: 'What is the best frequency for sleep?',
+      a: 'Delta frequencies (0.5-4 Hz), particularly 1.5 Hz, are associated with deep sleep. The Schumann resonance (7.83 Hz) may support circadian rhythm regulation. FreqTherapy\'s Deep Sleep Protocol combines both.',
+    },
+    {
+      q: 'Do I need headphones for frequency therapy?',
+      a: 'Yes, quality headphones are recommended, especially for binaural beats which require different tones in each ear. Over-ear headphones provide the best results.',
+    },
+    {
+      q: 'Is FreqTherapy free?',
+      a: 'FreqTherapy offers 2 frequencies free with 5-minute sessions, no account needed. Full access to all 23 frequencies starts at $10/month with the annual plan.',
+    },
+  ])
 
   return (
     <html 
@@ -53,18 +80,18 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Medical Schema Markup */}
+        {/* Structured Data — Organization + WebApplication + FAQ */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(medicalSchema),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(healthAppSchema),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFaq) }}
         />
         
         {/* Preload critical resources */}
@@ -82,15 +109,8 @@ export default function RootLayout({
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
         <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
         
-        {/* Medical Compliance Meta Tags */}
-        <meta name="medical-disclaimer" content="Not intended to diagnose, treat, cure, or prevent any disease. Consult healthcare provider." />
-        <meta name="fda-compliance" content="This device has not been evaluated by the FDA" />
-        <meta name="safety-warnings" content="Not suitable for epilepsy, pacemakers, or pregnancy without medical supervision" />
-        <meta name="clinical-evidence" content="47 peer-reviewed studies, 94.7% efficacy rate" />
-        
-        {/* Accessibility Meta Tags */}
-        <meta name="accessibility-features" content="keyboard navigation, screen reader support, high contrast mode" />
-        <meta name="wcag-compliance" content="WCAG 2.1 AA compliant" />
+        {/* Wellness Disclaimer */}
+        <meta name="disclaimer" content="FreqTherapy is a wellness tool. Not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare provider." />
       </head>
       
       <body 
