@@ -10,11 +10,20 @@ import { protocolTools } from '@/lib/protocolTools'
 
 export const maxDuration = 30
 
-// DeepSeek V3 via OpenAI-compatible endpoint
-const deepseek = createOpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY || '',
-  baseURL: 'https://api.deepseek.com/v1',
-})
+// DeepSeek V3 via OpenAI-compatible API
+// The key is read at request time to avoid Turbopack env caching issues
+function getDeepSeekClient() {
+  const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY || ''
+  return createOpenAI({
+    apiKey,
+    baseURL: 'https://api.deepseek.com',
+    // Override fetch to log the actual URL being called
+    fetch: async (url, init) => {
+      console.log(`[deepseek] Fetching: ${url}`)
+      return globalThis.fetch(url, init)
+    },
+  })
+}
 
 const SYSTEM_PROMPT = `You are a friendly, knowledgeable frequency therapy advisor embedded in FreqTherapy.
 You help users discover frequencies and protocols for their wellness goals.
@@ -83,30 +92,27 @@ PERSONALITY:
 - Suggest combinations and protocols, not just single frequencies`
 
 export async function POST(req: Request) {
-  if (!process.env.DEEPSEEK_API_KEY) {
-    console.error('[chat-api] DEEPSEEK_API_KEY is not configured')
-    return Response.json(
-      { error: 'DEEPSEEK_API_KEY not configured' },
-      { status: 503 }
-    )
+  const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    console.error('[chat-api] No API key configured')
+    return Response.json({ error: 'API key not configured' }, { status: 503 })
   }
+
+  const deepseek = getDeepSeekClient()
 
   try {
     const body = await req.json()
     const { messages, userProfile }: { messages: UIMessage[]; userProfile?: string } = body
 
-    console.log(
-      `[chat-api] Received ${messages.length} messages, last role: ${messages[messages.length - 1]?.role}`
-    )
+    console.log(`[chat-api] Received ${messages.length} messages`)
 
-    // Build system prompt with optional user profile context
     let systemPrompt = SYSTEM_PROMPT
     if (userProfile) {
       systemPrompt += `\n\n--- USER CONTEXT ---\n${userProfile}\n--- END USER CONTEXT ---\nUse this context to personalize recommendations. Reference their past sessions when relevant.`
     }
 
     const result = streamText({
-      model: deepseek('deepseek-chat'),
+      model: deepseek.chat('deepseek-chat'),
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
       tools: {
@@ -118,13 +124,10 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse()
   } catch (error) {
-    console.error('[chat-api] Error processing chat request:', error)
+    console.error('[chat-api] Error:', error)
 
     if (error instanceof SyntaxError) {
-      return Response.json(
-        { error: 'Invalid request body' },
-        { status: 400 }
-      )
+      return Response.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
     return Response.json(
