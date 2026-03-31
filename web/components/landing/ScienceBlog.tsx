@@ -156,10 +156,10 @@ export default function ScienceBlog() {
             </p>
           </div>
           <Link
-            href="/frequencies"
+            href="/blog"
             className="group flex-shrink-0 inline-flex items-center gap-2 text-sm text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
-            View all {frequencies.length} frequencies
+            View all articles
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               className="group-hover:translate-x-1 transition-transform">
               <path d="M5 12h14M12 5l7 7-7 7" />
