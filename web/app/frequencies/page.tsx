@@ -7,6 +7,7 @@ import { frequencies } from '@/lib/frequencies'
 import { Frequency } from '@/types'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useAuth } from '@/lib/authState'
+import { useSubscription } from '@/lib/useSubscription'
 import { smartSearch, detectIntent, POPULAR_SEARCHES, getMatchLabel, SmartSearchResult } from '@/lib/smartSearch'
 import { useSessionHistory } from '@/lib/sessionHistory'
 import { LibraryChat } from '@/components/library/LibraryChat'
@@ -35,6 +36,7 @@ const tierConfig = {
 export default function FrequenciesPage() {
   const router = useRouter()
   const { user } = useAuth()
+  const { isActive: hasSubscription, isLoading: subLoading } = useSubscription()
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [selectedFreq, setSelectedFreq] = useState<Frequency | null>(null)
@@ -342,6 +344,7 @@ export default function FrequenciesPage() {
               const tier = tierConfig[freq.tier]
               const isSelected = selectedFreq?.id === freq.id
               const matchedFields = matchedFieldsMap.get(freq.id) || []
+              const isLocked = freq.tier !== 'free' && !hasSubscription && !subLoading
 
               return (
                 <motion.button
@@ -349,23 +352,42 @@ export default function FrequenciesPage() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.02, duration: 0.3 }}
-                  onClick={() => handleSelect(freq)}
-                  className={`group text-left p-5 rounded-2xl border transition-all duration-300 ${
-                    isSelected
-                      ? 'border-cyan-500/30 dark:border-cyan-500/20 bg-cyan-50 dark:bg-cyan-500/[0.04] ring-1 ring-cyan-500/20'
-                      : 'border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08]'
+                  onClick={() => {
+                    if (isLocked) {
+                      router.push('/pricing?from=frequencies')
+                    } else {
+                      handleSelect(freq)
+                    }
+                  }}
+                  className={`group relative text-left p-5 rounded-2xl border transition-all duration-300 ${
+                    isLocked
+                      ? 'opacity-60 border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:opacity-80'
+                      : isSelected
+                        ? 'border-cyan-500/30 dark:border-cyan-500/20 bg-cyan-50 dark:bg-cyan-500/[0.04] ring-1 ring-cyan-500/20'
+                        : 'border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08]'
                   }`}
                 >
+                  {/* Lock icon overlay */}
+                  {isLocked && (
+                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gray-100 dark:bg-white/[0.06] flex items-center justify-center">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 dark:text-white/30">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs text-gray-400 dark:text-white/30 tabular-nums">{freq.hz_value} Hz</span>
-                    <div className="flex items-center gap-1.5">
+                    <div className={`flex items-center gap-1.5 ${isLocked ? 'mr-8' : ''}`}>
                       {/* Match highlight badge */}
                       {matchedFields.length > 0 && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-400/20">
                           {getMatchLabel(matchedFields[0])} match
                         </span>
                       )}
-                      <span className={`text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full border ${tier.color}`}>{tier.label}</span>
+                      <span className={`text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full border ${tier.color}`}>
+                        {freq.tier === 'free' ? '✦ Free' : tier.label}
+                      </span>
                     </div>
                   </div>
                   <h3 className="text-base font-light text-gray-900 dark:text-white/80 group-hover:text-gray-700 dark:group-hover:text-white mb-1.5"
@@ -443,12 +465,24 @@ export default function FrequenciesPage() {
                   </div>
                 )}
 
-                <Link
-                  href={`/experience/${selectedFreq.id}`}
-                  className="block w-full text-center py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all mb-2"
-                >
-                  Start Session
-                </Link>
+                {(() => {
+                  const detailLocked = selectedFreq.tier !== 'free' && !hasSubscription && !subLoading
+                  return detailLocked ? (
+                    <Link
+                      href="/pricing?from=frequencies"
+                      className="block w-full text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white text-sm font-medium hover:from-cyan-600 hover:to-teal-700 transition-all mb-2"
+                    >
+                      🔒 Unlock with Premium
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/experience/${selectedFreq.id}`}
+                      className="block w-full text-center py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all mb-2"
+                    >
+                      Start Session
+                    </Link>
+                  )
+                })()}
                 <Link
                   href={`/frequencies/${selectedFreq.slug}`}
                   className="block w-full text-center py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] text-sm text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/15 transition-all"
