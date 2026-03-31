@@ -3,7 +3,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { User as SupabaseUser, Session } from '@supabase/supabase-js'
-import { supabase, signInWithMagicLink as supabaseSignInWithMagicLink, signOut as supabaseSignOut, onAuthStateChange } from './supabase'
+import { supabase, signInWithMagicLink as supabaseSignInWithMagicLink, signIn as supabaseSignIn, signOut as supabaseSignOut, onAuthStateChange } from './supabase'
 import { User } from '../types'
 
 interface AuthState {
@@ -19,6 +19,7 @@ interface AuthState {
   
   // Auth actions
   signInWithMagicLink: (email: string) => Promise<{ data: any; error: any }>
+  signInWithPassword: (email: string, password: string) => Promise<{ data: any; error: any }>
   signOut: () => Promise<void>
   initializeAuth: () => Promise<void>
   clearError: () => void
@@ -38,6 +39,17 @@ const transformSupabaseUser = (supabaseUser: SupabaseUser): User => {
     subscription_tier: 'free', // Default tier - will be updated from profile
     created_at: supabaseUser.created_at || new Date().toISOString(),
   }
+}
+
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'sergioduran89@gmail.com'
+
+/** Check if email matches admin and upgrade tier to clinical */
+const applyAdminTier = (user: User): User => {
+  if (user.email === ADMIN_EMAIL) {
+    console.log('🔑 [AuthState] Admin detected — clinical tier')
+    return { ...user, subscription_tier: 'clinical' }
+  }
+  return user
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -72,6 +84,31 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: any) {
           console.error('❌ [AuthState] Magic link error:', error)
           const errorMessage = error?.message || 'Failed to send magic link'
+          set({ error: errorMessage, loading: false })
+          return { data: null, error: { message: errorMessage } }
+        }
+      },
+
+      signInWithPassword: async (email: string, password: string) => {
+        try {
+          set({ loading: true, error: null })
+          
+          console.log('🔐 [AuthState] Initiating password sign in for:', email)
+          
+          const result = await supabaseSignIn(email, password)
+          
+          if (result.error) {
+            console.error('❌ [AuthState] Password sign in failed:', result.error)
+            set({ error: result.error.message || 'Failed to sign in', loading: false })
+            return result
+          }
+          
+          console.log('✅ [AuthState] Password sign in successful')
+          set({ loading: false })
+          return result
+        } catch (error: any) {
+          console.error('❌ [AuthState] Password sign in error:', error)
+          const errorMessage = error?.message || 'Failed to sign in'
           set({ error: errorMessage, loading: false })
           return { data: null, error: { message: errorMessage } }
         }
@@ -141,8 +178,9 @@ export const useAuthStore = create<AuthState>()(
             console.log('✅ [AuthState] Found existing session for:', session.user.email)
             
             const appUser = transformSupabaseUser(session.user)
+            const finalUser = applyAdminTier(appUser)
             set({
-              user: appUser,
+              user: finalUser,
               supabaseUser: session.user,
               session: session,
               initializing: false
@@ -154,13 +192,12 @@ export const useAuthStore = create<AuthState>()(
               const { data: profile } = await getUserProfile(session.user.id)
               
               if (profile) {
-                set({
-                  user: {
-                    ...appUser,
-                    subscription_tier: profile.subscription_tier || 'free',
-                    profile: profile
-                  }
+                const profileUser = applyAdminTier({
+                  ...appUser,
+                  subscription_tier: profile.subscription_tier || 'free',
+                  profile: profile
                 })
+                set({ user: profileUser })
                 console.log('✅ [AuthState] User profile loaded')
               }
             } catch (profileError) {
@@ -178,8 +215,9 @@ export const useAuthStore = create<AuthState>()(
             
             if (event === 'SIGNED_IN' && session?.user) {
               const appUser = transformSupabaseUser(session.user)
+              const finalUser = applyAdminTier(appUser)
               set({
-                user: appUser,
+                user: finalUser,
                 supabaseUser: session.user,
                 session: session,
                 loading: false,
@@ -192,13 +230,12 @@ export const useAuthStore = create<AuthState>()(
                 const { data: profile } = await getUserProfile(session.user.id)
                 
                 if (profile) {
-                  set({
-                    user: {
-                      ...appUser,
-                      subscription_tier: profile.subscription_tier || 'free',
-                      profile: profile
-                    }
+                  const profileUser = applyAdminTier({
+                    ...appUser,
+                    subscription_tier: profile.subscription_tier || 'free',
+                    profile: profile
                   })
+                  set({ user: profileUser })
                 }
               } catch (profileError) {
                 console.warn('[AuthState] Failed to load profile on sign in:', profileError)

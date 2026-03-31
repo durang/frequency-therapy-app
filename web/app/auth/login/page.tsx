@@ -4,7 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { signInWithMagicLink, signIn } from '@/lib/supabase'
+import { signInWithMagicLink } from '@/lib/supabase'
+import { useAuthStore } from '@/lib/authState'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -29,7 +30,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { data, error } = await signIn(email, password)
+      const { data, error } = await useAuthStore.getState().signInWithPassword(email, password)
       if (error) toast.error(error.message || 'Failed to sign in')
       else if (data?.user) {
         toast.success('Welcome back!')
