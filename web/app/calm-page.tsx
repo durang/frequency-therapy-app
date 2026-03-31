@@ -7,8 +7,12 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { frequencies } from '@/lib/frequencies'
 import { audioManager } from '@/lib/audioManager'
 import { youtubeTestimonials } from '@/lib/testimonials'
+import ScienceBlog from '@/components/landing/ScienceBlog'
 
-const featured = frequencies.filter(f => f.tier === 'free').slice(0, 3)
+const featured = [
+  ...frequencies.filter(f => f.tier === 'free').slice(0, 2),
+  frequencies.find(f => f.tier === 'basic') || frequencies[2],
+].filter(Boolean).slice(0, 3)
 
 const BREATHING_PRESETS = [
   { name: 'Relaxing', pattern: '4-4-6', inhale: 4, hold: 4, exhale: 6, desc: 'Extended exhale calms the nervous system and activates the parasympathetic response', science: 'Prolonged exhalation stimulates the vagus nerve, reducing cortisol by up to 30% within 5 minutes. This triggers the "rest and digest" response, slowing heart rate and lowering blood pressure.', link: '/frequencies/anxiety-liberation' },
@@ -28,6 +32,7 @@ export default function LandingPage() {
       <Testimonials />
       <Breathing />
       <ScienceProof />
+      <ScienceBlog />
       <PricingSection />
       <FinalCTA />
       <Footer />
@@ -716,7 +721,7 @@ function ScienceProof() {
 
 /* ─── Final CTA with protocol preview ─────────────────────── */
 function FinalCTA() {
-  const [showProtocol, setShowProtocol] = useState(false)
+  const [showProtocol, setShowProtocol] = useState(true)
 
   const protocolDays = [
     { day: '1–3', title: 'Calibration', desc: 'Your brain learns to recognize the frequency. Start with 10-minute sessions using headphones. You may feel subtle tingling or deep relaxation.', icon: '🎧' },

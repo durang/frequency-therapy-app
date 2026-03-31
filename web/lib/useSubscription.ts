@@ -24,8 +24,12 @@ export function useSubscription(): UseSubscriptionResult {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const fetchSubscription = useCallback(async () => {
-    setIsLoading(true)
+  const fetchSubscription = useCallback(async (isRefetch = false) => {
+    // Only show loading state on initial fetch, not on refetches (e.g. tab-focus token refresh)
+    // Refetch-triggered loading would unmount the immersive experience
+    if (!isRefetch) {
+      setIsLoading(true)
+    }
     setError(null)
 
     try {
@@ -75,11 +79,13 @@ export function useSubscription(): UseSubscriptionResult {
     // Initial fetch
     fetchSubscription()
 
-    // Re-fetch when auth state changes (sign-in, sign-out, token refresh)
+    // Re-fetch when auth state changes (sign-in, sign-out) but NOT on token refresh
     const {
       data: { subscription: authListener },
-    } = supabase.auth.onAuthStateChange(() => {
-      fetchSubscription()
+    } = supabase.auth.onAuthStateChange((event) => {
+      // Token refresh happens on tab-focus — skip it to avoid resetting active experiences
+      if (event === 'TOKEN_REFRESHED') return
+      fetchSubscription(true)
     })
 
     return () => {

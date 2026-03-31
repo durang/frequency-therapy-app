@@ -104,7 +104,22 @@ export const useAuthStore = create<AuthState>()(
           }
           
           console.log('✅ [AuthState] Password sign in successful')
-          set({ loading: false })
+          
+          // Set user immediately so Zustand persists it before any page redirect
+          if (result.data?.user) {
+            const appUser = transformSupabaseUser(result.data.user)
+            const finalUser = applyAdminTier(appUser)
+            set({
+              user: finalUser,
+              supabaseUser: result.data.user,
+              session: result.data.session,
+              loading: false,
+              initializing: false,
+              error: null,
+            })
+          } else {
+            set({ loading: false })
+          }
           return result
         } catch (error: any) {
           console.error('❌ [AuthState] Password sign in error:', error)
@@ -344,8 +359,9 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         supabaseUser: state.supabaseUser,
         session: state.session,
-        initializing: state.initializing,
-        // Don't persist loading, error states - they should reset on page load
+        // NEVER persist initializing — it must start true on every page load
+        // so initializeAuth always runs and registers the onAuthStateChange listener.
+        // Persisting it as false caused sessions to silently expire (no token refresh).
       }),
     }
   )

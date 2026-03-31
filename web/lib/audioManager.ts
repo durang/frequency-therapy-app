@@ -19,6 +19,7 @@ class GlobalAudioManager {
   private harmonicGain: GainNode | null = null
   private _state: AudioState = { isPlaying: false, frequencyName: '', hzValue: 0 }
   private listeners: Set<Listener> = new Set()
+  private boundVisibilityHandler: (() => void) | null = null
 
   get state() { return this._state }
 
@@ -29,6 +30,38 @@ class GlobalAudioManager {
 
   private notify() {
     this.listeners.forEach(fn => fn(this._state))
+  }
+
+  /** Resume AudioContext when tab becomes visible again — browsers suspend it in background */
+  private setupVisibilityHandler() {
+    if (this.boundVisibilityHandler) return
+    this.boundVisibilityHandler = () => {
+      if (document.visibilityState === 'visible' && this.ctx && this._state.isPlaying) {
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume().then(() => {
+            console.log('🎵 Audio: Resumed after tab switch')
+          }).catch(() => {
+            // Context is dead — restart playback
+            console.log('🎵 Audio: Context dead after tab switch, restarting')
+            const { frequencyName, hzValue } = this._state
+            this.play(frequencyName, hzValue)
+          })
+        } else if (this.ctx.state === 'closed') {
+          // Context was closed — restart
+          console.log('🎵 Audio: Context closed after tab switch, restarting')
+          const { frequencyName, hzValue } = this._state
+          this.play(frequencyName, hzValue)
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', this.boundVisibilityHandler)
+  }
+
+  private removeVisibilityHandler() {
+    if (this.boundVisibilityHandler) {
+      document.removeEventListener('visibilitychange', this.boundVisibilityHandler)
+      this.boundVisibilityHandler = null
+    }
   }
 
   async play(name: string, hz: number) {
@@ -76,6 +109,7 @@ class GlobalAudioManager {
 
       this._state = { isPlaying: true, frequencyName: name, hzValue: hz }
       this.notify()
+      this.setupVisibilityHandler()
       console.log(`🎵 Audio: Playing ${name} at ${hz}Hz`)
     } catch (err) {
       console.error('Audio play failed:', err)
@@ -120,6 +154,7 @@ class GlobalAudioManager {
 
     this._state = { isPlaying: false, frequencyName: '', hzValue: 0 }
     this.notify()
+    this.removeVisibilityHandler()
     console.log('🔇 Audio: Stopped')
   }
 
