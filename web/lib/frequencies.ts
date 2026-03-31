@@ -5,6 +5,7 @@ export const frequencies: Frequency[] = [
   {
     id: '1',
     name: 'DNA Repair',
+    slug: 'dna-repair',
     hz_value: 528,
     category: 'dna_repair',
     description: 'The miracle frequency for cellular healing and genetic optimization',
@@ -50,6 +51,7 @@ export const frequencies: Frequency[] = [
   {
     id: '2',
     name: 'Anxiety Liberation',
+    slug: 'anxiety-liberation',
     hz_value: 432,
     category: 'anxiety_relief',
     description: 'Mathematical harmony frequency for anxiety and stress relief',
@@ -95,6 +97,7 @@ export const frequencies: Frequency[] = [
   {
     id: '3',
     name: 'Gamma Focus Enhancement',
+    slug: 'gamma-focus',
     hz_value: 40,
     category: 'cognitive_enhancement',
     description: 'Peak cognitive performance through gamma wave entrainment',
@@ -140,6 +143,7 @@ export const frequencies: Frequency[] = [
   {
     id: '4',
     name: 'Deep Sleep Delta',
+    slug: 'deep-sleep-delta',
     hz_value: 1.5,
     category: 'sleep_optimization',
     description: 'Ultra-deep delta frequency for restorative sleep and neural repair',
@@ -185,6 +189,7 @@ export const frequencies: Frequency[] = [
   {
     id: '5',
     name: 'Schumann Earth Resonance',
+    slug: 'schumann-earth-resonance',
     hz_value: 7.83,
     category: 'grounding',
     description: 'Earth\'s natural electromagnetic frequency for circadian synchronization',
@@ -232,6 +237,7 @@ export const frequencies: Frequency[] = [
   {
     id: '6',
     name: 'Pain Relief Matrix',
+    slug: 'pain-relief',
     hz_value: 285,
     category: 'pain_management',
     description: 'Advanced solfeggio frequency for pain modulation and tissue repair',
@@ -277,6 +283,7 @@ export const frequencies: Frequency[] = [
   {
     id: '7',
     name: 'Heart Coherence Optimizer',
+    slug: 'heart-coherence',
     hz_value: 0.1,
     category: 'cardiovascular',
     description: 'Ultra-low frequency for heart rate variability optimization',
@@ -322,6 +329,7 @@ export const frequencies: Frequency[] = [
   {
     id: '8',
     name: 'Dopamine Elevation',
+    slug: 'dopamine-elevation',
     hz_value: 14,
     category: 'neurotransmitter_optimization',
     description: 'Beta frequency for natural dopamine and motivation enhancement',
@@ -367,6 +375,7 @@ export const frequencies: Frequency[] = [
   {
     id: '9',
     name: 'Serotonin Balance',
+    slug: 'serotonin-balance',
     hz_value: 10,
     category: 'mood_enhancement',
     description: 'Alpha frequency for serotonin optimization and emotional balance',
@@ -412,6 +421,7 @@ export const frequencies: Frequency[] = [
   {
     id: '10',
     name: 'GABA Relaxation',
+    slug: 'gaba-relaxation',
     hz_value: 100,
     category: 'relaxation',
     description: 'High-frequency gamma for GABA enhancement and deep relaxation',
@@ -459,6 +469,7 @@ export const frequencies: Frequency[] = [
   {
     id: '11',
     name: 'Neural Regeneration Complex',
+    slug: 'neural-regeneration',
     hz_value: 741,
     category: 'neural_repair',
     description: 'Solfeggio frequency for neural pathway regeneration and cognitive restoration',
@@ -504,6 +515,7 @@ export const frequencies: Frequency[] = [
   {
     id: '12',
     name: 'Telomere Preservation',
+    slug: 'telomere-preservation',
     hz_value: 963,
     category: 'anti_aging',
     description: 'Crown chakra frequency for cellular longevity and DNA protection',
@@ -549,6 +561,7 @@ export const frequencies: Frequency[] = [
   {
     id: '13',
     name: 'Immune System Optimizer',
+    slug: 'immune-optimizer',
     hz_value: 594,
     category: 'immune_enhancement',
     description: 'Solar plexus frequency for immune function enhancement and pathogen resistance',
@@ -594,6 +607,7 @@ export const frequencies: Frequency[] = [
   {
     id: '14',
     name: 'Hormone Optimization Matrix',
+    slug: 'hormone-optimization',
     hz_value: 111,
     category: 'hormonal_balance',
     description: 'Sacred frequency for endocrine system balance and hormonal optimization',
@@ -639,6 +653,7 @@ export const frequencies: Frequency[] = [
   {
     id: '15',
     name: 'Mitochondrial Energizer',
+    slug: 'mitochondrial-energizer',
     hz_value: 55,
     category: 'cellular_energy',
     description: 'Cellular powerhouse frequency for mitochondrial optimization and energy production',
@@ -686,6 +701,7 @@ export const frequencies: Frequency[] = [
   {
     id: '16',
     name: 'Stem Cell Activation',
+    slug: 'stem-cell-activation',
     hz_value: 174,
     category: 'regenerative_medicine',
     description: 'Foundation frequency for stem cell activation and regenerative healing',
@@ -731,6 +747,7 @@ export const frequencies: Frequency[] = [
   {
     id: '17',
     name: 'Genetic Expression Optimizer',
+    slug: 'genetic-expression',
     hz_value: 852,
     category: 'epigenetic_therapy',
     description: 'Third eye frequency for genetic expression optimization and DNA methylation',
@@ -776,6 +793,7 @@ export const frequencies: Frequency[] = [
   {
     id: '18',
     name: 'Quantum Coherence Field',
+    slug: 'quantum-coherence',
     hz_value: 1008,
     category: 'quantum_medicine',
     description: 'Ultra-high frequency for quantum coherence and cellular field optimization',
@@ -823,6 +841,7 @@ export const frequencies: Frequency[] = [
   {
     id: '19',
     name: 'Circulation Enhancer',
+    slug: 'circulation-enhancer',
     hz_value: 62,
     category: 'vascular_health',
     description: 'Vascular frequency for circulation improvement and blood flow optimization',
@@ -866,6 +885,7 @@ export const frequencies: Frequency[] = [
   {
     id: '20',
     name: 'Metabolism Accelerator',
+    slug: 'metabolism-accelerator',
     hz_value: 95,
     category: 'metabolic_enhancement',
     description: 'High-beta frequency for metabolic rate enhancement and weight management',
@@ -910,6 +930,7 @@ export const frequencies: Frequency[] = [
   {
     id: '21',
     name: 'Universal Healing',
+    slug: 'universal-healing',
     hz_value: 10000,
     category: 'immune_enhancement',
     description: 'The most validated healing frequency globally — used in Rife therapy protocols with millions of reported beneficial outcomes across diverse conditions',
@@ -945,6 +966,7 @@ export const frequencies: Frequency[] = [
   {
     id: '22',
     name: 'Detox & Cleansing',
+    slug: 'detox-cleansing',
     hz_value: 741,
     category: 'relaxation',
     description: 'Solfeggio frequency associated with cellular detoxification, toxin elimination, and electromagnetic field cleansing — used in integrative wellness protocols worldwide',
@@ -979,6 +1001,7 @@ export const frequencies: Frequency[] = [
   {
     id: '23',
     name: 'Tissue Regeneration',
+    slug: 'tissue-regeneration',
     hz_value: 285,
     category: 'pain_management',
     description: 'Solfeggio frequency for tissue repair and cellular regeneration — associated with accelerated healing of wounds, burns, and tissue damage in integrative medicine',
@@ -1023,6 +1046,10 @@ export const getFrequenciesByCategory = (category: string): Frequency[] => {
 
 export const getFrequencyById = (id: string): Frequency | undefined => {
   return frequencies.find(freq => freq.id === id)
+}
+
+export const getFrequencyBySlug = (slug: string): Frequency | undefined => {
+  return frequencies.find(freq => freq.slug === slug)
 }
 
 export const searchFrequencies = (query: string): Frequency[] => {

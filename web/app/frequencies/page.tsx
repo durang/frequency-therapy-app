@@ -235,9 +235,15 @@ export default function FrequenciesPage() {
 
                 <Link
                   href={`/experience/${selectedFreq.id}`}
-                  className="block w-full text-center py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all"
+                  className="block w-full text-center py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all mb-2"
                 >
                   Start Session
+                </Link>
+                <Link
+                  href={`/frequencies/${selectedFreq.slug}`}
+                  className="block w-full text-center py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] text-sm text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/15 transition-all"
+                >
+                  Read Full Article →
                 </Link>
               </motion.div>
             )}

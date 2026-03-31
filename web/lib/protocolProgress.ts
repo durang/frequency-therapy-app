@@ -68,6 +68,9 @@ export function startProtocol(protocolId: string): ProtocolProgress {
   return progress
 }
 
+/** Minimum minutes a session must last to count as "completed" */
+const MIN_SESSION_MINUTES = 5
+
 export function logSession(protocolId: string, session: Omit<SessionLog, 'completedAt'>): ProtocolProgress {
   const all = loadAll()
   let progress = all[protocolId]
@@ -75,6 +78,23 @@ export function logSession(protocolId: string, session: Omit<SessionLog, 'comple
     progress = startProtocol(protocolId)
     const allNew = loadAll()
     progress = allNew[protocolId]
+  }
+
+  // Only count sessions where user actually listened for the minimum duration
+  if (session.duration < MIN_SESSION_MINUTES) {
+    console.log(`📋 Session too short (${session.duration}min < ${MIN_SESSION_MINUTES}min minimum) — not counted`)
+    return progress
+  }
+
+  // Prevent duplicate session logs for the same day+frequency combo
+  const today = new Date().toDateString()
+  const alreadyLogged = progress.completedSessions.some(s => {
+    const sessionDate = new Date(s.completedAt).toDateString()
+    return sessionDate === today && s.frequencyId === session.frequencyId && s.day === session.day
+  })
+  if (alreadyLogged) {
+    console.log(`📋 Session already logged for today (Day ${session.day}, ${session.frequencyName}) — skipping duplicate`)
+    return progress
   }
 
   const log: SessionLog = {
@@ -86,7 +106,6 @@ export function logSession(protocolId: string, session: Omit<SessionLog, 'comple
   progress.totalMinutes += session.duration
 
   // Update streak
-  const today = new Date().toDateString()
   const lastDate = progress.lastSessionDate ? new Date(progress.lastSessionDate).toDateString() : ''
   if (lastDate !== today) {
     const yesterday = new Date()
@@ -99,23 +118,25 @@ export function logSession(protocolId: string, session: Omit<SessionLog, 'comple
     progress.lastSessionDate = new Date().toISOString()
   }
 
-  // Update current day based on days elapsed since start
-  const daysSinceStart = Math.floor((Date.now() - new Date(progress.startedAt).getTime()) / (1000 * 60 * 60 * 24)) + 1
-  progress.currentDay = Math.min(daysSinceStart, 25)
+  // Current day = number of unique days with completed sessions (not calendar days since start)
+  const uniqueDays = new Set(
+    progress.completedSessions.map(s => new Date(s.completedAt).toDateString())
+  )
+  progress.currentDay = Math.min(uniqueDays.size, 25)
 
   // Update phase
   if (progress.currentDay <= 7) progress.currentPhase = 0
   else if (progress.currentDay <= 17) progress.currentPhase = 1
   else progress.currentPhase = 2
 
-  // Check completion
+  // Check completion — requires both 25 days with sessions AND at least 25 total sessions
   if (progress.currentDay >= 25 && progress.completedSessions.length >= 25) {
     progress.completed = true
   }
 
   all[protocolId] = progress
   saveAll(all)
-  console.log(`📋 Session logged: Day ${progress.currentDay}, Phase ${progress.currentPhase + 1}, ${session.duration}min`)
+  console.log(`📋 Session logged: Day ${progress.currentDay}, Phase ${progress.currentPhase + 1}, ${session.duration}min (${progress.completedSessions.length} total sessions)`)
   return progress
 }
 

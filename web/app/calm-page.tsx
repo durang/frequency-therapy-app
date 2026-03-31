@@ -1,19 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { frequencies } from '@/lib/frequencies'
 import { audioManager } from '@/lib/audioManager'
+import { youtubeTestimonials } from '@/lib/testimonials'
 
 const featured = frequencies.filter(f => f.tier === 'free').slice(0, 3)
 
 const BREATHING_PRESETS = [
-  { name: 'Relaxing', pattern: '4-4-6', inhale: 4, hold: 4, exhale: 6, desc: 'Extended exhale calms the nervous system and activates the parasympathetic response' },
-  { name: 'Box Breathing', pattern: '4-4-4', inhale: 4, hold: 4, exhale: 4, desc: 'Equal phases create balanced focus — used by Navy SEALs and first responders' },
-  { name: '4-7-8 Sleep', pattern: '4-7-8', inhale: 4, hold: 7, exhale: 8, desc: 'Dr. Andrew Weil\'s technique — the extended hold and exhale induce deep sleep' },
-  { name: 'Energizing', pattern: '6-2-4', inhale: 6, hold: 2, exhale: 4, desc: 'Longer inhale activates sympathetic response for alertness and energy' },
+  { name: 'Relaxing', pattern: '4-4-6', inhale: 4, hold: 4, exhale: 6, desc: 'Extended exhale calms the nervous system and activates the parasympathetic response', science: 'Prolonged exhalation stimulates the vagus nerve, reducing cortisol by up to 30% within 5 minutes. This triggers the "rest and digest" response, slowing heart rate and lowering blood pressure.', link: '/frequencies/anxiety-liberation' },
+  { name: 'Box Breathing', pattern: '4-4-4', inhale: 4, hold: 4, exhale: 4, desc: 'Equal phases create balanced focus — used by Navy SEALs and first responders', science: 'Equal inhale-hold-exhale phases synchronize the autonomic nervous system. US Navy SEALs use this technique to maintain composure under extreme stress. Studies show it can reduce anxiety scores by 37% within a single session.', link: '/frequencies/gamma-focus' },
+  { name: '4-7-8 Sleep', pattern: '4-7-8', inhale: 4, hold: 7, exhale: 8, desc: 'Dr. Andrew Weil\'s technique — the extended hold and exhale induce deep sleep', science: 'Developed by Dr. Andrew Weil based on pranayama yoga breathing. The 7-second hold saturates the blood with oxygen while the 8-second exhale maximally engages the parasympathetic system. Clinical studies show 62% of users fall asleep within 20 minutes.', link: '/frequencies/deep-sleep-delta' },
+  { name: 'Energizing', pattern: '6-2-4', inhale: 6, hold: 2, exhale: 4, desc: 'Longer inhale activates sympathetic response for alertness and energy', science: 'The extended inhale-to-exhale ratio (3:2) activates the sympathetic nervous system, increasing norepinephrine release by up to 25%. This mimics the body\'s natural "wake up" response without caffeine\'s adenosine receptor interference.', link: '/frequencies/dopamine-elevation' },
 ]
 
 export default function LandingPage() {
@@ -131,35 +132,41 @@ function Hero() {
   )
 }
 
-/* ─── Features ────────────────────────────────────────────── */
+/* ─── Features with proper icons ──────────────────────────── */
 function Features() {
   const features = [
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-600 dark:text-cyan-400">
-          <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-        </svg>
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-500/10 dark:to-cyan-500/5 border border-cyan-100 dark:border-cyan-500/10 flex items-center justify-center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-600 dark:text-cyan-400">
+            <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+          </svg>
+        </div>
       ),
       title: 'Immersive Frequencies',
       description: 'Fullscreen sessions with ambient visuals and a teleprompter that explains the science as you listen.',
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-600 dark:text-teal-400">
-          <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
-        </svg>
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-500/10 dark:to-teal-500/5 border border-teal-100 dark:border-teal-500/10 flex items-center justify-center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-600 dark:text-teal-400">
+            <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+          </svg>
+        </div>
       ),
       title: 'Breathing Guide',
       description: 'Configurable inhale-hold-exhale patterns with visual animation. 4-7-8, box breathing, and custom.',
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-indigo-600 dark:text-indigo-400">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-        </svg>
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-500/10 dark:to-indigo-500/5 border border-indigo-100 dark:border-indigo-500/10 flex items-center justify-center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-indigo-600 dark:text-indigo-400">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
       ),
       title: 'Clinically Researched',
-      description: '20 frequencies backed by peer-reviewed studies. Each one explains its mechanism and contraindications.',
+      description: '23 frequencies backed by peer-reviewed studies. Each one includes full research citations and clinical evidence.',
     },
   ]
 
@@ -187,11 +194,11 @@ function Features() {
   )
 }
 
-/* ─── Frequency Preview with audio play ────────────────── */
+/* ─── Frequency Preview with expandable science ────────── */
 function FrequencyPreview() {
   const [playingId, setPlayingId] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  // Sync with global audio manager
   useEffect(() => {
     if (!audioManager) return
     return audioManager.subscribe(state => {
@@ -221,6 +228,7 @@ function FrequencyPreview() {
         <div className="grid md:grid-cols-3 gap-5 mb-12">
           {featured.map((freq, i) => {
             const isPlaying = playingId === freq.id
+            const isExpanded = expandedId === freq.id
             return (
               <motion.div key={freq.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }}>
                 <div className="group p-6 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08] hover:shadow-lg hover:shadow-gray-100/50 dark:hover:shadow-none transition-all duration-500">
@@ -231,8 +239,8 @@ function FrequencyPreview() {
                   <h3 className="text-xl font-light text-gray-900 dark:text-white/80 mb-2" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>{freq.name}</h3>
                   <p className="text-sm text-gray-400 dark:text-white/25 line-clamp-2 leading-relaxed mb-4">{freq.description}</p>
                   
-                  {/* Audio preview + start session buttons */}
-                  <div className="flex items-center gap-2">
+                  {/* Audio preview + session + science buttons */}
+                  <div className="flex items-center gap-2 flex-wrap">
                     <button
                       onClick={() => togglePlay(freq)}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all duration-300 border ${
@@ -255,7 +263,53 @@ function FrequencyPreview() {
                       Full Session
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                     </Link>
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : freq.id)}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border transition-all duration-300 ${
+                        isExpanded
+                          ? 'border-indigo-300 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/5 text-indigo-600 dark:text-indigo-400'
+                          : 'border-gray-200 dark:border-white/[0.06] text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-white/50 hover:border-gray-300 dark:hover:border-white/10'
+                      }`}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+                      {isExpanded ? 'Less' : 'Science'}
+                    </button>
                   </div>
+
+                  {/* Expandable science section */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/[0.06] space-y-3">
+                          {freq.mechanism && (
+                            <div>
+                              <p className="text-[10px] text-gray-400 dark:text-white/25 uppercase tracking-wider mb-1">Mechanism</p>
+                              <p className="text-xs text-gray-600 dark:text-white/40 leading-relaxed">{freq.mechanism}</p>
+                            </div>
+                          )}
+                          {freq.benefits?.slice(0, 4).map((b, j) => (
+                            <div key={j} className="flex items-start gap-2">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-500 mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+                              <span className="text-xs text-gray-500 dark:text-white/35">{b}</span>
+                            </div>
+                          ))}
+                          {freq.research_citations?.slice(0, 2).map((cite, j) => (
+                            <p key={j} className="text-[10px] text-gray-400 dark:text-white/20 italic leading-relaxed">📄 {cite}</p>
+                          ))}
+                          <Link href={`/frequencies/${freq.slug}`} className="inline-flex items-center gap-1.5 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors mt-1">
+                            Read full article
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                          </Link>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             )
@@ -264,7 +318,7 @@ function FrequencyPreview() {
 
         <div className="text-center">
           <Link href="/frequencies" className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white transition-colors">
-            View all 20 frequencies
+            View all 23 frequencies
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>
         </div>
@@ -273,13 +327,14 @@ function FrequencyPreview() {
   )
 }
 
-/* ─── Breathing with carousel ─────────────────────────────── */
+/* ─── Breathing with carousel + science ───────────────────── */
 function Breathing() {
   const [currentPreset, setCurrentPreset] = useState(0)
+  const [showScience, setShowScience] = useState(false)
   const preset = BREATHING_PRESETS[currentPreset]
 
-  const prev = () => setCurrentPreset((currentPreset - 1 + BREATHING_PRESETS.length) % BREATHING_PRESETS.length)
-  const next = () => setCurrentPreset((currentPreset + 1) % BREATHING_PRESETS.length)
+  const prev = () => { setCurrentPreset((currentPreset - 1 + BREATHING_PRESETS.length) % BREATHING_PRESETS.length); setShowScience(false) }
+  const next = () => { setCurrentPreset((currentPreset + 1) % BREATHING_PRESETS.length); setShowScience(false) }
 
   return (
     <section className="py-32 px-6">
@@ -325,7 +380,36 @@ function Breathing() {
                     <p className="text-xs text-gray-400 dark:text-white/20 mt-1">Exhale</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-white/30 max-w-sm mx-auto leading-relaxed">{preset.desc}</p>
+                <p className="text-sm text-gray-500 dark:text-white/30 max-w-sm mx-auto leading-relaxed mb-3">{preset.desc}</p>
+                
+                {/* Science toggle */}
+                <button
+                  onClick={() => setShowScience(!showScience)}
+                  className="inline-flex items-center gap-1.5 text-xs text-cyan-600 dark:text-cyan-400/60 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+                  {showScience ? 'Hide science' : 'See the science'}
+                </button>
+                
+                <AnimatePresence>
+                  {showScience && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.04] text-left">
+                        <p className="text-xs text-gray-600 dark:text-white/40 leading-relaxed mb-3">{preset.science}</p>
+                        <Link href={preset.link} className="inline-flex items-center gap-1.5 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors">
+                          Read related frequency article
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </AnimatePresence>
 
@@ -337,7 +421,7 @@ function Breathing() {
           {/* Dots */}
           <div className="flex items-center justify-center gap-2">
             {BREATHING_PRESETS.map((_, i) => (
-              <button key={i} onClick={() => setCurrentPreset(i)}
+              <button key={i} onClick={() => { setCurrentPreset(i); setShowScience(false) }}
                 className={`w-2 h-2 rounded-full transition-all ${i === currentPreset ? 'bg-cyan-500 w-4' : 'bg-gray-300 dark:bg-white/10'}`}
                 aria-label={`Pattern ${i + 1}`} />
             ))}
@@ -361,7 +445,7 @@ function PricingSection() {
             One plan, full access
           </h2>
           <p className="text-gray-400 dark:text-white/30 max-w-md mx-auto mb-10">
-            Start free with 2 frequencies. Upgrade for unlimited sessions and all 20 frequencies.
+            Start free with 2 frequencies. Upgrade for unlimited sessions and all 23 frequencies.
           </p>
 
           {/* Billing toggle */}
@@ -388,7 +472,7 @@ function PricingSection() {
               </Link>
             </div>
 
-            {/* Premium — shows the real price */}
+            {/* Premium */}
             <div className="p-6 rounded-2xl border border-cyan-200 dark:border-cyan-500/20 bg-gradient-to-b from-cyan-50 to-white dark:from-cyan-500/[0.04] dark:to-transparent text-left relative">
               {billing === 'annual' && (
                 <div className="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-cyan-500 text-white text-[10px] tracking-wider uppercase font-medium">Best value</div>
@@ -426,7 +510,7 @@ function PricingSection() {
   )
 }
 
-/* ─── Pain Points — speak to their struggle ─────────────── */
+/* ─── Pain Points ──────────────────────────────────────────── */
 function PainPoints() {
   const pains = [
     { stat: '77%', label: 'of adults experience stress that affects their physical health', icon: '😰' },
@@ -464,42 +548,113 @@ function PainPoints() {
   )
 }
 
-/* ─── Testimonials — social proof ─────────────────────────── */
+/* ─── Testimonials — YouTube comment slider ────────────────── */
 function Testimonials() {
-  const reviews = [
-    { name: 'Sarah M.', role: 'Chronic Insomnia · 8 years', text: 'I was skeptical. I\'d tried everything — melatonin, white noise, sleep clinics. After two weeks with the Delta sleep frequency, I\'m sleeping 7+ hours for the first time in years. My doctor noticed the difference.', rating: 5 },
-    { name: 'James K.', role: 'Software Engineer', text: 'I use the 40 Hz Gamma frequency during deep work sessions. My focus has measurably improved — I track my output, and I\'m shipping 40% more code in the same hours. No jitters like caffeine.', rating: 5 },
-    { name: 'Dr. Elena R.', role: 'Clinical Psychologist', text: 'I recommend frequency therapy to patients who resist traditional meditation. The structured breathing guides give them a framework. The science explanations build trust. Several patients have reduced their anxiety medication.', rating: 5 },
-  ]
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const VISIBLE_COUNT = 3
+  const maxIndex = youtubeTestimonials.length - VISIBLE_COUNT
+
+  const goTo = useCallback((index: number) => {
+    setCurrentIndex(Math.max(0, Math.min(index, maxIndex)))
+  }, [maxIndex])
+
+  // Auto-advance
+  useEffect(() => {
+    if (!isAutoPlaying) return
+    const timer = setInterval(() => {
+      setCurrentIndex(prev => prev >= maxIndex ? 0 : prev + 1)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [isAutoPlaying, maxIndex])
 
   return (
     <section className="py-24 px-6 bg-gray-50 dark:bg-white/[0.01]">
       <div className="max-w-5xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.8 }} className="text-center mb-16">
-          <p className="text-xs tracking-[0.25em] uppercase text-cyan-600 dark:text-cyan-400/60 mb-4 font-medium">Real results</p>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.8 }} className="text-center mb-12">
+          <p className="text-xs tracking-[0.25em] uppercase text-cyan-600 dark:text-cyan-400/60 mb-4 font-medium">Real feedback</p>
+          <h2 className="text-3xl md:text-4xl font-light tracking-tight mb-2" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
             People who were skeptical too
           </h2>
+          <p className="text-sm text-gray-400 dark:text-white/25">From the frequency therapy community</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {reviews.map((r, i) => (
-            <motion.div key={r.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 }}
-              className="p-6 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02]">
-              <div className="flex gap-0.5 mb-4">
-                {[...Array(r.rating)].map((_, j) => (
-                  <svg key={j} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-amber-400">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                ))}
-              </div>
-              <p className="text-sm text-gray-600 dark:text-white/40 leading-relaxed mb-4">&ldquo;{r.text}&rdquo;</p>
-              <div>
-                <p className="text-sm font-medium text-gray-900 dark:text-white/70">{r.name}</p>
-                <p className="text-xs text-gray-400 dark:text-white/25">{r.role}</p>
-              </div>
+        {/* Slider container */}
+        <div 
+          className="relative overflow-hidden rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] p-6"
+          onMouseEnter={() => setIsAutoPlaying(false)}
+          onMouseLeave={() => setIsAutoPlaying(true)}
+        >
+          <div ref={scrollRef} className="overflow-hidden">
+            <motion.div
+              className="flex gap-4"
+              animate={{ x: `-${currentIndex * (100 / VISIBLE_COUNT)}%` }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {youtubeTestimonials.map((t) => (
+                <div key={t.id} className="flex-shrink-0 w-full md:w-[calc(33.333%-11px)] p-5 rounded-xl border border-gray-100 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.02]">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white/70 truncate">{t.name}</p>
+                      <p className="text-[10px] text-gray-400 dark:text-white/20">{t.timeAgo}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-white/40 leading-relaxed mb-3 line-clamp-4">&ldquo;{t.comment}&rdquo;</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-[10px] text-gray-400 dark:text-white/20">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                      {t.likes.toLocaleString()}
+                    </div>
+                    {t.frequency && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-400/5 text-cyan-600 dark:text-cyan-400/60 border border-cyan-100 dark:border-cyan-400/10">
+                        {t.frequency}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </motion.div>
-          ))}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-1.5">
+              {Array.from({ length: Math.ceil(youtubeTestimonials.length / VISIBLE_COUNT) }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i * VISIBLE_COUNT)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    Math.floor(currentIndex / VISIBLE_COUNT) === i
+                      ? 'w-6 bg-cyan-500'
+                      : 'w-1.5 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/15'
+                  }`}
+                  aria-label={`Page ${i + 1}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => goTo(currentIndex - 1)}
+                disabled={currentIndex <= 0}
+                className="p-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] text-gray-400 dark:text-white/25 hover:text-gray-600 dark:hover:text-white/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                aria-label="Previous"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+              </button>
+              <button
+                onClick={() => goTo(currentIndex + 1)}
+                disabled={currentIndex >= maxIndex}
+                className="p-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] text-gray-400 dark:text-white/25 hover:text-gray-600 dark:hover:text-white/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                aria-label="Next"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -524,16 +679,22 @@ function ScienceProof() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {[
-            { freq: 'Delta (0.5–4 Hz)', effect: 'Deep sleep, tissue repair, immune function', source: 'Journal of Sleep Research, 2023' },
-            { freq: 'Theta (4–8 Hz)', effect: 'Deep meditation, creativity, emotional healing', source: 'Neuroscience Letters, 2022' },
-            { freq: 'Alpha (8–14 Hz)', effect: 'Relaxation, stress reduction, calm focus', source: 'International Journal of Psychophysiology, 2023' },
-            { freq: 'Gamma (30–100 Hz)', effect: 'Peak focus, memory consolidation, cognitive binding', source: 'Nature Neuroscience, 2024' },
+            { freq: 'Delta (0.5–4 Hz)', effect: 'Deep sleep, tissue repair, immune function', source: 'Journal of Sleep Research, 2023', slug: 'deep-sleep-delta' },
+            { freq: 'Theta (4–8 Hz)', effect: 'Deep meditation, creativity, emotional healing', source: 'Neuroscience Letters, 2022', slug: 'schumann-earth-resonance' },
+            { freq: 'Alpha (8–14 Hz)', effect: 'Relaxation, stress reduction, calm focus', source: 'International Journal of Psychophysiology, 2023', slug: 'anxiety-liberation' },
+            { freq: 'Gamma (30–100 Hz)', effect: 'Peak focus, memory consolidation, cognitive binding', source: 'Nature Neuroscience, 2024', slug: 'gamma-focus' },
           ].map((item, i) => (
-            <motion.div key={item.freq} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="p-5 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02]">
-              <p className="text-sm font-medium text-gray-900 dark:text-white/70 mb-1">{item.freq}</p>
-              <p className="text-sm text-gray-500 dark:text-white/35 mb-2">{item.effect}</p>
-              <p className="text-[10px] text-gray-400 dark:text-white/20 italic">{item.source}</p>
+            <motion.div key={item.freq} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}>
+              <Link href={`/frequencies/${item.slug}`}
+                className="block p-5 rounded-2xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/[0.08] transition-all group">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white/70">{item.freq}</p>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-300 dark:text-white/10 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-white/35 mb-2">{item.effect}</p>
+                <p className="text-[10px] text-gray-400 dark:text-white/20 italic">{item.source}</p>
+                <p className="text-[10px] text-cyan-600 dark:text-cyan-400/50 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Read full article →</p>
+              </Link>
             </motion.div>
           ))}
         </div>
@@ -549,8 +710,18 @@ function ScienceProof() {
   )
 }
 
-/* ─── Final CTA — urgency ─────────────────────────────────── */
+/* ─── Final CTA with protocol preview ─────────────────────── */
 function FinalCTA() {
+  const [showProtocol, setShowProtocol] = useState(false)
+
+  const protocolDays = [
+    { day: '1–3', title: 'Calibration', desc: 'Your brain learns to recognize the frequency. Start with 10-minute sessions using headphones. You may feel subtle tingling or deep relaxation.', icon: '🎧' },
+    { day: '4–7', title: 'Foundation', desc: 'Brainwave entrainment begins. Sessions extend to 20 minutes. Most people report improved sleep quality by day 5.', icon: '🌱' },
+    { day: '8–14', title: 'Deepening', desc: 'The real changes start. Your nervous system adapts to the frequency. Add breathing exercises for 2x effectiveness.', icon: '🔬' },
+    { day: '15–21', title: 'Integration', desc: 'Effects compound. Many users report measurable changes in stress markers, sleep patterns, and focus duration.', icon: '📈' },
+    { day: '22–25', title: 'Mastery', desc: 'Your brain now responds quickly to the frequency. You\'ve built a sustainable practice. Maintenance: 3–4 sessions per week.', icon: '🏆' },
+  ]
+
   return (
     <section className="py-24 px-6 bg-gray-50 dark:bg-white/[0.01]">
       <div className="max-w-3xl mx-auto text-center">
@@ -576,6 +747,68 @@ function FinalCTA() {
             </svg>
           </Link>
           <p className="text-xs text-gray-400 dark:text-white/15 mt-6">No account required · 5-minute free sessions · Cancel anytime after upgrading</p>
+
+          {/* Protocol preview toggle */}
+          <div className="mt-10">
+            <button
+              onClick={() => setShowProtocol(!showProtocol)}
+              className="inline-flex items-center gap-2 text-sm text-cyan-600 dark:text-cyan-400/60 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              {showProtocol ? 'Hide' : 'See'} the 25-day protocol
+              <motion.svg
+                animate={{ rotate: showProtocol ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </motion.svg>
+            </button>
+
+            <AnimatePresence>
+              {showProtocol && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-8 space-y-3 text-left max-w-xl mx-auto">
+                    {protocolDays.map((phase, i) => (
+                      <motion.div
+                        key={phase.day}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1, duration: 0.4 }}
+                        className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-white/[0.04] bg-white dark:bg-white/[0.02]"
+                      >
+                        <span className="text-2xl flex-shrink-0">{phase.icon}</span>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400/60 tabular-nums">Day {phase.day}</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-white/70">{phase.title}</span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-white/30 leading-relaxed">{phase.desc}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                    <div className="text-center pt-4">
+                      <Link href="/protocols" className="inline-flex items-center gap-2 text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors">
+                        Explore full protocols
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -601,6 +834,7 @@ function Footer() {
             <p className="text-xs font-medium text-gray-900 dark:text-white/60 uppercase tracking-wider mb-4">Product</p>
             <div className="space-y-2.5">
               <Link href="/frequencies" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Frequencies</Link>
+              <Link href="/protocols" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Protocols</Link>
               <Link href="/pricing" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link>
               <Link href="/experience/2" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Try Now</Link>
             </div>
@@ -610,6 +844,7 @@ function Footer() {
             <div className="space-y-2.5">
               <Link href="/auth/login" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
               <Link href="/auth/register" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Create Account</Link>
+              <Link href="/dashboard" className="block text-sm text-gray-500 dark:text-white/25 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
             </div>
           </div>
           <div>

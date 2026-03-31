@@ -49,6 +49,7 @@ export interface ProgressStats {
 export interface Frequency {
   id: string
   name: string
+  slug: string
   hz_value: number
   category: FrequencyCategory
   description: string
