@@ -13,6 +13,8 @@ import { useChat } from '@ai-sdk/react'
 import { isToolUIPart, getToolName, type UIMessage } from 'ai'
 import { getFrequencyById } from '@/lib/frequencies'
 import { useSessionHistory } from '@/lib/sessionHistory'
+import { useAuth } from '@/lib/authState'
+import { useSubscription } from '@/lib/useSubscription'
 import { Frequency } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -248,6 +250,9 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
   const inputRef = useRef<HTMLInputElement>(null)
   const processedToolCalls = useRef<Set<string>>(new Set())
   const { addChatEntry, getProfileSummaryForAI } = useSessionHistory()
+  const { isSuperadmin } = useAuth()
+  const { isActive: hasSubscription } = useSubscription()
+  const canUseChat = hasSubscription || isSuperadmin
 
   const { messages, sendMessage, status } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -348,72 +353,83 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
       </div>
 
       {/* Messages — scrolls within this container, NOT the page */}
-      <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto px-5 py-4 scroll-smooth">
-        {!hasStarted ? (
-          <div className="text-center py-4">
-            <p className="text-sm text-gray-600 dark:text-white/50 mb-1">
-              Tell me how you feel, and I&apos;ll find the perfect frequency for you.
-            </p>
-            <p className="text-xs text-gray-400 dark:text-white/25 mb-4">
-              I speak English, Spanish, and more 🌎
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {CHAT_SUGGESTIONS.map(s => (
-                <button
-                  key={s.label}
-                  onClick={() => handleSuggestion(s.prompt)}
-                  className="px-3 py-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] text-xs text-gray-600 dark:text-white/50 hover:border-cyan-400/40 hover:bg-cyan-50 dark:hover:bg-cyan-500/10 hover:text-cyan-700 dark:hover:text-cyan-400 transition-all"
-                >
-                  {s.emoji} {s.label}
-                </button>
-              ))}
+      {canUseChat ? (
+        <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto px-5 py-4 scroll-smooth">
+          {!hasStarted ? (
+            <div className="text-center py-4">
+              <p className="text-sm text-gray-600 dark:text-white/50 mb-1">
+                Tell me how you feel, and I&apos;ll find the perfect frequency for you.
+              </p>
+              <p className="text-xs text-gray-400 dark:text-white/25 mb-4">
+                I speak English, Spanish, and more 🌎
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {CHAT_SUGGESTIONS.map(s => (
+                  <button
+                    key={s.label}
+                    onClick={() => handleSuggestion(s.prompt)}
+                    className="px-3 py-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] text-xs text-gray-600 dark:text-white/50 hover:border-cyan-400/40 hover:bg-cyan-50 dark:hover:bg-cyan-500/10 hover:text-cyan-700 dark:hover:text-cyan-400 transition-all"
+                  >
+                    {s.emoji} {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {messages.map((message: UIMessage) => (
-              <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[90%] ${
-                  message.role === 'user'
-                    ? 'rounded-2xl rounded-br-md px-4 py-2.5 bg-gray-900 dark:bg-white/10 text-white text-sm'
-                    : 'text-gray-700 dark:text-white/70'
-                }`}>
-                  {message.parts.map((part, idx) => {
-                    if (part.type === 'text') {
-                      return (
-                        <div key={idx}>
-                          {renderMarkdown(part.text)}
-                        </div>
-                      )
-                    }
-                    if (isToolUIPart(part) && part.state === 'output-available') {
-                      return (
-                        <ChatToolResult
-                          key={idx}
-                          toolName={getToolName(part)}
-                          output={part.output}
-                          onSelectFrequency={onSelectFrequency}
-                        />
-                      )
-                    }
-                    return null
-                  })}
+          ) : (
+            <div className="space-y-4">
+              {messages.map((message: UIMessage) => (
+                <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[90%] ${
+                    message.role === 'user'
+                      ? 'rounded-2xl rounded-br-md px-4 py-2.5 bg-gray-900 dark:bg-white/10 text-white text-sm'
+                      : 'text-gray-700 dark:text-white/70'
+                  }`}>
+                    {message.parts.map((part, idx) => {
+                      if (part.type === 'text') {
+                        return (
+                          <div key={idx}>
+                            {renderMarkdown(part.text)}
+                          </div>
+                        )
+                      }
+                      if (isToolUIPart(part) && part.state === 'output-available') {
+                        return (
+                          <ChatToolResult
+                            key={idx}
+                            toolName={getToolName(part)}
+                            output={part.output}
+                            onSelectFrequency={onSelectFrequency}
+                          />
+                        )
+                      }
+                      return null
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
 
-            {isLoading && (
-              <div className="flex justify-start">
-                <StreamingDots />
-              </div>
-            )}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <StreamingDots />
+                </div>
+              )}
 
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </div>
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Paywall — shown to free users instead of chat */
+        <div className="text-center p-6">
+          <span className="text-2xl mb-2 block">✨</span>
+          <p className="text-sm font-medium text-gray-900 dark:text-white/80 mb-1">AI Advisor is a Premium feature</p>
+          <p className="text-xs text-gray-500 dark:text-white/35 mb-4">Get personalized frequency recommendations powered by AI</p>
+          <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white text-sm font-medium">Upgrade to Premium</Link>
+        </div>
+      )}
 
-      {/* Input */}
+      {/* Input — only shown to subscribers */}
+      {canUseChat && (
       <div className="border-t border-gray-100 dark:border-white/[0.06] p-3">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
@@ -436,6 +452,7 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
           </button>
         </form>
       </div>
+      )}
     </motion.div>
   )
 }

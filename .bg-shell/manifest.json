@@ -1,16 +1,1 @@
-[
-  {
-    "id": "4af03d83",
-    "label": "dev-server",
-    "command": "cd /Users/sergioduran/clawd/projects/frequency-therapy-app/web && DEEPSEEK_API_KEY=sk-49654d20bcc5477cbb8735c848a58daf OPENAI_API_KEY=sk-49654d20bcc5477cbb8735c848a58daf OPENAI_BASE_URL=https://api.deepseek.com npm run dev 2>&1",
-    "cwd": "/Users/sergioduran/clawd/projects/frequency-therapy-app",
-    "ownerSessionFile": "/Users/sergioduran/.gsd/sessions/--Users-sergioduran-clawd-projects-frequency-therapy-app--/2026-03-31T03-22-33-950Z_7a898cee-66ef-4f52-9cc4-a05d4ac62578.jsonl",
-    "persistAcrossSessions": false,
-    "startedAt": 1774943482243,
-    "processType": "server",
-    "group": null,
-    "readyPattern": null,
-    "readyPort": 3000,
-    "pid": 60572
-  }
-]
+[]

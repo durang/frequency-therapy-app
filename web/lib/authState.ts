@@ -100,14 +100,13 @@ export const useAuthStore = create<AuthState>()(
             error: null
           })
           
-          // Clear any auth-related localStorage items
+          // Clear persisted auth state from localStorage
           if (typeof window !== 'undefined') {
             try {
-              // Clear session storage but keep user preferences
-              sessionStorage.removeItem('freq-auth-session-storage')
-              console.log('✅ [AuthState] Session storage cleared')
+              localStorage.removeItem('freq-auth-storage')
+              console.log('✅ [AuthState] Auth storage cleared')
             } catch (storageError) {
-              console.warn('[AuthState] Failed to clear session storage:', storageError)
+              console.warn('[AuthState] Failed to clear auth storage:', storageError)
             }
           }
           
@@ -259,27 +258,16 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'freq-auth-storage',
       storage: createJSONStorage(() => {
-        // Use different storage for different types of data
         if (typeof window !== 'undefined') {
           return {
-            // Custom storage that persists user preferences in localStorage
-            // but keeps session data in sessionStorage for security
+            // All auth data persists in localStorage — Supabase handles
+            // session security via token expiration and refresh
             getItem: (name: string) => {
               try {
                 if (name === 'freq-auth-storage') {
-                  // Get persisted user preferences from localStorage
-                  const prefs = localStorage.getItem('freq-auth-preferences')
-                  // Get session data from sessionStorage
-                  const session = sessionStorage.getItem('freq-auth-session-storage')
-                  
-                  // Merge preferences with session data
-                  const preferences = prefs ? JSON.parse(prefs) : {}
-                  const sessionData = session ? JSON.parse(session) : {}
-                  
-                  return JSON.stringify({
-                    ...preferences,
-                    ...sessionData
-                  })
+                  // All auth data persists in localStorage — Supabase handles
+                  // session security via token expiration and TOKEN_REFRESHED events
+                  return localStorage.getItem('freq-auth-storage')
                 }
                 return null
               } catch {
@@ -289,25 +277,7 @@ export const useAuthStore = create<AuthState>()(
             setItem: (name: string, value: string) => {
               try {
                 if (name === 'freq-auth-storage') {
-                  const data = JSON.parse(value)
-                  
-                  // Split data between localStorage (preferences) and sessionStorage (session)
-                  const preferences = {
-                    // Store user preferences that should persist across sessions
-                    lastEmail: data.user?.email || null,
-                  }
-                  
-                  const sessionData = {
-                    // Store session-sensitive data that should expire with browser session
-                    user: data.user,
-                    supabaseUser: data.supabaseUser,
-                    session: data.session,
-                    initializing: data.initializing,
-                    // Don't persist loading or error states
-                  }
-                  
-                  localStorage.setItem('freq-auth-preferences', JSON.stringify(preferences))
-                  sessionStorage.setItem('freq-auth-session-storage', JSON.stringify(sessionData))
+                  localStorage.setItem('freq-auth-storage', value)
                 }
               } catch (error) {
                 console.warn('[AuthState] Failed to save auth state:', error)
@@ -316,8 +286,7 @@ export const useAuthStore = create<AuthState>()(
             removeItem: (name: string) => {
               try {
                 if (name === 'freq-auth-storage') {
-                  localStorage.removeItem('freq-auth-preferences')
-                  sessionStorage.removeItem('freq-auth-session-storage')
+                  localStorage.removeItem('freq-auth-storage')
                 }
               } catch (error) {
                 console.warn('[AuthState] Failed to remove auth state:', error)
@@ -417,8 +386,7 @@ export const authUtils = {
       // Clear all auth storage
       if (typeof window !== 'undefined') {
         try {
-          localStorage.removeItem('freq-auth-preferences')
-          sessionStorage.removeItem('freq-auth-session-storage')
+          localStorage.removeItem('freq-auth-storage')
           sessionStorage.removeItem('sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1] + '-auth-token')
         } catch (storageError) {
           console.error('[AuthState] Failed to clear auth storage during emergency reset:', storageError)

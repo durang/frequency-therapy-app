@@ -11,6 +11,8 @@ import { useState, useEffect, useRef, useCallback, type FormEvent } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { isToolUIPart, getToolName, type UIMessage } from 'ai'
 import { useSessionHistory } from '@/lib/sessionHistory'
+import { useAuth } from '@/lib/authState'
+import { useSubscription } from '@/lib/useSubscription'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
@@ -253,6 +255,9 @@ export function ProtocolChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { getProfileSummaryForAI } = useSessionHistory()
+  const { isSuperadmin } = useAuth()
+  const { isActive: hasSubscription } = useSubscription()
+  const canUseChat = hasSubscription || isSuperadmin
 
   const { messages, sendMessage, status } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -302,41 +307,53 @@ export function ProtocolChat() {
           Tell me your goal and I&apos;ll recommend the perfect protocol — with the science behind it
         </p>
 
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="flex gap-2 max-w-lg mx-auto">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="e.g. I want to sleep better, reduce anxiety, improve focus..."
-            className="flex-1 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.03] px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 outline-none focus:border-cyan-500/40 dark:focus:border-cyan-500/30 transition-colors"
-            disabled={isLoading}
-          />
-          <button type="submit" disabled={isLoading || !input.trim()}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white text-sm font-medium hover:from-cyan-600 hover:to-teal-700 disabled:opacity-30 transition-all">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
-          </button>
-        </form>
-
-        {/* Goal suggestions — shown when not started */}
-        {!hasStarted && (
-          <div className="flex flex-wrap justify-center gap-2 mt-4">
-            {GOAL_SUGGESTIONS.map(s => (
-              <button key={s.label} onClick={() => handleSuggestion(s.prompt)}
-                className="px-3 py-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] text-xs text-gray-600 dark:text-white/40 hover:border-cyan-400/40 hover:bg-cyan-50 dark:hover:bg-cyan-500/10 hover:text-cyan-700 dark:hover:text-cyan-400 transition-all">
-                {s.emoji} {s.label}
+        {/* Input — only for subscribers */}
+        {canUseChat ? (
+          <>
+            <form onSubmit={handleSubmit} className="flex gap-2 max-w-lg mx-auto">
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="e.g. I want to sleep better, reduce anxiety, improve focus..."
+                className="flex-1 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.03] px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 outline-none focus:border-cyan-500/40 dark:focus:border-cyan-500/30 transition-colors"
+                disabled={isLoading}
+              />
+              <button type="submit" disabled={isLoading || !input.trim()}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white text-sm font-medium hover:from-cyan-600 hover:to-teal-700 disabled:opacity-30 transition-all">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
               </button>
-            ))}
+            </form>
+
+            {/* Goal suggestions — shown when not started */}
+            {!hasStarted && (
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
+                {GOAL_SUGGESTIONS.map(s => (
+                  <button key={s.label} onClick={() => handleSuggestion(s.prompt)}
+                    className="px-3 py-1.5 rounded-full border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] text-xs text-gray-600 dark:text-white/40 hover:border-cyan-400/40 hover:bg-cyan-50 dark:hover:bg-cyan-500/10 hover:text-cyan-700 dark:hover:text-cyan-400 transition-all">
+                    {s.emoji} {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          /* Paywall — shown to free users */
+          <div className="text-center pt-2">
+            <span className="text-2xl mb-2 block">✨</span>
+            <p className="text-sm font-medium text-gray-900 dark:text-white/80 mb-1">AI Advisor is a Premium feature</p>
+            <p className="text-xs text-gray-500 dark:text-white/35 mb-4">Get personalized frequency recommendations powered by AI</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white text-sm font-medium">Upgrade to Premium</Link>
           </div>
         )}
       </div>
 
-      {/* Chat conversation — expands when active */}
+      {/* Chat conversation — expands when active (subscribers only) */}
       <AnimatePresence>
-        {isExpanded && (
+        {isExpanded && canUseChat && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}

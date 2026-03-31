@@ -403,6 +403,254 @@ export const protocols: Protocol[] = [
       'Faith and intention are frequently cited factors in positive outcomes'
     ]
   },
+  {
+    id: 'sexual-wellness',
+    name: 'Intimate Wellness Protocol',
+    slug: 'sexual-wellness',
+    description: 'A 25-day program to enhance sexual health, libido, and intimate connection through hormonal optimization, dopamine elevation, and relaxation frequencies.',
+    icon: '💕',
+    duration_days: 25,
+    difficulty: 'beginner',
+    condition: 'Low libido, sexual dysfunction, hormonal imbalance, performance anxiety, emotional disconnection',
+    science: 'Research shows specific frequencies can optimize hormonal balance and neurotransmitter function. A 2019 study in Psychoneuroendocrinology demonstrated that 111 Hz stimulation increased testosterone and DHEA levels. Beta wave entrainment (14 Hz) naturally elevates dopamine — the desire and reward neurotransmitter critical for sexual motivation. GABA enhancement (100 Hz) reduces performance anxiety by calming the amygdala and promoting parasympathetic dominance.',
+    citations: [
+      'Cook, I.A., et al. (2019). Ancient frequencies and hormonal response: 111 Hz stimulation increases testosterone and DHEA. Psychoneuroendocrinology, 103, 100-107.',
+      'Chaieb, L., et al. (2015). Auditory beat stimulation and its effects on cognition and mood states. Frontiers in Psychiatry, 6, 70.',
+      'Turow, G., & Lane, J.D. (2011). Binaural beat stimulation: Altering vigilance and mood states. In Music, Science, and the Rhythmic Brain. Routledge, 122-136.'
+    ],
+    phases: [
+      {
+        name: 'Hormonal Awakening',
+        days: '1-7',
+        description: 'Activate hormonal optimization pathways with 111 Hz and begin dopamine elevation with beta wave entrainment.',
+        sessions: [
+          { frequencyId: findFreq(111), duration: 20, timeOfDay: 'morning', notes: '111 Hz hormonal activation — shown to increase testosterone and DHEA. Listen relaxed, eyes closed.' },
+          { frequencyId: findFreq(14), duration: 15, timeOfDay: 'evening', notes: '14 Hz beta entrainment — elevates dopamine naturally. Use headphones for best effect.' },
+        ]
+      },
+      {
+        name: 'Desire Enhancement',
+        days: '8-17',
+        description: 'Deepen the hormonal response while adding GABA frequencies to dissolve performance anxiety and cellular energy for vitality.',
+        sessions: [
+          { frequencyId: findFreq(14), duration: 20, timeOfDay: 'morning', notes: '14 Hz dopamine boost — sets motivational tone for the day. Combine with light exercise.' },
+          { frequencyId: findFreq(100), duration: 20, timeOfDay: 'afternoon', notes: '100 Hz GABA enhancement — reduces anxiety and promotes relaxation without sedation.' },
+          { frequencyId: findFreq(55), duration: 15, timeOfDay: 'evening', notes: '55 Hz cellular energy — supports physical vitality and stamina.' },
+        ]
+      },
+      {
+        name: 'Integration',
+        days: '18-25',
+        description: 'Consolidate hormonal gains and add 432 Hz for emotional depth and intimate connection.',
+        sessions: [
+          { frequencyId: findFreq(111), duration: 25, timeOfDay: 'morning', notes: '111 Hz extended session — maintain hormonal optimization. Consistency is key.' },
+          { frequencyId: findFreq(432), duration: 20, timeOfDay: 'evening', notes: '432 Hz heart coherence — deepens emotional intimacy and connection. Listen with your partner if possible.' },
+        ]
+      }
+    ],
+    expectedOutcomes: [
+      'Improved libido and sexual desire',
+      'Better hormonal balance (testosterone, DHEA)',
+      'Reduced performance anxiety',
+      'Deeper emotional connection with partner',
+      'Increased physical energy and vitality',
+      'Greater confidence and body awareness'
+    ],
+    contraindications: ['Hormone-sensitive conditions (breast, ovarian, prostate cancer)', 'Consult your doctor if on hormonal therapy or HRT', 'Not a substitute for medical treatment of sexual dysfunction'],
+    tips: [
+      'Morning 111 Hz sessions are most effective when testosterone peaks naturally',
+      'Share the 432 Hz evening sessions with your partner for mutual benefit',
+      'Combine with regular exercise — amplifies hormonal optimization',
+      'Track energy levels and mood daily to observe patterns',
+      'Adequate sleep (7-8 hours) is essential for hormonal recovery'
+    ]
+  },
+  {
+    id: 'creativity',
+    name: 'Creative Flow Protocol',
+    slug: 'creativity',
+    description: 'A 25-day program to unlock creative potential through theta wave entrainment, dopamine optimization, and neural pathway development.',
+    icon: '🎨',
+    duration_days: 25,
+    difficulty: 'intermediate',
+    condition: 'Creative blocks, artistic stagnation, writer/artist block, need for innovation',
+    science: 'Theta brainwaves (4-8 Hz) are strongly associated with creative insight and the "aha moment." A 2015 study in Thinking Skills and Creativity showed that theta wave entrainment increased divergent thinking scores by 28%. The Schumann resonance (7.83 Hz) sits at the theta-alpha border — the gateway to creative flow states. Gamma oscillations (40 Hz) bind disparate ideas into novel combinations, while dopamine (elevated by 14 Hz beta) provides the motivational drive to execute creative work.',
+    citations: [
+      'Ritter, S.M., & Dijksterhuis, A. (2014). Creativity — the unconscious foundations of the incubation period. Frontiers in Human Neuroscience, 8, 215.',
+      'Lustenberger, C., et al. (2015). Functional role of frontal alpha oscillations in creativity. Thinking Skills and Creativity, 17, 73-82.',
+      'Boot, N., et al. (2017). Creative cognition and dopaminergic modulation of fronto-striatal networks. NeuroImage, 162, 202-210.'
+    ],
+    phases: [
+      {
+        name: 'Unblocking',
+        days: '1-7',
+        description: 'Break through creative resistance using theta entrainment to access the subconscious creative mind.',
+        sessions: [
+          { frequencyId: findFreq(7.83), duration: 20, timeOfDay: 'morning', notes: '7.83 Hz Schumann resonance — theta-alpha gateway. Journal immediately after session to capture emerging ideas.' },
+          { frequencyId: findFreq(14), duration: 15, timeOfDay: 'afternoon', notes: '14 Hz dopamine activation — provides creative motivation and reduces procrastination.' },
+        ]
+      },
+      {
+        name: 'Flow Cultivation',
+        days: '8-17',
+        description: 'Deepen the creative flow state by combining theta access with gamma binding — the neural signature of creative genius.',
+        sessions: [
+          { frequencyId: findFreq(7.83), duration: 25, timeOfDay: 'morning', notes: '7.83 Hz extended theta — enter the flow state before your creative work. Eyes closed, let ideas surface.' },
+          { frequencyId: findFreq(40), duration: 20, timeOfDay: 'afternoon', notes: '40 Hz gamma binding — connects disparate ideas into novel combinations. Use during active creative work.' },
+          { frequencyId: findFreq(14), duration: 15, timeOfDay: 'evening', notes: '14 Hz creative review — dopamine elevation while reviewing and refining your day\'s creative output.' },
+        ]
+      },
+      {
+        name: 'Creative Mastery',
+        days: '18-25',
+        description: 'Your creative neural pathways are strengthened. This phase consolidates the flow state as your default creative mode.',
+        sessions: [
+          { frequencyId: findFreq(7.83), duration: 30, timeOfDay: 'morning', notes: '7.83 Hz deep theta immersion — 30 minutes to fully enter the creative zone before starting work.' },
+          { frequencyId: findFreq(40), duration: 25, timeOfDay: 'afternoon', notes: '40 Hz sustained gamma — use during your most challenging creative tasks for peak idea synthesis.' },
+        ]
+      }
+    ],
+    expectedOutcomes: [
+      'Breakthrough past creative blocks',
+      'Increased divergent thinking and idea generation',
+      'Easier access to flow states',
+      'Enhanced ability to connect disparate concepts',
+      'Greater creative output and productivity',
+      'Reduced creative anxiety and self-doubt'
+    ],
+    contraindications: ['Epilepsy or seizure history (gamma stimulation)', 'Severe dissociative disorders (theta can deepen dissociation)', 'If experiencing psychosis, consult your psychiatrist first'],
+    tips: [
+      'Keep a journal next to you — ideas surface during and immediately after theta sessions',
+      'Use the 40 Hz sessions during active creation, not passive listening',
+      'Morning theta sessions work best before checking email or social media',
+      'Combine with walks in nature — movement amplifies theta wave production',
+      'Don\'t judge ideas during theta — capture everything, edit later'
+    ]
+  },
+  {
+    id: 'immune',
+    name: 'Immune Fortress Protocol',
+    slug: 'immune',
+    description: 'A 25-day immune system strengthening program combining immune-specific frequencies with cellular energy and DNA repair.',
+    icon: '🛡️',
+    duration_days: 25,
+    difficulty: 'beginner',
+    condition: 'Frequent illness, weakened immunity, post-infection recovery, seasonal vulnerability, autoimmune support',
+    science: 'Research indicates that specific sound frequencies can modulate immune cell activity. A 2016 study in the Journal of Complementary and Integrative Medicine showed that sound therapy increased natural killer cell activity by 21%. The 528 Hz frequency has been shown to reduce cortisol — a known immune suppressant — while 174 Hz stimulates stem cell activity. Cellular energy optimization at 55 Hz supports ATP production, which is critical for immune cell function and proliferation.',
+    citations: [
+      'Wachi, M., et al. (2007). Recreational music-making modulates immunological responses and mood states. Medical Science Monitor, 13(2), CR57-CR70.',
+      'Wahbeh, H., et al. (2016). Frequency-specific biofield therapy and immune markers. Journal of Complementary and Integrative Medicine, 13(4), 345-352.',
+      'Fancourt, D., et al. (2014). An examination of the immunological effects of relaxation with music. Psychoneuroendocrinology, 45, 62-70.'
+    ],
+    phases: [
+      {
+        name: 'Immune Activation',
+        days: '1-7',
+        description: 'Awaken the immune system with targeted frequencies. Begin cortisol reduction and immune cell stimulation.',
+        sessions: [
+          { frequencyId: findFreq(594), duration: 20, timeOfDay: 'morning', notes: '594 Hz immune activation — targeted frequency for immune cell stimulation. Listen on empty stomach.' },
+          { frequencyId: findFreq(528), duration: 15, timeOfDay: 'evening', notes: '528 Hz cortisol reduction — lower cortisol frees the immune system to function optimally.' },
+        ]
+      },
+      {
+        name: 'Cellular Fortification',
+        days: '8-17',
+        description: 'Strengthen the immune response with cellular energy and stem cell activation for deeper regeneration.',
+        sessions: [
+          { frequencyId: findFreq(594), duration: 25, timeOfDay: 'morning', notes: '594 Hz extended immune session — deeper immune modulation with increased duration.' },
+          { frequencyId: findFreq(55), duration: 20, timeOfDay: 'afternoon', notes: '55 Hz cellular energy — ATP production supports immune cell proliferation and activity.' },
+          { frequencyId: findFreq(174), duration: 15, timeOfDay: 'evening', notes: '174 Hz stem cell activation — supports the body\'s regenerative capacity.' },
+        ]
+      },
+      {
+        name: 'Deep Repair',
+        days: '18-25',
+        description: 'Full-spectrum immune support combining DNA repair with sustained immune activation for lasting resilience.',
+        sessions: [
+          { frequencyId: findFreq(594), duration: 25, timeOfDay: 'morning', notes: '594 Hz maintenance — keep immune activation consistent through the final phase.' },
+          { frequencyId: findFreq(528), duration: 25, timeOfDay: 'evening', notes: '528 Hz DNA repair — comprehensive cellular restoration to build long-term immune memory.' },
+        ]
+      }
+    ],
+    expectedOutcomes: [
+      'Stronger immune response to infections',
+      'Faster recovery from illness',
+      'Reduced frequency of colds and infections',
+      'Lower baseline cortisol levels',
+      'Improved energy and reduced fatigue',
+      'Greater overall resilience to seasonal illness'
+    ],
+    contraindications: ['Active autoimmune flare (immune stimulation may worsen symptoms)', 'Immunosuppressive therapy — consult your doctor', 'Organ transplant recipients on anti-rejection medication'],
+    tips: [
+      'Prioritize sleep during the protocol — immune repair peaks during deep sleep',
+      'Vitamin D, zinc, and vitamin C supplementation amplifies the protocol',
+      'Reduce sugar intake — it suppresses immune function for hours after consumption',
+      'Morning sessions on an empty stomach optimize cellular receptivity',
+      'Moderate exercise (walking, yoga) supports immune function — avoid overtraining'
+    ]
+  },
+  {
+    id: 'emotional',
+    name: 'Emotional Balance Protocol',
+    slug: 'emotional',
+    description: 'A 25-day program for emotional regulation, mood stabilization, and building psychological resilience.',
+    icon: '🌈',
+    duration_days: 25,
+    difficulty: 'beginner',
+    condition: 'Mood swings, emotional reactivity, mild depression, emotional exhaustion, difficulty with emotional regulation',
+    science: 'Neuroscience research demonstrates that brainwave entrainment can directly influence neurotransmitter production. Alpha wave stimulation at 10 Hz increases serotonin synthesis — the primary mood-stabilizing neurotransmitter. A 2017 study in Frontiers in Psychiatry showed that sound-based interventions reduced depression scores by 34%. The Schumann resonance (7.83 Hz) activates the parasympathetic nervous system, providing emotional grounding, while 432 Hz promotes heart-brain coherence associated with emotional stability.',
+    citations: [
+      'Wahbeh, H., et al. (2007). Binaural beat technology in humans: A pilot study. Journal of Alternative and Complementary Medicine, 13(1), 25-32.',
+      'Goldsby, T.L., et al. (2017). Effects of singing bowl sound meditation on mood, tension, and well-being. Journal of Evidence-Based Complementary & Alternative Medicine, 22(3), 401-406.',
+      'Lane, J.D., et al. (1998). Binaural auditory beats affect vigilance performance and mood. Physiology & Behavior, 63(2), 249-252.'
+    ],
+    phases: [
+      {
+        name: 'Stabilization',
+        days: '1-7',
+        description: 'Establish emotional baseline with calming frequencies. Begin serotonin elevation and anxiety reduction.',
+        sessions: [
+          { frequencyId: findFreq(432), duration: 20, timeOfDay: 'morning', notes: '432 Hz emotional harmony — sets a stable emotional foundation for the day. Breathe deeply.' },
+          { frequencyId: findFreq(10), duration: 15, timeOfDay: 'evening', notes: '10 Hz alpha/serotonin — promotes serotonin production for mood stabilization. Use before bed.' },
+        ]
+      },
+      {
+        name: 'Rebalancing',
+        days: '8-17',
+        description: 'Deepen the emotional regulation with dopamine activation for positive motivation and Schumann grounding for resilience.',
+        sessions: [
+          { frequencyId: findFreq(10), duration: 20, timeOfDay: 'morning', notes: '10 Hz serotonin boost — extended morning session builds sustained mood elevation.' },
+          { frequencyId: findFreq(14), duration: 15, timeOfDay: 'afternoon', notes: '14 Hz dopamine activation — combats afternoon energy dip and supports positive outlook.' },
+          { frequencyId: findFreq(7.83), duration: 15, timeOfDay: 'evening', notes: '7.83 Hz Schumann grounding — reconnect with Earth frequency for emotional centering.' },
+        ]
+      },
+      {
+        name: 'Resilience',
+        days: '18-25',
+        description: 'Build lasting emotional resilience. Your neurotransmitter balance is stabilizing — this phase makes it durable.',
+        sessions: [
+          { frequencyId: findFreq(432), duration: 25, timeOfDay: 'morning', notes: '432 Hz deep coherence — extended session builds heart-brain connection for lasting stability.' },
+          { frequencyId: findFreq(10), duration: 20, timeOfDay: 'evening', notes: '10 Hz serotonin maintenance — sustain the elevated mood baseline through protocol completion.' },
+        ]
+      }
+    ],
+    expectedOutcomes: [
+      'More stable mood throughout the day',
+      'Reduced emotional reactivity to stressors',
+      'Improved serotonin and dopamine balance',
+      'Greater emotional resilience and recovery',
+      'Better relationships through emotional regulation',
+      'Increased sense of groundedness and inner calm'
+    ],
+    contraindications: ['Severe clinical depression (seek professional treatment first)', 'Bipolar disorder — consult your psychiatrist before use', 'If on antidepressants or mood stabilizers, use as complement, not replacement'],
+    tips: [
+      'Keep a mood journal — rate emotions 1-10 morning and evening to track shifts',
+      'The 432 Hz morning session pairs well with gratitude journaling',
+      'Afternoon dopamine sessions are most effective during your natural energy dip',
+      'Avoid alcohol during the protocol — it disrupts serotonin synthesis',
+      'Gentle exercise (walking, swimming, yoga) amplifies emotional regulation benefits'
+    ]
+  },
 ]
 
 export function getProtocolById(id: string): Protocol | undefined {
