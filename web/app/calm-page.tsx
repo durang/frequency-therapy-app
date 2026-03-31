@@ -29,13 +29,13 @@ export default function LandingPage() {
       <Hero />
       <PainPoints />
       <Features />
-      <ScienceBlog />
       <FrequencyPreview />
       <Testimonials />
       <Breathing />
       <ScienceProof />
       <PricingSection />
       <FinalCTA />
+      <ScienceBlog />
       <Footer />
     </div>
   )
@@ -43,7 +43,8 @@ export default function LandingPage() {
 
 /* ─── Navigation ─────────────────────────────────────────── */
 function Nav() {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#fafaf9]/80 dark:bg-[#0a0a0f]/80 border-b border-gray-200/50 dark:border-white/[0.04]">
@@ -57,26 +58,90 @@ function Nav() {
           <span className="text-base font-semibold tracking-tight text-gray-900 dark:text-white">FreqTherapy</span>
         </Link>
 
+        {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           <Link href="/frequencies" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Frequencies</Link>
           <Link href="/protocols" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Protocols</Link>
           <Link href="/pricing" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link>
-          {user ? (
-            <Link href="/dashboard" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
-          ) : (
-            <Link href="/auth/login" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
-          )}
           <ThemeToggle />
-          <Link href="/frequencies" className="text-sm px-5 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors font-medium">
-            Try Free
-          </Link>
+          {user ? (
+            <div className="relative">
+              <button onClick={() => setMenuOpen(!menuOpen)}
+                className="flex items-center gap-2 text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-xs font-medium">
+                  {user.email?.charAt(0).toUpperCase()}
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6" /></svg>
+              </button>
+              <AnimatePresence>
+                {menuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                    <motion.div initial={{ opacity: 0, y: -8, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.96 }} transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-52 py-1.5 rounded-xl bg-white dark:bg-[#1a1a24] border border-gray-200 dark:border-white/[0.08] shadow-xl z-50">
+                      <div className="px-4 py-2 border-b border-gray-100 dark:border-white/[0.06] mb-1">
+                        <p className="text-xs text-gray-400 dark:text-white/25 truncate">{user.email}</p>
+                      </div>
+                      <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors">Dashboard</Link>
+                      <Link href="/frequencies" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors">My Frequencies</Link>
+                      <Link href="/profile" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors">Profile</Link>
+                      <div className="border-t border-gray-100 dark:border-white/[0.06] mt-1 pt-1">
+                        <button onClick={() => { setMenuOpen(false); signOut() }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.06] transition-colors">
+                          Sign Out
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <>
+              <Link href="/auth/login" className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
+              <Link href="/frequencies" className="text-sm px-5 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors font-medium">Try Free</Link>
+            </>
+          )}
         </div>
 
+        {/* Mobile */}
         <div className="flex md:hidden items-center gap-3">
           <ThemeToggle />
-          <Link href="/frequencies" className="text-sm px-4 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium">
-            Try Free
-          </Link>
+          {user ? (
+            <div className="relative">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-1.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-600 dark:text-white/50">
+                  {menuOpen
+                    ? <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>
+                    : <><line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" /></>
+                  }
+                </svg>
+              </button>
+              <AnimatePresence>
+                {menuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                    <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-56 py-1.5 rounded-xl bg-white dark:bg-[#1a1a24] border border-gray-200 dark:border-white/[0.08] shadow-xl z-50">
+                      <div className="px-4 py-2 border-b border-gray-100 dark:border-white/[0.06] mb-1">
+                        <p className="text-xs text-gray-400 dark:text-white/25 truncate">{user.email}</p>
+                      </div>
+                      <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04]">Dashboard</Link>
+                      <Link href="/frequencies" onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04]">Frequencies</Link>
+                      <Link href="/protocols" onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04]">Protocols</Link>
+                      <Link href="/profile" onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04]">Profile</Link>
+                      <div className="border-t border-gray-100 dark:border-white/[0.06] mt-1 pt-1">
+                        <button onClick={() => { setMenuOpen(false); signOut() }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.06]">Sign Out</button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <Link href="/frequencies" className="text-sm px-4 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium">Try Free</Link>
+          )}
         </div>
       </div>
     </nav>

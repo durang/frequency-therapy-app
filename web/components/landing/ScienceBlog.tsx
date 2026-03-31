@@ -51,7 +51,7 @@ export default function ScienceBlog() {
     .map(slug => frequencies.find(f => f.slug === slug))
     .filter(Boolean) as typeof frequencies
 
-  // GSAP horizontal scroll-triggered carousel
+  // Simple fade-in animation for cards — no pin, no scroll hijacking
   useEffect(() => {
     if (!containerRef.current || !trackRef.current) return
 
@@ -72,39 +72,22 @@ export default function ScienceBlog() {
         const track = trackRef.current!
         const container = containerRef.current!
 
-        // Total scrollable distance
-        const scrollWidth = track.scrollWidth - container.offsetWidth
-
         ctx = gsap.context(() => {
-          // Horizontal scroll
-          gsap.to(track, {
-            x: -scrollWidth,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: container,
-              start: 'top 20%',
-              end: () => `+=${scrollWidth}`,
-              scrub: 1,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          })
-
-          // Stagger-reveal cards
+          // Stagger-reveal cards as they enter viewport
           gsap.fromTo(
             track.querySelectorAll('.science-card'),
-            { opacity: 0.3, y: 30, scale: 0.96 },
+            { opacity: 0, y: 40, scale: 0.95 },
             {
               opacity: 1,
               y: 0,
               scale: 1,
-              stagger: 0.08,
+              duration: 0.6,
+              stagger: 0.1,
+              ease: 'power2.out',
               scrollTrigger: {
                 trigger: container,
-                start: 'top 40%',
-                end: 'top 10%',
-                scrub: 1,
+                start: 'top 80%',
+                once: true,
               },
             }
           )
@@ -156,13 +139,12 @@ export default function ScienceBlog() {
         </div>
       </div>
 
-      {/* Scrollable card track */}
-      <div ref={containerRef} className="relative h-[80vh] min-h-[600px]">
+      {/* Scrollable card track — native horizontal scroll, no pin */}
+      <div ref={containerRef} className="relative pb-8">
         <div
           ref={trackRef}
-          className={`flex gap-6 pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))] pr-[40vw] h-full items-center ${
-            !gsapLoaded ? 'overflow-x-auto snap-x snap-mandatory pb-4' : ''
-          }`}
+          className="flex gap-6 pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))] pr-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {articles.map((freq, i) => (
             <Link
@@ -272,16 +254,6 @@ export default function ScienceBlog() {
           </div>
         </div>
       </div>
-
-      {/* Scroll hint (only when GSAP is active) */}
-      {gsapLoaded && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-[10px] tracking-widest uppercase text-gray-300 dark:text-white/15 pointer-events-none">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-          Scroll to explore
-        </div>
-      )}
     </section>
   )
 }
