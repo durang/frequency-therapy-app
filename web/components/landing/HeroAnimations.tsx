@@ -370,7 +370,7 @@ export default function HeroAnimations({
               whileHover={{ scale: 1.05 }}
             >
               <Heart className="w-4 h-4 text-red-500" />
-              <span>94.7% effectiveness</span>
+              <span>94.7% satisfaction</span>
             </motion.div>
             <motion.div 
               className="flex items-center space-x-2"

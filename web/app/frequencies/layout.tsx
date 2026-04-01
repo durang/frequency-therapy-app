@@ -4,7 +4,7 @@ import { collectionSchema, breadcrumbSchema, faqSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Frequency Library — 23 Therapeutic Frequencies for Healing',
-  description: 'Explore 23 science-backed therapeutic frequencies: 432 Hz for anxiety, 528 Hz for DNA repair, 40 Hz gamma for focus, delta waves for sleep, and solfeggio frequencies. Free sessions available.',
+  description: 'Explore 23 research-informed wellness frequencies: 432 Hz for relaxation, 528 Hz Love Frequency, 40 Hz gamma for focus, delta waves for sleep, and solfeggio frequencies. Free sessions available.',
   keywords: [
     'healing frequencies',
     'healing frequencies list',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Frequency Library — 23 Therapeutic Healing Frequencies',
-    description: 'Browse all therapeutic frequencies: 432 Hz anxiety relief, 528 Hz DNA repair, 40 Hz gamma focus, delta sleep waves, and more. Research-backed, free to try.',
+    description: 'Browse all wellness frequencies: 432 Hz relaxation, 528 Hz Love Frequency, 40 Hz gamma focus, delta sleep waves, and more. Research-informed, free to try.',
     url: 'https://freqtherapy.com/frequencies',
     type: 'website',
   },

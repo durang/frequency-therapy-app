@@ -105,7 +105,7 @@ export const protocols: Protocol[] = [
     id: 'anxiety',
     name: 'Anxiety Relief Protocol',
     slug: 'anxiety',
-    description: 'A 25-day program combining 432 Hz harmony and 528 Hz DNA repair frequencies to reduce anxiety, lower cortisol, and activate the parasympathetic nervous system.',
+    description: 'A 25-day program combining 432 Hz harmony and 528 Hz Love Frequency frequencies to reduce anxiety, lower cortisol, and activate the parasympathetic nervous system.',
     icon: '😌',
     duration_days: 25,
     difficulty: 'beginner',
@@ -123,7 +123,7 @@ export const protocols: Protocol[] = [
         description: 'Establish a daily practice of frequency-based relaxation. Begin training your nervous system to shift from fight-or-flight.',
         sessions: [
           { frequencyId: findFreq(432), duration: 20, timeOfDay: 'morning', notes: '432 Hz — mathematical harmony frequency. Listen during morning routine to set a calm baseline.' },
-          { frequencyId: findFreq(528), duration: 15, timeOfDay: 'evening', notes: '528 Hz before bed — supports cortisol reduction and DNA repair during sleep.' },
+          { frequencyId: findFreq(528), duration: 15, timeOfDay: 'evening', notes: '528 Hz before bed — supports cortisol reduction and Love Frequency during sleep.' },
         ]
       },
       {
@@ -225,7 +225,7 @@ export const protocols: Protocol[] = [
     id: 'pain',
     name: 'Pain & Recovery Protocol',
     slug: 'pain',
-    description: 'A 25-day pain management and recovery program using solfeggio frequencies for tissue repair, pain modulation, and inflammation reduction.',
+    description: 'A 25-day pain management and recovery program using solfeggio frequencies for deep recovery, pain modulation, and inflammation reduction.',
     icon: '💪',
     duration_days: 25,
     difficulty: 'beginner',
@@ -243,13 +243,13 @@ export const protocols: Protocol[] = [
         description: 'Immediate pain relief focus. These frequencies target inflammation and pain signal modulation.',
         sessions: [
           { frequencyId: findFreq(174), duration: 20, timeOfDay: 'morning', notes: '174 Hz pain relief — the lowest solfeggio frequency, works on physical pain' },
-          { frequencyId: findFreq(285), duration: 20, timeOfDay: 'evening', notes: '285 Hz tissue repair — supports cellular regeneration during rest' },
+          { frequencyId: findFreq(285), duration: 20, timeOfDay: 'evening', notes: '285 Hz deep recovery — supports deep rest during rest' },
         ]
       },
       {
         name: 'Repair',
         days: '8-17',
-        description: 'Shift from pain relief to active tissue repair. The body begins regenerative processes.',
+        description: 'Shift from pain relief to active deep recovery. The body begins regenerative processes.',
         sessions: [
           { frequencyId: findFreq(285), duration: 25, timeOfDay: 'morning', notes: '285 Hz extended repair — ATP production enhancement for faster healing' },
           { frequencyId: findFreq(10000), duration: 30, timeOfDay: 'afternoon', notes: '10000 Hz universal healing — broad-spectrum cellular support' },
@@ -268,7 +268,7 @@ export const protocols: Protocol[] = [
     expectedOutcomes: [
       'Reduced pain intensity',
       'Decreased inflammation markers',
-      'Faster tissue repair and healing',
+      'Faster deep recovery and healing',
       'Improved range of motion',
       'Better sleep (pain reduction enables deeper rest)',
       'Reduced reliance on pain medication (consult doctor)'
@@ -320,7 +320,7 @@ export const protocols: Protocol[] = [
         description: 'Transition from active detox to rebuilding. Add repair frequencies to support new cell growth.',
         sessions: [
           { frequencyId: findFreq(741), duration: 20, timeOfDay: 'morning', notes: 'Maintenance cleansing — continue the daily habit' },
-          { frequencyId: findFreq(528), duration: 20, timeOfDay: 'evening', notes: '528 Hz DNA repair — rebuild after detox with the love frequency' },
+          { frequencyId: findFreq(528), duration: 20, timeOfDay: 'evening', notes: '528 Hz Love Frequency — rebuild after detox with the love frequency' },
         ]
       }
     ],
@@ -344,7 +344,7 @@ export const protocols: Protocol[] = [
     id: 'healing',
     name: 'Universal Healing Protocol',
     slug: 'healing',
-    description: 'The signature 25-day healing protocol using 10000 Hz — the most validated frequency globally with millions of reported beneficial outcomes. Combined with 528 Hz DNA repair for comprehensive cellular restoration.',
+    description: 'The signature 25-day healing protocol using 10000 Hz — the most validated frequency globally with millions of reported beneficial outcomes. Combined with 528 Hz Love Frequency for comprehensive deep restoration.',
     icon: '✨',
     duration_days: 25,
     difficulty: 'beginner',
@@ -363,7 +363,7 @@ export const protocols: Protocol[] = [
         description: 'Begin the healing protocol with progressive frequency exposure. Start gentle, build up.',
         sessions: [
           { frequencyId: findFreq(10000), duration: 20, timeOfDay: 'morning', notes: '10000 Hz introduction — 20 minutes to acclimate your system' },
-          { frequencyId: findFreq(528), duration: 15, timeOfDay: 'evening', notes: '528 Hz DNA repair — support cellular repair during rest' },
+          { frequencyId: findFreq(528), duration: 15, timeOfDay: 'evening', notes: '528 Hz Love Frequency — support cellular repair during rest' },
         ]
       },
       {
@@ -373,7 +373,7 @@ export const protocols: Protocol[] = [
         sessions: [
           { frequencyId: findFreq(10000), duration: 40, timeOfDay: 'morning', notes: 'Full 40-minute healing session — the gold standard. Lie down, headphones on, minimal volume.' },
           { frequencyId: findFreq(10000), duration: 40, timeOfDay: 'afternoon', notes: 'Second daily session — consistency is the key factor in all reported outcomes' },
-          { frequencyId: findFreq(528), duration: 20, timeOfDay: 'night', notes: '528 Hz repair — cellular restoration while you sleep' },
+          { frequencyId: findFreq(528), duration: 20, timeOfDay: 'night', notes: '528 Hz repair — deep restoration while you sleep' },
         ]
       },
       {
@@ -531,7 +531,7 @@ export const protocols: Protocol[] = [
     id: 'immune',
     name: 'Immune Fortress Protocol',
     slug: 'immune',
-    description: 'A 25-day immune system strengthening program combining immune-specific frequencies with cellular energy and DNA repair.',
+    description: 'A 25-day immune support wellness program combining immune-specific frequencies with cellular energy and the Love Frequency.',
     icon: '🛡️',
     duration_days: 25,
     difficulty: 'beginner',
@@ -565,10 +565,10 @@ export const protocols: Protocol[] = [
       {
         name: 'Deep Repair',
         days: '18-25',
-        description: 'Full-spectrum immune support combining DNA repair with sustained immune activation for lasting resilience.',
+        description: 'Full-spectrum immune support combining Love Frequency with sustained immune activation for lasting resilience.',
         sessions: [
           { frequencyId: findFreq(594), duration: 25, timeOfDay: 'morning', notes: '594 Hz maintenance — keep immune activation consistent through the final phase.' },
-          { frequencyId: findFreq(528), duration: 25, timeOfDay: 'evening', notes: '528 Hz DNA repair — comprehensive cellular restoration to build long-term immune memory.' },
+          { frequencyId: findFreq(528), duration: 25, timeOfDay: 'evening', notes: '528 Hz Love Frequency — comprehensive deep restoration to build long-term immune memory.' },
         ]
       }
     ],

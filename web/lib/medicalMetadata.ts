@@ -23,7 +23,7 @@ export function generateMedicalMetadata(): Metadata {
       '432 Hz music',
       '432 Hz anxiety relief',
       '528 Hz healing',
-      '528 Hz DNA repair',
+      '528 Hz Love Frequency',
       '40 Hz gamma',
       '40 Hz Alzheimer therapy',
       'solfeggio frequencies',

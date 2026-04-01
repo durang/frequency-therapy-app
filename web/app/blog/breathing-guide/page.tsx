@@ -41,7 +41,7 @@ const patternGroups = [
   {
     pattern: '5-5-5',
     name: 'Deep Healing & Oxygenation',
-    science: 'Equal-phase slow breathing at 4 breaths per minute maximizes blood oxygen saturation and creates coherent heart rate variability. This state optimizes cellular repair processes, immune function, and regenerative signaling.',
+    science: 'Equal-phase slow breathing at 4 breaths per minute maximizes blood oxygen saturation and creates coherent heart rate variability. Research suggests this state promotes deep rest, supports immune function, and enhances overall wellbeing.',
     icon: '🧬',
     color: 'from-emerald-500/20 to-green-500/10 border-emerald-500/20',
     textColor: 'text-emerald-400',

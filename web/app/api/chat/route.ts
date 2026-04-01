@@ -37,7 +37,7 @@ CAPABILITIES:
 - Provide links to frequency articles and protocol pages
 
 AVAILABLE FREQUENCY CATEGORIES:
-- DNA Repair (528 Hz) — cellular healing and genetic optimization
+- Love Frequency (528 Hz) — deep relaxation and inner harmony
 - Anxiety Relief (432 Hz) — stress reduction and emotional balance
 - Cognitive Enhancement (40 Hz) — focus, memory, and attention
 - Sleep Optimization (1.5 Hz) — deep restorative sleep

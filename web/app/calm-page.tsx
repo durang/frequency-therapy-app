@@ -194,7 +194,7 @@ function Hero() {
           <div className="flex items-center justify-center gap-6 mt-14 text-xs text-gray-400 dark:text-white/20">
             <span>127K+ users</span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
-            <span>94.7% effectiveness</span>
+            <span>94.7% satisfaction</span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
             <span>47 studies cited</span>
           </div>

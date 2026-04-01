@@ -1,53 +1,52 @@
 import { Frequency } from '@/types'
 
 export const frequencies: Frequency[] = [
-  // DNA Repair — moved to basic tier per D039
+  // Love Frequency — moved to basic tier per D039
   {
     id: '1',
-    name: 'DNA Repair',
+    name: 'Love Frequency',
     slug: 'dna-repair',
     hz_value: 528,
     category: 'dna_repair',
-    description: 'The miracle frequency for cellular healing and genetic optimization',
-    scientific_backing: 'Revolutionary research by Dr. Leonard Horowitz and molecular biologists shows 528 Hz can repair DNA damage by up to 98.4%. This frequency resonates with the molecular structure of DNA, enabling rapid cellular regeneration and genetic optimization at the quantum level.',
+    description: 'The renowned Solfeggio frequency associated with inner harmony, deep relaxation, and a profound sense of wellbeing',
+    scientific_backing: 'Research suggests that 528 Hz sound waves may positively influence the autonomic nervous system and stress markers. A peer-reviewed study (Akimoto et al., 2018) found that listening to 528 Hz music reduced cortisol and increased oxytocin in participants. Additional research explores potential effects on cell viability and testosterone production in laboratory settings.',
     benefits: [
-      'DNA damage repair up to 98.4%',
-      'Cellular regeneration acceleration',
-      'Genetic optimization',
-      'Enhanced healing response',
-      'Mitochondrial energy boost',
-      'Immune system strengthening'
+      'Deep relaxation and stress relief',
+      'Enhanced sense of inner harmony',
+      'Improved mood and emotional balance',
+      'Support for restorative rest',
+      'Promotes feelings of wellbeing',
+      'Gentle energizing effect'
     ],
     best_for: [
       'Post-illness recovery',
-      'Anti-aging therapy',
-      'Cellular health optimization',
-      'Genetic repair',
-      'Immune system boost',
-      'Chronic fatigue recovery'
+      'Relaxation practice',
+      'Meditation enhancement',
+      'Self-care routines',
+      'Stress management',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 20,
     research_citations: [
-      'Horowitz, L. G. (2024). DNA Resonance and 528 Hz: Clinical Evidence. Nature Biotechnology, 42(3), 234-241.',
-      'Glen Rein, PhD (2023). Quantum Biology and Frequency Medicine. Cell Research International, 18(7), 89-102.',
-      'Stanford Medical Research (2024). 528 Hz Frequency Effects on Cellular Regeneration. Journal of Regenerative Medicine, 29(4), 412-428.',
-      'MIT Frequency Lab (2023). Molecular Resonance and DNA Repair Mechanisms. Quantum Biology Review, 15(2), 156-173.',
-      'Harvard Genetics Institute (2024). Solfeggio Frequencies and Gene Expression. Nature Genetics, 51(8), 892-907.'
+      'Akimoto K, Hu A, Yamaguchi T, Kobayashi H. Effect of 528 Hz Music on the Endocrine System and Autonomic Nervous System. Health, 2018; 10(9): 1159-1170. https://doi.org/10.4236/health.2018.109088',
+      'Babayi Daylari T, Riazi GH, et al. Influence of 528 Hz sound-wave in production of testosterone in rat brain. Genes & Genomics, 2019; 41: 201-212. https://pubmed.ncbi.nlm.nih.gov/30414050/',
+      'Babayi T, Riazi GH. Effects of 528 Hz Sound Wave to Reduce Cell Death in Human Astrocyte Primary Cell Culture. J Addict Res Ther, 2017; 8: 335. https://doi.org/10.4172/2155-6105.1000335',
+      'Bhoot A, et al. Effect of OM Chanting at 528Hz on HRV, Wellbeing, and Sleep Quality. Annals of Indian Academy of Neurology, 2025. https://doi.org/10.1177/09727531251390261'
     ],
     clinical_trials: [
       {
-        title: 'DNA Repair Efficacy Study',
-        participants: 847,
-        duration_weeks: 12,
-        results: '94.7% improvement in cellular repair markers',
-        institution: 'Stanford Medical Research Center'
+        title: 'Effect of 528 Hz Music on Endocrine and Autonomic Nervous System',
+        participants: 9,
+        duration_weeks: 1,
+        results: 'Reduced cortisol and increased oxytocin observed in participants',
+        institution: 'Institute of Subtropical Agriculture, Japan (Akimoto et al., 2018)'
       }
     ],
-    mechanism: 'Resonates with DNA molecular structure, activating repair enzymes and enhancing cellular communication pathways',
-    contraindications: ['Pregnancy (first trimester)', 'Active cancer treatment', 'Pacemaker users'],
-    dosage: '20-30 minutes daily, preferably morning hours for optimal circadian alignment',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Steady equal breathing maximizes cellular oxygenation for DNA repair enzyme activation' }
+    mechanism: 'Research suggests 528 Hz may promote relaxation by influencing the autonomic nervous system, potentially reducing stress hormone levels and supporting a sense of calm',
+    contraindications: ['Consult your healthcare provider if you are in your first trimester of pregnancy', 'Consult your healthcare provider if you are undergoing active cancer treatment', 'Consult your healthcare provider if you use a pacemaker', 'This is a wellness tool, not a medical device'],
+    dosage: '20-30 minutes daily, preferably morning hours for a refreshing start. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Steady equal breathing supports relaxation and enhances the listening experience' }
   },
   // TIER 1: FREE - Scientific Gateway Frequencies (2 free per D039)
   {
@@ -56,46 +55,36 @@ export const frequencies: Frequency[] = [
     slug: 'anxiety-liberation',
     hz_value: 432,
     category: 'anxiety_relief',
-    description: 'Mathematical harmony frequency for anxiety and stress relief',
-    scientific_backing: 'Clinical trials at UCLA demonstrate 432 Hz reduces cortisol levels by 73% and activates parasympathetic nervous system. This natural mathematical frequency promotes emotional balance and reduces anxiety symptoms significantly faster than pharmaceutical interventions.',
+    description: 'Mathematical harmony frequency for anxiety and stress relief, promoting deep calm and emotional balance',
+    scientific_backing: 'A double-blind crossover study (Calamassi & Pomponi, 2019) found that music tuned to 432 Hz was associated with a slight decrease in blood pressure and heart rate compared to 440 Hz. Research suggests that this tuning may promote parasympathetic activation and emotional balance, though more studies are needed.',
     benefits: [
-      'Cortisol reduction by 73%',
-      'Anxiety symptoms decreased 84%',
-      'Parasympathetic activation',
-      'Emotional regulation enhancement',
-      'Stress response modulation',
-      'Social anxiety improvement'
+      'Reduced tension and anxiety',
+      'Enhanced calm and emotional balance',
+      'Support for parasympathetic relaxation',
+      'Improved sense of wellbeing',
+      'Stress relief',
+      'Gentle mood elevation'
     ],
     best_for: [
-      'Generalized anxiety disorder',
-      'Panic disorder',
-      'Social anxiety',
-      'PTSD symptoms',
-      'Chronic stress',
-      'Performance anxiety'
+      'Stress management',
+      'Relaxation practice',
+      'Meditation enhancement',
+      'Performance anxiety support',
+      'Mindfulness sessions',
+      'Self-care routines'
     ],
     tier: 'free',
     duration_minutes: 25,
     research_citations: [
-      'UCLA Anxiety Research Center (2024). 432 Hz vs 440 Hz: Anxiety Response Study. Journal of Anxiety Disorders, 78, 102-118.',
-      'Italian Music Therapy Institute (2023). Mathematical Harmonics and Stress Reduction. European Journal of Music Therapy, 34(2), 89-104.',
-      'Mayo Clinic (2024). Natural Frequency Therapy for Anxiety Disorders. Clinical Psychology Review, 89, 234-249.',
-      'Stanford Neuroscience (2023). Harmonic Frequencies and Neuroplasticity. Nature Neuroscience, 26(7), 1456-1472.',
-      'Harvard Medical School (2024). Non-pharmaceutical Anxiety Treatments. JAMA Psychiatry, 81(4), 412-427.'
+      'Calamassi D, Pomponi GP. Music Tuned to 440 Hz Versus 432 Hz and the Health Effects: A Double-blind Cross-over Pilot Study. EXPLORE, 2019; 15(4): 283-290. https://pubmed.ncbi.nlm.nih.gov/30389302/',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007'
     ],
-    clinical_trials: [
-      {
-        title: 'Harmonic Anxiety Relief Study',
-        participants: 1243,
-        duration_weeks: 8,
-        results: '84% reduction in anxiety symptoms',
-        institution: 'UCLA Neuropsychiatric Institute'
-      }
-    ],
-    mechanism: 'Creates harmonic resonance with cellular structures, activates GABA pathways, reduces amygdala hyperactivity',
-    contraindications: ['Severe depression with psychotic features', 'Acute bipolar episodes'],
-    dosage: '20-30 minutes during anxiety episodes, preventive use 2x daily',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale stimulates the vagus nerve, reducing cortisol and activating parasympathetic response' }
+    clinical_trials: [],
+    mechanism: 'Creates harmonic resonance associated with calm states, may support parasympathetic activation and reduce stress responses',
+    contraindications: ['Consult your healthcare provider if you have severe depression with psychotic features', 'Consult your healthcare provider if you are experiencing acute bipolar episodes', 'This is a wellness tool, not a medical device'],
+    dosage: '20-30 minutes during anxious moments, or as a preventive practice twice daily. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale supports vagus nerve activation, promoting calm breathing and relaxation' }
   },
   {
     id: '3',
@@ -103,46 +92,44 @@ export const frequencies: Frequency[] = [
     slug: 'gamma-focus',
     hz_value: 40,
     category: 'cognitive_enhancement',
-    description: 'Peak cognitive performance through gamma wave entrainment',
-    scientific_backing: 'MIT and Harvard collaborative research shows 40 Hz gamma stimulation increases working memory by 340%, enhances attention span by 250%, and improves cognitive binding. This frequency is observed in monks during deep meditation and high-performers during peak states.',
+    description: 'Peak cognitive performance through gamma wave entrainment, associated with heightened focus and mental clarity',
+    scientific_backing: 'Research at MIT (Iaccarino et al., 2016, published in Nature) demonstrated that 40 Hz gamma frequency entrainment reduced amyloid load and modified microglia in mouse models. A follow-up study (Martorell et al., 2019, Cell) extended these findings with multi-sensory gamma stimulation. This frequency is observed in experienced meditators during deep focus states.',
     benefits: [
-      'Working memory increase 340%',
-      'Attention span boost 250%',
-      'Processing speed enhancement',
-      'Cognitive binding improvement',
-      'Mental stamina extension',
-      'Creative insight activation'
+      'Enhanced focus and concentration',
+      'Improved mental clarity',
+      'Support for cognitive performance',
+      'Better attention during tasks',
+      'Mental stamina support',
+      'Creative thinking enhancement'
     ],
     best_for: [
-      'ADHD management',
       'Study enhancement',
       'Work productivity',
       'Creative projects',
       'Mental performance',
-      'Cognitive rehabilitation'
+      'Meditation enhancement',
+      'Mindfulness sessions'
     ],
     tier: 'free',
     duration_minutes: 45,
     research_citations: [
-      'MIT Picower Institute (2024). 40 Hz Stimulation and Working Memory Enhancement. Science, 384(6692), 234-239.',
-      'Harvard Medical School (2023). Gamma Entrainment and Cognitive Performance. Nature Neuroscience, 26(8), 1234-1249.',
-      'Stanford Cognitive Lab (2024). Gamma Waves in Peak Mental Performance. Journal of Cognitive Enhancement, 8(2), 156-171.',
-      'Johns Hopkins (2023). Gamma Oscillations and Attention. PNAS, 120(15), e2301234120.',
-      'UCLA Brain Imaging Center (2024). 40 Hz and Neural Synchronization. NeuroImage, 287, 120089.'
+      'Iaccarino HF, Singer AC, et al. Gamma frequency entrainment attenuates amyloid load and modifies microglia. Nature, 2016; 540: 230-235. https://doi.org/10.1038/nature20587',
+      'Martorell AJ, et al. Multi-sensory gamma stimulation ameliorates Alzheimer-associated pathology. Cell, 2019; 177(2): 256-271. https://doi.org/10.1016/j.cell.2019.02.014',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007'
     ],
     clinical_trials: [
       {
-        title: 'Cognitive Enhancement Protocol',
-        participants: 1567,
-        duration_weeks: 16,
-        results: '89% improvement in attention and memory scores',
-        institution: 'MIT-Harvard Collaborative Neuroscience Lab'
+        title: 'Gamma Frequency Entrainment and Amyloid Load',
+        participants: 0,
+        duration_weeks: 1,
+        results: 'Reduced amyloid-beta levels and modified microglial response in mouse models',
+        institution: 'MIT Picower Institute for Learning and Memory (Iaccarino et al., 2016, Nature)'
       }
     ],
-    mechanism: 'Entrains cortical gamma oscillations, optimizes neural synchronization, enhances thalamo-cortical binding',
-    contraindications: ['Epilepsy', 'Severe ADHD with medication', 'Recent concussion'],
-    dosage: '30-45 minutes during peak performance needs, avoid within 4 hours of sleep',
-    breathing: { inhale: 4, hold: 4, exhale: 4, reason: 'Box breathing synchronizes autonomic nervous system for sustained cognitive performance' }
+    mechanism: 'Entrains cortical gamma oscillations, associated with enhanced neural synchronization and heightened attentional states',
+    contraindications: ['Consult your healthcare provider if you have epilepsy', 'Consult your healthcare provider if you have a recent concussion', 'This is a wellness tool, not a medical device'],
+    dosage: '30-45 minutes during peak performance needs, avoid within 4 hours of sleep. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 4, reason: 'Box breathing supports balanced focus and sustained cognitive performance' }
   },
   {
     id: '4',
@@ -150,46 +137,36 @@ export const frequencies: Frequency[] = [
     slug: 'deep-sleep-delta',
     hz_value: 1.5,
     category: 'sleep_optimization',
-    description: 'Ultra-deep delta frequency for restorative sleep and neural repair',
-    scientific_backing: 'Johns Hopkins sleep research demonstrates 1.5 Hz delta stimulation increases deep sleep phases by 380%, enhances growth hormone release by 420%, and accelerates neural repair processes. This frequency optimizes the glymphatic system for brain detoxification.',
+    description: 'Ultra-deep delta frequency for restorative sleep, promoting deep rest and overnight recovery',
+    scientific_backing: 'Research suggests that delta-range frequencies (0.5-4 Hz) are associated with the deepest stages of sleep, during which the body undergoes restorative processes. Studies on sound-based sleep interventions show that auditory stimulation synchronized with slow-wave sleep may enhance sleep quality and support natural recovery processes.',
     benefits: [
-      'Deep sleep increase 380%',
-      'Growth hormone boost 420%',
-      'Neural repair acceleration',
-      'Memory consolidation',
-      'Brain detoxification',
-      'Immune system restoration'
+      'Support for deeper sleep stages',
+      'Enhanced sense of overnight rest',
+      'Improved sleep quality',
+      'Better morning refreshment',
+      'Relaxation before bed',
+      'Support for natural recovery'
     ],
     best_for: [
-      'Chronic insomnia',
       'Sleep quality improvement',
-      'Recovery optimization',
-      'Memory consolidation',
-      'Brain health maintenance',
-      'Aging-related sleep decline'
+      'Relaxation practice',
+      'Recovery support',
+      'Self-care routines',
+      'Stress management',
+      'Evening wind-down'
     ],
     tier: 'basic',
     duration_minutes: 60,
     research_citations: [
-      'Johns Hopkins Sleep Center (2024). Delta Wave Enhancement and Sleep Quality. Sleep Medicine Reviews, 73, 101-118.',
-      'Mayo Clinic (2023). 1.5 Hz Stimulation and Growth Hormone. Journal of Clinical Endocrinology, 108(7), 2456-2471.',
-      'Stanford Sleep Lab (2024). Delta Oscillations and Memory Consolidation. Nature Neuroscience, 27(3), 412-428.',
-      'Harvard Sleep Medicine (2023). Slow Wave Sleep and Brain Detoxification. Science, 382(6674), 890-895.',
-      'UCLA Sleep Research (2024). Delta Frequencies and Immune Function. Sleep, 47(4), zsab234.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894'
     ],
-    clinical_trials: [
-      {
-        title: 'Deep Sleep Enhancement Study',
-        participants: 892,
-        duration_weeks: 10,
-        results: '91% improvement in sleep quality metrics',
-        institution: 'Johns Hopkins Sleep Disorders Center'
-      }
-    ],
-    mechanism: 'Entrains slow wave sleep, activates glymphatic clearance, stimulates growth hormone release',
-    contraindications: ['Sleep apnea without treatment', 'Narcolepsy', 'Recent sleep medication changes'],
-    dosage: '45-60 minutes during sleep hours, use with sleep hygiene protocols',
-    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Dr. Weil 4-7-8 technique — extended hold saturates blood with oxygen, long exhale triggers sleep onset' }
+    clinical_trials: [],
+    mechanism: 'Associated with slow-wave sleep states that support deep rest and natural overnight recovery processes',
+    contraindications: ['Consult your healthcare provider if you have untreated sleep apnea', 'Consult your healthcare provider if you have narcolepsy', 'Consult your healthcare provider if you have recently changed sleep medications', 'This is a wellness tool, not a medical device'],
+    dosage: '45-60 minutes during sleep hours, use with good sleep hygiene practices. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Extended hold and long exhale promote calm breathing and support the transition to sleep' }
   },
   {
     id: '5',
@@ -197,189 +174,149 @@ export const frequencies: Frequency[] = [
     slug: 'schumann-earth-resonance',
     hz_value: 7.83,
     category: 'grounding',
-    description: 'Earth\'s natural electromagnetic frequency for circadian synchronization',
-    scientific_backing: 'NASA Ames Research confirms 7.83 Hz Schumann Resonance synchronizes human circadian rhythms, reduces jet lag by 78%, and optimizes melatonin production. This frequency matches Earth\'s electromagnetic field and promotes natural biological rhythm alignment.',
+    description: 'Earth\'s natural electromagnetic frequency for grounding, circadian support, and a deep connection to natural rhythms',
+    scientific_backing: 'The Schumann resonance at 7.83 Hz is a well-documented electromagnetic phenomenon in the Earth-ionosphere cavity. Research suggests that exposure to this frequency range may support circadian rhythm alignment and promote a sense of grounding. While specific research on 7.83 Hz listening is limited, the broader field of sound wellness research suggests that low frequencies may promote relaxation and reduce stress markers.',
     benefits: [
-      'Circadian rhythm synchronization',
-      'Jet lag reduction 78%',
-      'Melatonin optimization',
+      'Sense of grounding and connection',
+      'Circadian rhythm support',
       'Stress reduction',
-      'Electromagnetic field balance',
-      'Natural grounding effect'
+      'Enhanced relaxation',
+      'Natural rhythm alignment',
+      'Improved sense of balance'
     ],
     best_for: [
       'Jet lag recovery',
-      'Shift work adaptation',
-      'Circadian rhythm disorders',
+      'Relaxation practice',
       'Stress management',
-      'EMF protection',
-      'Natural wellness'
+      'Meditation enhancement',
+      'Mindfulness sessions',
+      'Self-care routines'
     ],
     tier: 'basic',
     duration_minutes: 30,
     research_citations: [
-      'NASA Ames Research (2023). Schumann Resonance and Human Circadian Biology. Space Medicine Research, 45(3), 178-194.',
-      'Max Planck Institute (2024). Earth Electromagnetic Fields and Melatonin. Chronobiology International, 41(2), 234-249.',
-      'MIT Environmental Health (2023). 7.83 Hz and Biological Rhythm Synchronization. Environmental Health Perspectives, 131(4), 047001.',
-      'Stanford Circadian Lab (2024). Schumann Frequency and Sleep-Wake Cycles. Nature Communications, 15, 1423.',
-      'Harvard Environmental Medicine (2023). Natural EMF and Human Health. Science of the Total Environment, 892, 164578.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894'
     ],
-    clinical_trials: [
-      {
-        title: 'Circadian Synchronization Protocol',
-        participants: 634,
-        duration_weeks: 6,
-        results: '87% improvement in circadian rhythm markers',
-        institution: 'NASA-Stanford Collaborative Research'
-      }
-    ],
-    mechanism: 'Synchronizes with Earth\'s electromagnetic field, entrains circadian pacemaker, optimizes pineal function',
-    contraindications: ['Pacemaker users', 'Severe arrhythmias', 'Electromagnetic sensitivity'],
-    dosage: '25-35 minutes daily, optimal timing 2 hours before natural bedtime',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming extended exhale harmonizes with the natural electromagnetic rhythm of the Earth' }
+    clinical_trials: [],
+    mechanism: 'Associated with Earth\'s natural electromagnetic rhythm, may support circadian alignment and promote a sense of grounding and calm',
+    contraindications: ['Consult your healthcare provider if you use a pacemaker', 'Consult your healthcare provider if you have severe arrhythmias', 'Consult your healthcare provider if you have electromagnetic sensitivity', 'This is a wellness tool, not a medical device'],
+    dosage: '25-35 minutes daily, optimal timing 2 hours before natural bedtime. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming extended exhale promotes relaxation and harmonizes with a natural sense of rhythm' }
   },
 
   // TIER 2: BASIC ($19.99) - Advanced Therapeutic Suite
   {
     id: '6',
-    name: 'Pain Relief Matrix',
+    name: 'Pain Relief',
     slug: 'pain-relief',
     hz_value: 285,
     category: 'pain_management',
-    description: 'Advanced solfeggio frequency for pain modulation and tissue repair',
-    scientific_backing: 'Cleveland Clinic pain research demonstrates 285 Hz reduces chronic pain by 79%, decreases inflammation markers by 84%, and accelerates tissue healing by 210%. This frequency activates endogenous opioid pathways and modulates pain gate mechanisms.',
+    description: 'Solfeggio frequency associated with comfort, tension relief, and a restorative experience for the body',
+    scientific_backing: 'Research suggests that specific sound frequencies may influence pain perception through auditory-mediated relaxation pathways. A peer-reviewed study found that music-based interventions can modulate pain responses by promoting endorphin release and reducing stress hormones. While specific research on 285 Hz is limited, the broader field of sound wellness research suggests that targeted frequencies may support comfort and relaxation.',
     benefits: [
-      'Chronic pain reduction 79%',
-      'Inflammation decrease 84%',
-      'Tissue healing acceleration 210%',
-      'Endorphin release activation',
-      'Pain gate modulation',
-      'Nerve regeneration support'
+      'Reduced tension and discomfort',
+      'Deep relaxation',
+      'Enhanced sense of physical comfort',
+      'Support for natural recovery',
+      'Stress relief',
+      'Improved sense of wellbeing'
     ],
     best_for: [
-      'Chronic pain syndromes',
-      'Arthritis management',
-      'Fibromyalgia',
-      'Neuropathic pain',
-      'Post-surgical recovery',
-      'Sports injury healing'
+      'Relaxation practice',
+      'Recovery support',
+      'Self-care routines',
+      'Stress management',
+      'Mindfulness sessions',
+      'Post-exercise comfort'
     ],
     tier: 'basic',
     duration_minutes: 35,
     research_citations: [
-      'Cleveland Clinic (2024). 285 Hz Frequency Therapy for Chronic Pain. Pain Medicine, 25(4), 412-428.',
-      'Mayo Clinic Pain Research (2023). Solfeggio Frequencies and Inflammation. Journal of Pain Research, 16, 1789-1804.',
-      'Johns Hopkins Pain Center (2024). Frequency Medicine in Pain Management. Clinical Journal of Pain, 40(3), 156-171.',
-      'Stanford Pain Lab (2023). Vibrational Medicine and Endogenous Opioids. Nature Medicine, 29(7), 1034-1049.',
-      'Harvard Pain Research (2024). Non-pharmacological Pain Interventions. JAMA Internal Medicine, 184(8), 892-907.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'Chronic Pain Frequency Protocol',
-        participants: 1124,
-        duration_weeks: 14,
-        results: '82% significant pain reduction',
-        institution: 'Cleveland Clinic Neurological Institute'
-      }
-    ],
-    mechanism: 'Activates descending pain inhibition, stimulates endorphin release, reduces pro-inflammatory cytokines',
-    contraindications: ['Acute abdominal pain', 'Undiagnosed pain conditions', 'Pregnancy complications'],
-    dosage: '30-40 minutes, 2-3 times daily for chronic conditions',
-    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Long exhale activates endorphin release and reduces pain perception through vagal tone' }
+    clinical_trials: [],
+    mechanism: 'May promote relaxation and comfort through auditory-mediated pathways, potentially supporting the body\'s natural responses to tension',
+    contraindications: ['Consult your healthcare provider if you have acute abdominal pain', 'Consult your healthcare provider if you have undiagnosed pain conditions', 'Consult your healthcare provider if you have pregnancy complications', 'This is a wellness tool, not a medical device'],
+    dosage: '30-40 minutes, 2-3 times daily as needed for comfort. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Long exhale supports relaxation and promotes a sense of physical comfort' }
   },
   {
     id: '7',
-    name: 'Heart Coherence Optimizer',
+    name: 'Heart Coherence',
     slug: 'heart-coherence',
     hz_value: 0.1,
     category: 'cardiovascular',
-    description: 'Ultra-low frequency for heart rate variability optimization',
-    scientific_backing: 'Stanford Cardiovascular Institute research shows 0.1 Hz stimulation increases heart rate variability by 156%, improves cardiac coherence, and reduces cardiovascular disease risk by 34%. This frequency optimizes autonomic nervous system balance.',
+    description: 'Ultra-low frequency for heart rate variability support and a balanced sense of calm',
+    scientific_backing: 'Research suggests that breathing and biofeedback practices at approximately 0.1 Hz (6 breaths per minute) are associated with improved heart rate variability and autonomic balance. Peer-reviewed studies on HRV biofeedback demonstrate that this resonant frequency may support cardiovascular wellness and stress resilience.',
     benefits: [
-      'HRV improvement 156%',
-      'Cardiac coherence optimization',
-      'Cardiovascular risk reduction 34%',
-      'Autonomic balance',
-      'Blood pressure regulation',
-      'Stress resilience enhancement'
+      'Heart rate variability support',
+      'Enhanced sense of calm',
+      'Improved stress resilience',
+      'Support for autonomic balance',
+      'Relaxation and centering',
+      'Improved sense of wellbeing'
     ],
     best_for: [
-      'Cardiovascular health',
-      'Hypertension management',
-      'Stress-related heart issues',
-      'Athletic performance',
-      'Autonomic dysfunction',
-      'Heart disease prevention'
+      'Relaxation practice',
+      'Stress management',
+      'Meditation enhancement',
+      'Self-care routines',
+      'Mindfulness sessions',
+      'Athletic recovery'
     ],
     tier: 'basic',
     duration_minutes: 20,
     research_citations: [
-      'Stanford Cardiovascular Institute (2024). 0.1 Hz and Heart Rate Variability. Circulation Research, 134(8), 1123-1138.',
-      'Mayo Clinic Cardiology (2023). Low Frequency Stimulation and Cardiac Health. Journal of the American Heart Association, 12(14), e029456.',
-      'Harvard Cardiac Prevention (2024). Frequency Medicine in Cardiovascular Disease. European Heart Journal, 45(12), 1034-1049.',
-      'Johns Hopkins Cardiology (2023). Autonomic Balance and Heart Coherence. Autonomic Neuroscience, 247, 103089.',
-      'UCLA Cardiac Research (2024). HRV Enhancement Through Frequency Therapy. Heart Rhythm, 21(4), 567-583.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007'
     ],
-    clinical_trials: [
-      {
-        title: 'Cardiac Coherence Enhancement Study',
-        participants: 756,
-        duration_weeks: 12,
-        results: '88% improvement in cardiac coherence metrics',
-        institution: 'Stanford Medicine Cardiovascular Institute'
-      }
-    ],
-    mechanism: 'Entrains cardiac rhythms, balances sympathetic/parasympathetic activity, optimizes baroreceptor sensitivity',
-    contraindications: ['Severe arrhythmias', 'Recent cardiac surgery', 'Unstable angina'],
-    dosage: '15-25 minutes, preferably morning and evening sessions',
-    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Cardiac coherence ratio — 5s inhale, 3s hold matches heart rate variability optimization' }
+    clinical_trials: [],
+    mechanism: 'Associated with cardiac coherence patterns; may support autonomic balance through resonant frequency entrainment',
+    contraindications: ['Consult your healthcare provider if you have severe arrhythmias', 'Consult your healthcare provider if you have had recent cardiac surgery', 'Consult your healthcare provider if you have unstable angina', 'This is a wellness tool, not a medical device'],
+    dosage: '15-25 minutes, preferably morning and evening sessions. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'This breathing ratio supports relaxation and promotes a sense of heart-centered calm' }
   },
   {
     id: '8',
-    name: 'Dopamine Elevation',
+    name: 'Dopamine & Motivation',
     slug: 'dopamine-elevation',
     hz_value: 14,
     category: 'neurotransmitter_optimization',
-    description: 'Beta frequency for natural dopamine and motivation enhancement',
-    scientific_backing: 'UCLA neuroscience research demonstrates 14 Hz beta stimulation increases dopamine production by 195%, enhances motivation by 167%, and improves reward pathway function. This frequency naturally balances neurotransmitter systems without pharmaceutical side effects.',
+    description: 'Beta frequency associated with motivation, drive, and an uplifting sense of focus and energy',
+    scientific_backing: 'Research suggests that beta-range frequencies (12-30 Hz) are associated with alert, focused mental states. Studies on auditory stimulation in the beta range indicate potential effects on mood and motivation. While specific research on 14 Hz is limited, the broader field of sound wellness research suggests that beta frequencies may support an energized and focused mental state.',
     benefits: [
-      'Dopamine increase 195%',
-      'Motivation enhancement 167%',
-      'Reward pathway optimization',
-      'Addiction recovery support',
-      'Depression symptom relief',
-      'Focus and drive improvement'
+      'Enhanced sense of motivation',
+      'Improved focus and drive',
+      'Uplifting mood support',
+      'Better mental energy',
+      'Support for positive outlook',
+      'Increased sense of purpose'
     ],
     best_for: [
-      'Depression treatment',
-      'Addiction recovery',
-      'Motivation disorders',
-      'ADHD support',
-      'Parkinson\'s disease',
-      'Chronic fatigue syndrome'
+      'Motivation support',
+      'Self-care routines',
+      'Morning energy practice',
+      'Mindfulness sessions',
+      'Creative work',
+      'Stress management'
     ],
     tier: 'basic',
     duration_minutes: 25,
     research_citations: [
-      'UCLA Neuroscience (2024). 14 Hz Beta Stimulation and Dopamine Systems. Nature Neuroscience, 27(6), 892-907.',
-      'Stanford Neurology (2023). Beta Frequencies and Reward Pathways. Journal of Neuroscience, 43(28), 5234-5249.',
-      'Harvard Psychiatry (2024). Natural Dopamine Enhancement in Depression. JAMA Psychiatry, 81(7), 678-693.',
-      'Johns Hopkins Addiction Research (2023). Frequency Therapy in Substance Recovery. Addiction Biology, 28(4), e13278.',
-      'Mayo Clinic Neurology (2024). Beta Waves and Neurotransmitter Balance. Clinical Neurophysiology, 159, 45-62.'
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Gerra G, et al. Neuroendocrine responses of healthy volunteers to music. Psychoneuroendocrinology, 1998; 23(8): 915-925.',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'Dopamine Enhancement Protocol',
-        participants: 923,
-        duration_weeks: 10,
-        results: '76% improvement in motivation and mood scores',
-        institution: 'UCLA Department of Psychiatry'
-      }
-    ],
-    mechanism: 'Stimulates dopaminergic neurons, enhances tyrosine hydroxylase activity, optimizes reward pathway function',
-    contraindications: ['Bipolar disorder (manic phase)', 'Psychotic disorders', 'Recent stimulant use'],
-    dosage: '20-30 minutes morning use, avoid evening application to prevent sleep disruption',
-    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing ratio with longer inhale increases norepinephrine and dopamine release' }
+    clinical_trials: [],
+    mechanism: 'Associated with beta brainwave states linked to alertness and motivation; may support an energized mental state',
+    contraindications: ['Consult your healthcare provider if you have bipolar disorder (manic phase)', 'Consult your healthcare provider if you have psychotic disorders', 'This is a wellness tool, not a medical device'],
+    dosage: '20-30 minutes morning use, avoid evening application to prevent sleep disruption. Individual experiences may vary',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing ratio with longer inhale supports an uplifting, motivated state' }
   },
   {
     id: '9',
@@ -387,46 +324,36 @@ export const frequencies: Frequency[] = [
     slug: 'serotonin-balance',
     hz_value: 10,
     category: 'mood_enhancement',
-    description: 'Alpha frequency for serotonin optimization and emotional balance',
-    scientific_backing: 'Harvard Medical School research shows 10 Hz alpha stimulation increases serotonin levels by 186%, reduces depression symptoms by 71%, and enhances emotional regulation. This frequency naturally balances mood without pharmaceutical interventions.',
+    description: 'Alpha frequency associated with emotional balance, calm, and an elevated sense of mood',
+    scientific_backing: 'Research suggests that alpha-range frequencies (8-12 Hz) are associated with relaxed, calm mental states. Studies on sound and music interventions show effects on mood and emotional regulation. A peer-reviewed study found that music listening significantly reduced cortisol and improved mood markers in participants.',
     benefits: [
-      'Serotonin increase 186%',
-      'Depression reduction 71%',
-      'Emotional regulation enhancement',
-      'Mood stability improvement',
-      'Anxiety reduction',
-      'Social confidence boost'
+      'Enhanced emotional balance',
+      'Improved mood and calm',
+      'Reduced tension',
+      'Greater sense of wellbeing',
+      'Support for emotional stability',
+      'Gentle relaxation'
     ],
     best_for: [
-      'Major depression',
-      'Seasonal affective disorder',
-      'Emotional dysregulation',
-      'Social anxiety',
-      'Mood disorders',
-      'Emotional wellness'
+      'Emotional wellness',
+      'Relaxation practice',
+      'Meditation enhancement',
+      'Self-care routines',
+      'Stress management',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 30,
     research_citations: [
-      'Harvard Medical School (2024). 10 Hz Alpha and Serotonin Production. Biological Psychiatry, 95(8), 623-638.',
-      'Stanford Psychiatry (2023). Alpha Frequencies in Depression Treatment. American Journal of Psychiatry, 180(7), 567-583.',
-      'Mayo Clinic Mental Health (2024). Natural Serotonin Enhancement. Journal of Clinical Psychiatry, 85(4), 412-427.',
-      'Johns Hopkins Mood Research (2023). Alpha Wave Therapy for Mood Disorders. Depression and Anxiety, 40(6), 578-594.',
-      'UCLA Emotional Regulation Lab (2024). 10 Hz Stimulation and Emotional Balance. Emotion, 24(3), 567-582.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109'
     ],
-    clinical_trials: [
-      {
-        title: 'Serotonin Balance Enhancement Study',
-        participants: 1089,
-        duration_weeks: 12,
-        results: '83% improvement in mood disorder symptoms',
-        institution: 'Harvard McLean Hospital'
-      }
-    ],
-    mechanism: 'Enhances tryptophan hydroxylase activity, increases serotonin synthesis, modulates limbic system activity',
-    contraindications: ['Serotonin syndrome risk', 'MAOI medications', 'Recent SSRI changes'],
-    dosage: '25-35 minutes daily, preferably consistent timing for circadian optimization',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Gentle extended exhale promotes serotonin synthesis through parasympathetic activation' }
+    clinical_trials: [],
+    mechanism: 'Associated with alpha brainwave states linked to calm alertness; may support emotional balance through relaxation pathways',
+    contraindications: ['Consult your healthcare provider if you are at risk of serotonin syndrome', 'Consult your healthcare provider if you take MAOI medications', 'Consult your healthcare provider if you have recently changed SSRI medications', 'This is a wellness tool, not a medical device'],
+    dosage: '25-35 minutes daily, preferably at a consistent time for routine building. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Gentle extended exhale promotes calm breathing and supports emotional balance' }
   },
   {
     id: '10',
@@ -434,556 +361,450 @@ export const frequencies: Frequency[] = [
     slug: 'gaba-relaxation',
     hz_value: 100,
     category: 'relaxation',
-    description: 'High-frequency gamma for GABA enhancement and deep relaxation',
-    scientific_backing: 'Johns Hopkins neuropharmacology research demonstrates 100 Hz stimulation increases GABA production by 178%, reduces anxiety by 68%, and promotes deep relaxation without sedation. This frequency naturally enhances the brain\'s primary inhibitory neurotransmitter.',
+    description: 'High-frequency gamma for deep relaxation, tension release, and a profound sense of calm',
+    scientific_backing: 'Research suggests that sound-based relaxation interventions can promote measurable reductions in anxiety and tension. A peer-reviewed study on singing bowl meditation found significant reductions in tension, anger, and fatigue. While specific research on 100 Hz is limited, the broader field of sound wellness research supports the use of specific frequencies for relaxation and stress reduction.',
     benefits: [
-      'GABA production increase 178%',
-      'Anxiety reduction 68%',
-      'Muscle tension relief',
-      'Mental relaxation enhancement',
-      'Sleep preparation',
-      'Stress response modulation'
+      'Deep relaxation',
+      'Reduced tension and anxiety',
+      'Enhanced sense of calm',
+      'Support for sleep preparation',
+      'Stress relief',
+      'Improved sense of wellbeing'
     ],
     best_for: [
-      'Anxiety disorders',
-      'Muscle tension',
+      'Relaxation practice',
       'Stress management',
       'Sleep preparation',
-      'Panic disorder',
-      'General relaxation'
+      'Self-care routines',
+      'Meditation enhancement',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 20,
     research_citations: [
-      'Johns Hopkins Neuropharmacology (2024). 100 Hz and GABA System Enhancement. Journal of Neurochemistry, 168(4), 789-804.',
-      'Stanford Anxiety Research (2023). High-Frequency Gamma and Relaxation. Psychophysiology, 60(8), e14289.',
-      'Harvard Neuroscience (2024). GABA Enhancement Through Frequency Stimulation. Nature Communications, 15, 2456.',
-      'Mayo Clinic Neurology (2023). Gamma Waves and Inhibitory Neurotransmission. Clinical Neurophysiology, 154, 78-94.',
-      'UCLA Stress Research (2024). Natural GABA Modulation and Anxiety Relief. Journal of Anxiety Disorders, 102, 102789.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'GABA Enhancement Relaxation Study',
-        participants: 687,
-        duration_weeks: 8,
-        results: '79% reduction in anxiety and tension scores',
-        institution: 'Johns Hopkins Anxiety Disorders Clinic'
-      }
-    ],
-    mechanism: 'Stimulates GABAergic interneurons, enhances GABA synthesis, promotes cortical inhibition',
-    contraindications: ['Severe depression', 'Cognitive impairment', 'GABA medication interactions'],
-    dosage: '15-25 minutes for acute relaxation, evening use for sleep preparation',
-    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Deep hold and extended exhale maximize GABA receptor activation for deep relaxation' }
+    clinical_trials: [],
+    mechanism: 'May support relaxation through auditory stimulation pathways associated with calm and reduced arousal',
+    contraindications: ['Consult your healthcare provider if you have severe depression', 'Consult your healthcare provider if you have cognitive impairment', 'Consult your healthcare provider about potential medication interactions', 'This is a wellness tool, not a medical device'],
+    dosage: '15-25 minutes for relaxation, evening use for sleep preparation. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 7, exhale: 8, reason: 'Deep hold and extended exhale promote deep relaxation and calm breathing' }
   },
 
   // TIER 3: PRO ($39.99) - Advanced Clinical Protocols
   {
     id: '11',
-    name: 'Neural Regeneration Complex',
+    name: 'Neural Harmony',
     slug: 'neural-regeneration',
     hz_value: 741,
     category: 'neural_repair',
-    description: 'Solfeggio frequency for neural pathway regeneration and cognitive restoration',
-    scientific_backing: 'Yale Neurology research demonstrates 741 Hz stimulation promotes nerve growth factor production by 245%, enhances neuroplasticity by 198%, and accelerates neural repair in stroke and TBI patients. This frequency activates brain-derived neurotrophic factor pathways.',
+    description: 'Solfeggio frequency for cognitive clarity, mental harmony, and a restorative experience for the mind',
+    scientific_backing: 'Research suggests that specific sound frequencies may support cognitive wellness and mental clarity. While specific research on 741 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing. Studies on sound meditation show improvements in mood, tension, and cognitive clarity.',
     benefits: [
-      'Neural growth factor increase 245%',
-      'Neuroplasticity enhancement 198%',
-      'Cognitive function restoration',
-      'Memory improvement',
-      'Neural pathway repair',
-      'Brain injury recovery'
+      'Enhanced mental clarity',
+      'Improved cognitive focus',
+      'Deep relaxation for the mind',
+      'Support for mental wellbeing',
+      'Reduced mental tension',
+      'Restorative experience'
     ],
     best_for: [
-      'Stroke recovery',
-      'Traumatic brain injury',
-      'Cognitive decline',
-      'Alzheimer\'s disease',
-      'Neurodegenerative conditions',
-      'Memory disorders'
+      'Cognitive wellness',
+      'Relaxation practice',
+      'Meditation enhancement',
+      'Self-care routines',
+      'Mindfulness sessions',
+      'Stress management'
     ],
     tier: 'pro',
     duration_minutes: 50,
     research_citations: [
-      'Yale School of Medicine (2024). 741 Hz and Neural Regeneration. Nature Neuroscience, 27(9), 1234-1249.',
-      'Johns Hopkins Neurology (2023). Solfeggio Frequencies in Brain Repair. Journal of Neuroregeneration Research, 18(4), 567-583.',
-      'Stanford Neurosurgery (2024). Frequency Therapy in TBI Recovery. Brain Injury, 38(7), 890-905.',
-      'Harvard Neurology (2023). BDNF Enhancement Through Sound Therapy. Neurobiology of Disease, 178, 106089.',
-      'Mayo Clinic Cognitive Disorders (2024). Neural Repair Frequencies. Alzheimer\'s & Dementia, 20(5), 1456-1471.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024'
     ],
-    clinical_trials: [
-      {
-        title: 'Neural Recovery Enhancement Protocol',
-        participants: 534,
-        duration_weeks: 20,
-        results: '74% improvement in cognitive function scores',
-        institution: 'Yale-New Haven Neuroscience Institute'
-      }
-    ],
-    mechanism: 'Activates BDNF pathways, promotes synaptic plasticity, enhances neural stem cell differentiation',
-    contraindications: ['Active seizure disorders', 'Recent neurosurgery', 'Brain tumor history'],
-    dosage: '40-60 minutes, requires medical supervision for neurological conditions',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Slow steady breathing ensures optimal neural oxygenation for regenerative processes' }
+    clinical_trials: [],
+    mechanism: 'Research suggests this frequency may promote mental clarity and cognitive harmony through auditory relaxation pathways',
+    contraindications: ['Consult your healthcare provider if you have active seizure disorders', 'Consult your healthcare provider if you have had recent neurosurgery', 'This is a wellness tool, not a medical device'],
+    dosage: '40-60 minutes for a full restorative session. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Slow steady breathing supports relaxation and enhances the listening experience' }
   },
   {
     id: '12',
-    name: 'Telomere Preservation',
+    name: 'Longevity Frequency',
     slug: 'telomere-preservation',
     hz_value: 963,
     category: 'anti_aging',
-    description: 'Crown chakra frequency for cellular longevity and DNA protection',
-    scientific_backing: 'Harvard Longevity Institute research suggests 963 Hz may influence telomerase activity by 67%, protect against cellular aging, and enhance DNA repair mechanisms. This frequency shows promise in age reversal protocols at the cellular level.',
+    description: 'Crown chakra Solfeggio frequency associated with vitality, inner radiance, and a deep sense of renewal',
+    scientific_backing: 'Research suggests that sound-based wellness practices may support stress reduction, which is associated with healthier aging markers. While specific research on 963 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Telomerase activity increase 67%',
-      'Cellular aging deceleration',
-      'DNA protection enhancement',
-      'Longevity marker improvement',
-      'Age-related decline prevention',
-      'Cellular rejuvenation'
+      'Deep sense of renewal',
+      'Enhanced vitality',
+      'Stress reduction',
+      'Improved sense of wellbeing',
+      'Support for healthy routines',
+      'Inner radiance and calm'
     ],
     best_for: [
-      'Anti-aging therapy',
-      'Longevity enhancement',
-      'Age-related decline prevention',
-      'Cellular health optimization',
-      'DNA protection',
-      'Regenerative medicine'
+      'Relaxation practice',
+      'Meditation enhancement',
+      'Self-care routines',
+      'Mindfulness sessions',
+      'Vitality practice',
+      'Stress management'
     ],
     tier: 'pro',
     duration_minutes: 45,
     research_citations: [
-      'Harvard T.H. Chan School (2024). 963 Hz and Telomerase Activity. Cell, 187(9), 2345-2361.',
-      'Stanford Longevity Center (2023). Crown Frequency and Cellular Aging. Nature Aging, 3(7), 567-583.',
-      'MIT Age Reversal Lab (2024). Sound Therapy in Longevity Medicine. Science Translational Medicine, 16(742), eabcd1234.',
-      'Johns Hopkins Longevity (2023). Frequency Medicine and Telomere Biology. Aging Cell, 22(8), e13867.',
-      'UCLA Longevity Institute (2024). 963 Hz and Age-Related Biomarkers. Journals of Gerontology, 79(6), 1234-1249.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024'
     ],
-    clinical_trials: [
-      {
-        title: 'Longevity Enhancement Trial',
-        participants: 387,
-        duration_weeks: 24,
-        results: '59% improvement in aging biomarkers',
-        institution: 'Harvard Longevity Research Institute'
-      }
-    ],
-    mechanism: 'Theoretical influence on telomerase enzyme complex, DNA methylation patterns, cellular senescence pathways',
-    contraindications: ['Cancer history', 'Pregnancy', 'Under 25 years old', 'Growth disorders'],
-    dosage: 'Requires clinical supervision, individualized protocols based on biomarker assessment',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Stress-reducing breathing pattern shown to slow telomere shortening in clinical studies' }
+    clinical_trials: [],
+    mechanism: 'Associated with deep meditative states; research suggests sound-based practices may support stress reduction and a sense of renewal',
+    contraindications: ['Consult your healthcare provider if you have a history of cancer', 'Consult your healthcare provider if you are pregnant', 'This is a wellness tool, not a medical device'],
+    dosage: '30-45 minutes as part of a regular wellness practice. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Stress-reducing breathing pattern supports relaxation and a sense of renewal' }
   },
   {
     id: '13',
-    name: 'Immune System Optimizer',
+    name: 'Immune Support',
     slug: 'immune-optimizer',
     hz_value: 594,
     category: 'immune_enhancement',
-    description: 'Solar plexus frequency for immune function enhancement and pathogen resistance',
-    scientific_backing: 'Mayo Clinic immunology research shows 594 Hz stimulation increases natural killer cell activity by 189%, enhances T-cell function by 156%, and improves overall immune response. This frequency optimizes immune surveillance and pathogen resistance.',
+    description: 'Solar plexus frequency for vitality, inner strength, and overall wellness support',
+    scientific_backing: 'Research suggests that music and sound interventions may influence immune markers. A peer-reviewed study (Fancourt et al., 2014) found psychoneuroimmunological effects of music, including changes in immune biomarkers. While specific research on 594 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'NK cell activity increase 189%',
-      'T-cell function enhancement 156%',
-      'Immune surveillance improvement',
-      'Pathogen resistance boost',
-      'Inflammatory response optimization',
-      'Autoimmune balance'
+      'Enhanced sense of vitality',
+      'Support for overall wellness',
+      'Deep relaxation',
+      'Stress reduction',
+      'Improved sense of inner strength',
+      'General wellbeing support'
     ],
     best_for: [
-      'Chronic infections',
-      'Immune deficiency',
-      'Autoimmune conditions',
-      'Cancer support',
-      'Viral resistance',
-      'General immunity'
+      'Wellness practice',
+      'Self-care routines',
+      'Relaxation practice',
+      'Stress management',
+      'Meditation enhancement',
+      'Mindfulness sessions'
     ],
     tier: 'pro',
     duration_minutes: 40,
     research_citations: [
-      'Mayo Clinic Immunology (2024). 594 Hz and Natural Killer Cell Function. Journal of Immunology, 212(8), 1567-1583.',
-      'Stanford Immunology (2023). Solar Plexus Frequency and T-Cell Response. Nature Immunology, 24(7), 890-905.',
-      'Harvard Medical School (2024). Sound Therapy in Immune Enhancement. Clinical Immunology, 251, 109324.',
-      'Johns Hopkins Oncology (2023). Frequency Medicine and Cancer Immunity. Cancer Immunology Research, 11(6), 789-804.',
-      'UCLA AIDS Institute (2024). Immune Function Optimization Through Frequency Therapy. Journal of Acquired Immune Deficiency Syndromes, 95(3), 234-249.'
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'Immune Enhancement Protocol',
-        participants: 672,
-        duration_weeks: 16,
-        results: '81% improvement in immune function markers',
-        institution: 'Mayo Clinic Immunology Division'
-      }
-    ],
-    mechanism: 'Activates sympathetic immune pathways, enhances cytokine production, optimizes immune cell trafficking',
-    contraindications: ['Active autoimmune flares', 'Immunosuppressive therapy', 'Organ transplant recipients'],
-    dosage: '35-45 minutes daily, timing adjusted for circadian immune function optimization',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal-phase breathing activates the immune system through balanced autonomic stimulation' }
+    clinical_trials: [],
+    mechanism: 'Research suggests sound-based wellness practices may support the body\'s natural processes through stress reduction and relaxation',
+    contraindications: ['Consult your healthcare provider if you have active autoimmune flares', 'Consult your healthcare provider if you are on immunosuppressive therapy', 'Consult your healthcare provider if you are an organ transplant recipient', 'This is a wellness tool, not a medical device'],
+    dosage: '35-45 minutes daily as part of a wellness routine. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal-phase breathing supports relaxation and balanced energy' }
   },
   {
     id: '14',
-    name: 'Hormone Optimization Matrix',
+    name: 'Hormonal Balance',
     slug: 'hormone-optimization',
     hz_value: 111,
     category: 'hormonal_balance',
-    description: 'Sacred frequency for endocrine system balance and hormonal optimization',
-    scientific_backing: 'Endocrine Society research demonstrates 111 Hz stimulation balances cortisol by 73%, optimizes testosterone by 89% in men, and enhances estrogen balance by 67% in women. This ancient sacred frequency harmonizes the entire endocrine system.',
+    description: 'Sacred frequency associated with balance, harmony, and a deep sense of inner equilibrium',
+    scientific_backing: 'Research suggests that sound frequencies may influence the body\'s stress responses, which in turn are closely linked to hormonal balance. Studies on sound and music interventions demonstrate effects on cortisol and stress markers. While specific research on 111 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Cortisol balance improvement 73%',
-      'Testosterone optimization 89%',
-      'Estrogen balance enhancement 67%',
-      'Thyroid function support',
-      'Growth hormone optimization',
-      'Insulin sensitivity improvement'
+      'Enhanced sense of balance',
+      'Deep relaxation',
+      'Stress reduction',
+      'Improved sense of equilibrium',
+      'Support for natural rhythms',
+      'General wellbeing support'
     ],
     best_for: [
-      'Hormonal imbalances',
-      'Menopause symptoms',
-      'Andropause management',
-      'Thyroid disorders',
-      'Adrenal fatigue',
-      'Metabolic optimization'
+      'Self-care routines',
+      'Relaxation practice',
+      'Stress management',
+      'Meditation enhancement',
+      'Mindfulness sessions',
+      'Wellness practice'
     ],
     tier: 'pro',
     duration_minutes: 35,
     research_citations: [
-      'Endocrine Society (2024). 111 Hz Sacred Frequency and Hormonal Balance. Journal of Clinical Endocrinology & Metabolism, 109(7), 1890-1905.',
-      'Mayo Clinic Endocrinology (2023). Sacred Frequencies in Hormone Therapy. Endocrine Reviews, 44(4), 456-471.',
-      'Harvard Medical School (2024). 111 Hz and Hypothalamic-Pituitary Axis. Nature Reviews Endocrinology, 20(6), 334-349.',
-      'Stanford Endocrine Lab (2023). Ancient Frequencies and Modern Hormone Science. Frontiers in Endocrinology, 14, 1234567.',
-      'Johns Hopkins Hormone Research (2024). Sacred Sound and Endocrine Function. Molecular Endocrinology, 38(5), 789-804.'
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Gerra G, et al. Neuroendocrine responses of healthy volunteers to music. Psychoneuroendocrinology, 1998; 23(8): 915-925.',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007'
     ],
-    clinical_trials: [
-      {
-        title: 'Endocrine Optimization Study',
-        participants: 845,
-        duration_weeks: 18,
-        results: '77% improvement in hormonal balance markers',
-        institution: 'Endocrine Society Research Foundation'
-      }
-    ],
-    mechanism: 'Modulates hypothalamic-pituitary axis, influences circadian hormone rhythms, optimizes feedback loops',
-    contraindications: ['Hormone-sensitive cancers', 'Pregnancy', 'Recent hormone therapy changes'],
-    dosage: '30-40 minutes, optimal timing varies by individual circadian hormone patterns',
-    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern optimizes hypothalamic-pituitary-adrenal axis regulation' }
+    clinical_trials: [],
+    mechanism: 'May support balance and relaxation through auditory pathways associated with stress reduction and inner equilibrium',
+    contraindications: ['Consult your healthcare provider if you have hormone-sensitive conditions', 'Consult your healthcare provider if you are pregnant', 'Consult your healthcare provider if you have recently changed hormone therapy', 'This is a wellness tool, not a medical device'],
+    dosage: '30-40 minutes as part of a regular wellness practice. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern supports relaxation and a sense of inner balance' }
   },
   {
     id: '15',
-    name: 'Mitochondrial Energizer',
+    name: 'Cellular Energy',
     slug: 'mitochondrial-energizer',
     hz_value: 55,
     category: 'cellular_energy',
-    description: 'Cellular powerhouse frequency for mitochondrial optimization and energy production',
-    scientific_backing: 'MIT cellular biology research shows 55 Hz stimulation increases ATP production by 234%, enhances mitochondrial biogenesis by 178%, and improves cellular energy efficiency. This frequency directly targets the cellular powerhouses for enhanced vitality.',
+    description: 'Low-frequency tone for vitality, natural energy, and an invigorating restorative experience',
+    scientific_backing: 'Research suggests that specific sound frequencies may influence physiological arousal and energy levels. Studies on low-frequency sound stimulation show effects on autonomic nervous system activity and self-reported energy. While specific research on 55 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote alertness and reduce fatigue markers.',
     benefits: [
-      'ATP production increase 234%',
-      'Mitochondrial biogenesis 178%',
-      'Cellular energy efficiency',
-      'Physical stamina enhancement',
-      'Mental energy boost',
-      'Metabolic optimization'
+      'Enhanced sense of vitality',
+      'Natural energy support',
+      'Reduced feeling of fatigue',
+      'Improved mental alertness',
+      'Invigorating experience',
+      'Support for active lifestyles'
     ],
     best_for: [
-      'Chronic fatigue syndrome',
-      'Mitochondrial disorders',
-      'Athletic performance',
-      'Energy optimization',
-      'Metabolic enhancement',
-      'Age-related energy decline'
+      'Morning energy practice',
+      'Self-care routines',
+      'Pre-exercise preparation',
+      'Stress management',
+      'Mindfulness sessions',
+      'Wellness practice'
     ],
     tier: 'pro',
     duration_minutes: 30,
     research_citations: [
-      'MIT Department of Biology (2024). 55 Hz and Mitochondrial Function. Cell Metabolism, 39(4), 789-804.',
-      'Harvard Medical School (2023). Frequency Therapy and ATP Synthesis. Nature Cell Biology, 25(7), 890-905.',
-      'Stanford Biochemistry (2024). Sound Waves and Cellular Energy Production. Science, 384(6695), 567-583.',
-      'Johns Hopkins Cell Biology (2023). Mitochondrial Enhancement Through Frequency Medicine. Journal of Cell Science, 136(12), jcs260123.',
-      'Mayo Clinic Metabolism (2024). 55 Hz Stimulation and Energy Metabolism. Cell Reports, 43(4), 114123.'
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'Mitochondrial Enhancement Protocol',
-        participants: 523,
-        duration_weeks: 14,
-        results: '86% improvement in energy and fatigue scores',
-        institution: 'MIT-Harvard Mitochondrial Medicine'
-      }
-    ],
-    mechanism: 'Stimulates mitochondrial membrane potential, enhances electron transport chain efficiency, promotes biogenesis',
-    contraindications: ['Mitochondrial DNA disorders', 'Severe cardiac conditions', 'Recent metabolic medication changes'],
-    dosage: '25-35 minutes morning use for sustained energy enhancement',
-    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing pattern increases mitochondrial oxygen supply and ATP production' }
+    clinical_trials: [],
+    mechanism: 'May support a sense of vitality and energy through auditory stimulation pathways associated with physiological arousal',
+    contraindications: ['Consult your healthcare provider if you have severe cardiac conditions', 'Consult your healthcare provider if you have recently changed metabolic medications', 'This is a wellness tool, not a medical device'],
+    dosage: '25-35 minutes morning use for a natural energy boost. Individual experiences may vary',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing pattern with longer inhale supports an invigorating, alert state' }
   },
 
   // TIER 4: CLINICAL ($79.99) - Medical-Grade Frequencies
   {
     id: '16',
-    name: 'Stem Cell Activation',
+    name: 'Deep Restoration',
     slug: 'stem-cell-activation',
     hz_value: 174,
     category: 'regenerative_medicine',
-    description: 'Foundation frequency for stem cell activation and regenerative healing',
-    scientific_backing: 'Stanford Regenerative Medicine research demonstrates 174 Hz stimulation activates mesenchymal stem cells by 267%, enhances tissue regeneration by 198%, and accelerates wound healing. This frequency shows remarkable potential in regenerative medicine protocols.',
+    description: 'Foundation Solfeggio frequency for deep restoration, comfort, and a profoundly restorative wellness experience',
+    scientific_backing: 'Research suggests that low-frequency sound may promote deep relaxation and a sense of physical restoration. The 174 Hz Solfeggio frequency is traditionally associated with comfort and grounding. While specific research on 174 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Stem cell activation 267%',
-      'Tissue regeneration 198%',
-      'Wound healing acceleration',
-      'Organ repair support',
-      'Bone regeneration',
-      'Vascular repair'
+      'Deep restorative relaxation',
+      'Enhanced sense of physical comfort',
+      'Profound rest',
+      'Stress reduction',
+      'Support for recovery periods',
+      'Grounding and stability'
     ],
     best_for: [
-      'Degenerative diseases',
-      'Tissue damage repair',
-      'Post-surgical healing',
-      'Bone fractures',
-      'Organ dysfunction',
-      'Accelerated recovery'
+      'Recovery support',
+      'Relaxation practice',
+      'Self-care routines',
+      'Meditation enhancement',
+      'Mindfulness sessions',
+      'Stress management'
     ],
     tier: 'clinical',
     duration_minutes: 60,
     research_citations: [
-      'Stanford Medicine (2024). 174 Hz and Stem Cell Biology. Nature Biotechnology, 42(8), 1234-1249.',
-      'Harvard Stem Cell Institute (2023). Foundation Frequency and Regenerative Medicine. Cell Stem Cell, 32(7), 890-905.',
-      'Mayo Clinic Regenerative Medicine (2024). Sound Therapy in Tissue Engineering. Science Translational Medicine, 16(745), eabcd5678.',
-      'Johns Hopkins Tissue Engineering (2023). 174 Hz Stimulation and Mesenchymal Stem Cells. Biomaterials, 298, 122134.',
-      'Yale Regenerative Medicine (2024). Frequency Medicine and Organ Repair. Nature Medicine, 30(6), 1456-1471.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024'
     ],
-    clinical_trials: [
-      {
-        title: 'Stem Cell Activation Clinical Trial',
-        participants: 289,
-        duration_weeks: 26,
-        results: '72% improvement in tissue regeneration markers',
-        institution: 'Stanford Institute for Stem Cell Biology'
-      }
-    ],
-    mechanism: 'Activates Wnt signaling pathways, promotes stem cell self-renewal, enhances differentiation potential',
-    contraindications: ['Active malignancy', 'Immunocompromised states', 'Pregnancy'],
-    dosage: 'Clinical supervision required, protocol individualized based on condition severity',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Deep steady oxygenation supports stem cell mobilization and tissue repair signaling' }
+    clinical_trials: [],
+    mechanism: 'Associated with deep rest and grounding; may support the body\'s natural restorative processes through deep relaxation',
+    contraindications: ['Consult your healthcare provider if you have active malignancy', 'Consult your healthcare provider if you are immunocompromised', 'Consult your healthcare provider if you are pregnant', 'This is a wellness tool, not a medical device'],
+    dosage: '45-60 minutes for a full restorative session. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Deep steady breathing supports relaxation and enhances the restorative experience' }
   },
   {
     id: '17',
-    name: 'Genetic Expression Optimizer',
+    name: 'Spiritual Awakening',
     slug: 'genetic-expression',
     hz_value: 852,
     category: 'epigenetic_therapy',
-    description: 'Third eye frequency for genetic expression optimization and DNA methylation',
-    scientific_backing: 'Harvard Genetics Institute research suggests 852 Hz may influence epigenetic markers by 78%, optimize gene expression patterns, and affect DNA methylation. This frequency shows potential in personalized genetic therapy protocols.',
+    description: 'Third eye Solfeggio frequency associated with intuition, spiritual awareness, and inner vision',
+    scientific_backing: 'The 852 Hz Solfeggio frequency is traditionally associated with awakening intuition and spiritual awareness. Research suggests that meditative sound practices may promote alpha and theta brainwave states linked to insight and introspection. While specific research on 852 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Epigenetic marker optimization 78%',
-      'Gene expression enhancement',
-      'DNA methylation improvement',
-      'Genetic predisposition mitigation',
-      'Hereditary risk reduction',
-      'Personalized genetic therapy'
+      'Enhanced intuition and insight',
+      'Deepened meditation experience',
+      'Greater sense of inner awareness',
+      'Stress reduction',
+      'Improved introspection',
+      'Spiritual clarity'
     ],
     best_for: [
-      'Genetic predisposition mitigation',
-      'Hereditary disease prevention',
-      'Personalized medicine',
-      'Epigenetic therapy',
-      'Gene expression disorders',
-      'Precision medicine protocols'
+      'Meditation enhancement',
+      'Mindfulness sessions',
+      'Spiritual practice',
+      'Self-care routines',
+      'Relaxation practice',
+      'Inner exploration'
     ],
     tier: 'clinical',
     duration_minutes: 55,
     research_citations: [
-      'Harvard Medical School (2024). 852 Hz and Epigenetic Modifications. Nature Genetics, 56(8), 1123-1138.',
-      'Stanford Genetics (2023). Third Eye Frequency and Gene Expression. Cell, 186(12), 2567-2583.',
-      'MIT Broad Institute (2024). Sound Therapy in Precision Medicine. Nature Reviews Genetics, 25(7), 412-427.',
-      'Johns Hopkins Genetic Medicine (2023). Frequency Medicine and DNA Methylation. Epigenetics & Chromatin, 16, 25.',
-      'Yale Genetic Counseling (2024). 852 Hz and Hereditary Risk Modification. American Journal of Human Genetics, 111(6), 1234-1249.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    clinical_trials: [
-      {
-        title: 'Genetic Expression Optimization Trial',
-        participants: 178,
-        duration_weeks: 32,
-        results: '64% improvement in genetic risk markers',
-        institution: 'Harvard-MIT Genetic Medicine Consortium'
-      }
-    ],
-    mechanism: 'Potential influence on chromatin remodeling, histone modifications, transcription factor activity',
-    contraindications: ['Genetic counseling required', 'Family history assessment needed', 'Age restrictions apply'],
-    dosage: 'Highly individualized protocols based on genetic testing and clinical assessment',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming pattern reduces epigenetic stress markers that suppress beneficial gene expression' }
+    clinical_trials: [],
+    mechanism: 'Associated with meditative and introspective states; may support spiritual awareness through deep relaxation and stress reduction',
+    contraindications: ['Consult your healthcare provider if you have a history of dissociative episodes', 'Consult your healthcare provider about any mental health conditions', 'This is a wellness tool, not a medical device'],
+    dosage: '40-55 minutes as part of a meditation or spiritual practice. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Calming pattern supports deep introspection and enhances the meditative experience' }
   },
   {
     id: '18',
-    name: 'Quantum Coherence Field',
+    name: 'Crown Connection',
     slug: 'quantum-coherence',
     hz_value: 1008,
     category: 'quantum_medicine',
-    description: 'Ultra-high frequency for quantum coherence and cellular field optimization',
-    scientific_backing: 'MIT Quantum Biology Lab research suggests 1008 Hz may influence quantum coherence in biological systems by 45%, optimize cellular field interactions, and enhance quantum healing processes. This represents the frontier of quantum medicine.',
+    description: 'Ultra-high frequency associated with expanded awareness, spiritual connection, and holistic harmony',
+    scientific_backing: 'Research on high-frequency sound and consciousness is an emerging field. Preliminary studies explore how specific frequencies may influence subjective experiences of awareness and wellbeing. While specific research on 1008 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Quantum coherence enhancement 45%',
-      'Cellular field optimization',
-      'Quantum healing activation',
-      'Biofield balance',
-      'Consciousness expansion',
-      'Holistic system integration'
+      'Expanded sense of awareness',
+      'Spiritual connection and harmony',
+      'Deep meditative experience',
+      'Enhanced sense of wholeness',
+      'Stress reduction',
+      'Holistic wellbeing support'
     ],
     best_for: [
-      'Consciousness disorders',
-      'Systemic imbalances',
-      'Holistic healing protocols',
-      'Quantum medicine research',
-      'Advanced wellness optimization',
-      'Experimental therapies'
+      'Spiritual practice',
+      'Meditation enhancement',
+      'Mindfulness sessions',
+      'Self-care routines',
+      'Relaxation practice',
+      'Holistic wellness'
     ],
     tier: 'clinical',
     duration_minutes: 40,
     research_citations: [
-      'MIT Quantum Biology (2024). 1008 Hz and Biological Quantum Coherence. Nature Physics, 20(7), 890-905.',
-      'Stanford Consciousness Lab (2023). Ultra-High Frequencies and Biofield Medicine. Consciousness and Cognition, 118, 103567.',
-      'Harvard Quantum Medicine (2024). Quantum Coherence in Biological Systems. Quantum Biology, 8(3), 234-249.',
-      'Princeton Consciousness Research (2023). High Frequency Stimulation and Awareness. Journal of Consciousness Studies, 30(7), 123-138.',
-      'CalTech Quantum Biology (2024). 1008 Hz and Cellular Field Interactions. Physical Review E, 109, 042401.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024'
     ],
-    clinical_trials: [
-      {
-        title: 'Quantum Coherence Enhancement Study',
-        participants: 89,
-        duration_weeks: 20,
-        results: '52% improvement in holistic wellness markers',
-        institution: 'MIT-Stanford Quantum Medicine Research'
-      }
-    ],
-    mechanism: 'Theoretical quantum field interactions, possible influence on microtubule quantum processes',
-    contraindications: ['Requires specialized monitoring', 'Research protocol participation only'],
-    dosage: 'Experimental protocols under strict clinical research supervision',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal coherent breathing creates electromagnetic harmony supporting quantum biological processes' }
+    clinical_trials: [],
+    mechanism: 'Associated with expanded states of awareness; research into high-frequency sound and consciousness is an emerging area of study',
+    contraindications: ['Consult your healthcare provider if you have a history of dissociative episodes', 'Consult your healthcare provider about any neurological conditions', 'This is a wellness tool, not a medical device'],
+    dosage: '30-40 minutes as part of an advanced meditation practice. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Equal coherent breathing supports a sense of balance and harmony during the practice' }
   },
 
   // Additional specialized frequencies
   {
     id: '19',
-    name: 'Circulation Enhancer',
+    name: 'Circulation & Flow',
     slug: 'circulation-enhancer',
     hz_value: 62,
     category: 'vascular_health',
-    description: 'Vascular frequency for circulation improvement and blood flow optimization',
-    scientific_backing: 'Mayo Clinic vascular research shows 62 Hz stimulation improves peripheral circulation by 143%, enhances nitric oxide production by 89%, and reduces vascular resistance. This frequency optimizes cardiovascular circulation naturally.',
+    description: 'Low-frequency tone for warmth, circulation support, and an invigorating sense of physical flow',
+    scientific_backing: 'Research suggests that specific sound frequencies and vibration may influence peripheral blood flow and autonomic nervous system activity. While specific research on 62 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote relaxation, reduce stress markers, and support general wellbeing.',
     benefits: [
-      'Circulation improvement 143%',
-      'Nitric oxide boost 89%',
-      'Vascular resistance reduction',
-      'Blood pressure optimization',
-      'Peripheral flow enhancement',
-      'Cardiovascular health'
+      'Enhanced sense of warmth and flow',
+      'Improved physical comfort',
+      'Support for active lifestyles',
+      'Deep relaxation',
+      'Stress relief',
+      'Improved sense of wellbeing'
     ],
     best_for: [
-      'Poor circulation',
-      'Peripheral artery disease',
-      'Diabetic complications',
-      'Cold extremities',
-      'Vascular health',
-      'Athletic performance'
+      'Relaxation practice',
+      'Self-care routines',
+      'Post-exercise recovery',
+      'Stress management',
+      'Wellness practice',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 25,
     research_citations: [
-      'Mayo Clinic Vascular Medicine (2024). 62 Hz and Peripheral Circulation. Circulation Research, 134(9), 1234-1249.',
-      'Harvard Vascular Biology (2023). Sound Therapy and Nitric Oxide Production. Cardiovascular Research, 119(8), 1567-1583.',
-      'Stanford Cardiovascular Medicine (2024). Frequency Medicine in Vascular Health. Journal of Vascular Research, 61(3), 145-160.'
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007'
     ],
-    clinical_trials: [
-      {
-        title: 'Circulation Enhancement Study',
-        participants: 456,
-        duration_weeks: 12,
-        results: '79% improvement in circulation measurements',
-        institution: 'Mayo Clinic Gonda Vascular Center'
-      }
-    ],
-    mechanism: 'Stimulates endothelial nitric oxide synthase, promotes vasodilation, enhances blood flow',
-    contraindications: ['Bleeding disorders', 'Recent vascular surgery', 'Severe hypotension'],
-    dosage: '20-30 minutes daily, optimal timing with physical activity',
-    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Longer inhale phase promotes vasodilation and increases circulatory oxygen delivery' }
+    clinical_trials: [],
+    mechanism: 'May support a sense of warmth and physical flow through low-frequency auditory stimulation and relaxation pathways',
+    contraindications: ['Consult your healthcare provider if you have bleeding disorders', 'Consult your healthcare provider if you have had recent vascular surgery', 'Consult your healthcare provider if you have severe hypotension', 'This is a wellness tool, not a medical device'],
+    dosage: '20-30 minutes daily, pairs well with gentle movement. Individual experiences may vary',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Longer inhale phase supports an invigorating sense of physical warmth and flow' }
   },
   {
     id: '20',
-    name: 'Metabolism Accelerator',
+    name: 'Metabolic Boost',
     slug: 'metabolism-accelerator',
     hz_value: 95,
     category: 'metabolic_enhancement',
-    description: 'High-beta frequency for metabolic rate enhancement and weight management',
-    scientific_backing: 'Johns Hopkins metabolism research demonstrates 95 Hz stimulation increases basal metabolic rate by 167%, enhances fat oxidation by 134%, and improves insulin sensitivity by 78%. This frequency naturally optimizes metabolic function.',
+    description: 'High-beta frequency for an energizing experience, vitality support, and metabolic wellness',
+    scientific_backing: 'Research suggests that auditory stimulation in the beta range may influence physiological arousal and metabolic activity. While specific research on 95 Hz is limited, the broader field of sound wellness research suggests that specific frequencies may promote alertness, support energy levels, and reduce fatigue markers.',
     benefits: [
-      'Metabolic rate increase 167%',
-      'Fat oxidation boost 134%',
-      'Insulin sensitivity 78%',
-      'Weight management support',
-      'Energy expenditure increase',
-      'Metabolic flexibility'
+      'Energizing experience',
+      'Enhanced sense of vitality',
+      'Support for active lifestyles',
+      'Improved alertness',
+      'Natural energy boost',
+      'Wellness support'
     ],
     best_for: [
-      'Weight management',
-      'Metabolic syndrome',
-      'Diabetes prevention',
-      'Athletic performance',
-      'Age-related metabolism decline',
-      'Obesity treatment'
+      'Morning energy practice',
+      'Self-care routines',
+      'Wellness practice',
+      'Pre-exercise preparation',
+      'Stress management',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 20,
     research_citations: [
-      'Johns Hopkins Metabolism Lab (2024). 95 Hz and Metabolic Rate Enhancement. Cell Metabolism, 39(6), 1123-1138.',
-      'Harvard School of Public Health (2023). Sound Therapy and Weight Management. Obesity Reviews, 24(7), e13456.',
-      'Stanford Metabolic Research (2024). High-Beta Frequencies and Fat Oxidation. Journal of Clinical Investigation, 134(12), e176543.'
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156',
+      'Nakajima Y, et al. Stress Recovery Effects of High- and Low-Frequency Amplified Music on Heart Rate Variability. Behav Neurol, 2016; 2016: 5965894. https://doi.org/10.1155/2016/5965894'
     ],
-    clinical_trials: [
-      {
-        title: 'Metabolic Enhancement Protocol',
-        participants: 673,
-        duration_weeks: 16,
-        results: '71% improvement in metabolic markers',
-        institution: 'Johns Hopkins Weight Management Center'
-      }
-    ],
-    mechanism: 'Activates sympathetic nervous system, enhances thyroid function, promotes lipolysis',
-    contraindications: ['Hyperthyroidism', 'Eating disorders', 'Cardiovascular instability'],
-    dosage: '15-25 minutes morning use, combine with lifestyle interventions',
-    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing inhale-dominant pattern increases metabolic rate through sympathetic activation' }
+    clinical_trials: [],
+    mechanism: 'May support an energized state through auditory stimulation associated with heightened physiological arousal',
+    contraindications: ['Consult your healthcare provider if you have hyperthyroidism', 'Consult your healthcare provider if you have eating disorders', 'Consult your healthcare provider if you have cardiovascular instability', 'This is a wellness tool, not a medical device'],
+    dosage: '15-25 minutes morning use, combine with healthy lifestyle practices. Individual experiences may vary',
+    breathing: { inhale: 6, hold: 2, exhale: 4, reason: 'Energizing inhale-dominant pattern supports an alert and invigorated state' }
   },
   // NEW: Star frequencies based on global research validation
   {
     id: '21',
-    name: 'Universal Healing',
+    name: 'Universal Harmony',
     slug: 'universal-healing',
     hz_value: 10000,
     category: 'immune_enhancement',
-    description: 'The most validated healing frequency globally — used in Rife therapy protocols with millions of reported beneficial outcomes across diverse conditions',
-    scientific_backing: 'Based on Royal Rife\'s research from the 1930s and modern amplitude-modulated electromagnetic field studies. Zimmerman et al. (2012) published in British Journal of Cancer showed that specific modulation frequencies inhibit cancer cell proliferation without affecting normal cells. Barbault et al. discovered that tumor-specific frequencies are predominantly found above 1,000 Hz. PEMF therapy at various frequencies has FDA approval for bone healing and post-operative recovery.',
+    description: 'A high-frequency tone used in integrative wellness protocols worldwide, associated with broad-spectrum support and deep restorative harmony',
+    scientific_backing: 'Based on historical research by Royal Rife from the 1930s and modern amplitude-modulated electromagnetic field studies. Zimmerman et al. (2012) published in British Journal of Cancer explored specific modulation frequencies and cell proliferation. Barbault et al. (2009) examined amplitude-modulated electromagnetic fields. Note that these studies involved electromagnetic fields, not acoustic sound waves, and results should not be directly extrapolated to audio listening.',
     benefits: [
-      'Broad-spectrum cellular support',
-      'Immune system activation',
-      'Deep tissue penetration via harmonic resonance',
-      'Reported pain reduction',
-      'Enhanced cellular repair processes',
-      'Complementary wellness support'
+      'Broad-spectrum wellness support',
+      'Deep restorative experience',
+      'Enhanced sense of harmony',
+      'Relaxation and calm',
+      'Complementary wellness support',
+      'Improved sense of wellbeing'
     ],
     best_for: [
-      'General wellness protocols',
-      'Immune system support',
-      'Recovery and rehabilitation',
-      'Complementary therapy programs',
-      '25-day healing protocols',
-      'Deep cellular restoration'
+      'General wellness practice',
+      'Relaxation practice',
+      'Recovery support',
+      'Self-care routines',
+      'Meditation enhancement',
+      'Mindfulness sessions'
     ],
     tier: 'pro',
     duration_minutes: 40,
     research_citations: [
       'Zimmerman, J.W., et al. (2012). Cancer cell proliferation is inhibited by specific modulation frequencies. British Journal of Cancer, 106, 307-313.',
       'Barbault, A., et al. (2009). Amplitude-modulated electromagnetic fields for the treatment of cancer. Bioelectromagnetics, 30(8), 681-689.',
-      'Costa, F.P., et al. (2011). Treatment of advanced hepatocellular carcinoma with very low levels of amplitude-modulated electromagnetic fields. British Journal of Cancer, 105(5), 640-648.',
-      'Meessen, A. (2020). Virus Destruction by Resonance. Journal of Modern Physics, 11, 2011-2052.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109'
     ],
-    mechanism: 'High-frequency electromagnetic stimulation creates resonant interaction with cellular structures. Research suggests specific frequencies can selectively affect cellular proliferation rates. The 10,000 Hz range generates harmonic sidebands that interact with biological tissue at multiple frequency levels simultaneously.',
-    contraindications: ['Pacemaker or implanted electrical devices', 'Pregnancy', 'Active seizure disorders', 'Do not replace prescribed medical treatment'],
-    dosage: '40 minutes per session, 2-3 times daily for optimal results. Minimum 25 consecutive days for protocol completion. Listen at comfortable volume with headphones.',
-    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Balanced breathing creates whole-body coherence for multi-system healing support' }
+    clinical_trials: [],
+    mechanism: 'High-frequency stimulation associated with broad-spectrum wellness support. Research into electromagnetic frequency effects on biological systems is an active area of study, though acoustic and electromagnetic modalities differ significantly.',
+    contraindications: ['Consult your healthcare provider if you use a pacemaker or implanted electrical device', 'Consult your healthcare provider if you are pregnant', 'Consult your healthcare provider if you have active seizure disorders', 'Do not use as a replacement for prescribed medical treatment', 'This is a wellness tool, not a medical device'],
+    dosage: '40 minutes per session, 2-3 times daily for a full protocol. Minimum 25 consecutive days for protocol completion. Listen at comfortable volume with headphones. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 5, exhale: 5, reason: 'Balanced breathing supports relaxation and a sense of whole-body harmony' }
   },
   {
     id: '22',
@@ -991,71 +812,73 @@ export const frequencies: Frequency[] = [
     slug: 'detox-cleansing',
     hz_value: 741,
     category: 'relaxation',
-    description: 'Solfeggio frequency associated with cellular detoxification, toxin elimination, and electromagnetic field cleansing — used in integrative wellness protocols worldwide',
-    scientific_backing: 'Part of the ancient Solfeggio frequency scale, 741 Hz has been studied in the context of sound therapy and vibrational medicine. A 2016 study in the Journal of Evidence-Based Integrative Medicine found that sound meditation with specific frequencies significantly reduced tension, anger, fatigue, and depression. Research into sound frequency effects on cellular behavior shows measurable changes in cell morphology and metabolic activity.',
+    description: 'Solfeggio frequency associated with clarity, purification, and a refreshing sense of mental and physical renewal',
+    scientific_backing: 'Part of the ancient Solfeggio frequency scale, 741 Hz has been explored in the context of sound therapy and vibrational wellness. A 2017 study (Goldsby et al.) in the Journal of Evidence-Based Complementary and Alternative Medicine found that sound meditation significantly reduced tension, anger, fatigue, and depression. While specific research on 741 Hz is limited, the broader field of sound wellness research supports the use of specific frequencies for relaxation and stress reduction.',
     benefits: [
-      'Cellular detoxification support',
-      'Electromagnetic field cleansing',
-      'Toxin elimination pathways',
-      'Mental clarity enhancement',
-      'Throat chakra activation',
-      'Expression and communication improvement'
+      'Sense of clarity and renewal',
+      'Mental fog reduction',
+      'Deep relaxation',
+      'Refreshing experience',
+      'Enhanced communication clarity',
+      'Stress relief'
     ],
     best_for: [
-      'Detox programs',
-      'Post-illness recovery',
-      'Environmental toxin exposure',
-      'Mental fog and confusion',
-      'Seasonal cleansing protocols',
-      'Combined with fasting protocols'
+      'Wellness practice',
+      'Recovery support',
+      'Self-care routines',
+      'Mental clarity sessions',
+      'Relaxation practice',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 30,
     research_citations: [
-      'Goldsby, T.L., et al. (2017). Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. Journal of Evidence-Based Integrative Medicine, 22(3), 401-406.',
-      'Bartel, L.R. (2017). Music Has Power: Sound, Vibration, and Health. University of Toronto Press.',
-      'Rein, G. (2004). Bioinformation Within the Biofield. The Journal of Alternative and Complementary Medicine, 10(1), 59-68.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Chanda ML, Levitin DJ. The neurochemistry of music. Trends in Cognitive Sciences, 2013; 17(4): 179-193. https://doi.org/10.1016/j.tics.2013.02.007',
+      'Fancourt D, et al. The psychoneuroimmunological effects of music. Brain Behav Immun, 2014; 36: 15-26. https://doi.org/10.1016/j.bbi.2013.10.024'
     ],
-    mechanism: 'Sound frequencies at 741 Hz create vibrational patterns that influence cellular water structure and metabolic processes. The frequency is thought to stimulate the body\'s natural detoxification pathways and support elimination of environmental toxins through enhanced cellular communication.',
-    contraindications: ['Severe kidney disease', 'Active dialysis treatment', 'Pregnancy (first trimester)'],
-    dosage: '20-30 minutes per session, 1-2 times daily. Best used in morning on empty stomach. Combine with adequate hydration for optimal detox support.',
-    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale promotes lymphatic drainage and toxin elimination through diaphragmatic movement' }
+    clinical_trials: [],
+    mechanism: 'Sound frequencies at 741 Hz are traditionally associated with clarity and purification. Research suggests sound-based practices may support relaxation and a sense of renewal.',
+    contraindications: ['Consult your healthcare provider if you have severe kidney disease', 'Consult your healthcare provider if you are on active dialysis treatment', 'Consult your healthcare provider if you are in your first trimester of pregnancy', 'This is a wellness tool, not a medical device'],
+    dosage: '20-30 minutes per session, 1-2 times daily. Best used in morning. Combine with adequate hydration. Individual experiences may vary',
+    breathing: { inhale: 4, hold: 4, exhale: 6, reason: 'Extended exhale promotes relaxation and supports a sense of renewal and clarity' }
   },
   {
     id: '23',
-    name: 'Tissue Regeneration',
+    name: 'Recovery & Renewal',
     slug: 'tissue-regeneration',
     hz_value: 285,
     category: 'pain_management',
-    description: 'Solfeggio frequency for tissue repair and cellular regeneration — associated with accelerated healing of wounds, burns, and tissue damage in integrative medicine',
-    scientific_backing: 'Frequency-specific microcurrent (FSM) research by McMakin (2004) demonstrated that specific frequencies can reduce inflammation by up to 62% in a single treatment. Cheng et al. (1982) showed that microcurrent at therapeutic frequencies increases ATP production by up to 500% and enhances protein synthesis by 75%. The 285 Hz range falls within therapeutic parameters studied in sound healing and vibrational medicine.',
+    description: 'Solfeggio frequency associated with comfort, recovery support, and a deeply restorative wellness experience',
+    scientific_backing: 'Research into frequency-specific microcurrent (FSM) by McMakin (2004) explored specific frequencies and their effects on inflammation and comfort. Cheng et al. (1982) studied microcurrent effects on cellular processes. Note that microcurrent and acoustic sound are different modalities, and results should not be directly equated. The broader field of sound wellness research supports the use of specific frequencies for relaxation and comfort.',
     benefits: [
-      'Accelerated tissue repair',
-      'Enhanced wound healing',
-      'Cellular regeneration support',
-      'Reduced inflammation markers',
-      'Improved collagen production',
-      'Post-surgical recovery support'
+      'Support for recovery periods',
+      'Enhanced sense of physical comfort',
+      'Deep restorative relaxation',
+      'Reduced tension',
+      'Improved sense of wellbeing',
+      'Post-activity recovery support'
     ],
     best_for: [
-      'Post-surgery recovery',
-      'Sports injuries',
-      'Chronic wound healing',
-      'Burn recovery',
-      'Joint and muscle repair',
-      'Anti-aging skin protocols'
+      'Recovery support',
+      'Relaxation practice',
+      'Self-care routines',
+      'Post-exercise comfort',
+      'Stress management',
+      'Mindfulness sessions'
     ],
     tier: 'basic',
     duration_minutes: 25,
     research_citations: [
       'McMakin, C.R. (2004). Microcurrent therapy: a novel treatment method for chronic low back myofascial pain. Journal of Bodywork and Movement Therapies, 8(2), 143-153.',
-      'Cheng, N., et al. (1982). The effects of electric currents on ATP generation, protein synthesis, and membrane transport in rat skin. Clinical Orthopaedics and Related Research, 171, 264-272.',
-      'Bjordal, J.M., et al. (2008). A systematic review with meta-analysis of the effect of PEMF on osteoarthritis. Pain Research and Management, 13(6), 503-510.'
+      'Goldsby TL, et al. Effects of Singing Bowl Sound Meditation on Mood, Tension, and Well-being. J Evid Based Complementary Altern Med, 2017; 22(3): 401-406. https://doi.org/10.1177/2156587216668109',
+      'Thoma MV, et al. The effect of music on the human stress response. PLoS ONE, 2013; 8(8): e70156. https://doi.org/10.1371/journal.pone.0070156'
     ],
-    mechanism: 'The 285 Hz frequency stimulates cellular repair mechanisms through resonant interaction with tissue structures. Research suggests this frequency range enhances ATP production and protein synthesis at the cellular level, supporting the body\'s natural regenerative processes.',
-    contraindications: ['Active bleeding disorders', 'Open wounds (use adjacent, not directly on)', 'Pregnancy'],
-    dosage: '20-25 minutes per session, 2 times daily. Apply during rest periods for maximum cellular repair. Combine with adequate nutrition and sleep.',
-    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern maximizes growth hormone release during tissue repair' }
+    clinical_trials: [],
+    mechanism: 'Associated with comfort and recovery; research suggests that sound-based practices may support relaxation and the body\'s natural restorative processes',
+    contraindications: ['Consult your healthcare provider if you have active bleeding disorders', 'Consult your healthcare provider if you have open wounds', 'Consult your healthcare provider if you are pregnant', 'This is a wellness tool, not a medical device'],
+    dosage: '20-25 minutes per session, 2 times daily during recovery periods. Combine with adequate rest and nutrition. Individual experiences may vary',
+    breathing: { inhale: 5, hold: 3, exhale: 7, reason: 'Extended exhale pattern supports relaxation and enhances the restorative experience' }
   }
 ]
 
@@ -1131,18 +954,11 @@ export const getFrequencyStats = () => {
     totalClinicalTrials: totalTrials,
     totalParticipants,
     institutionsInvolved: [
-      'Harvard Medical School',
-      'Stanford Medical Center', 
-      'MIT',
-      'Johns Hopkins',
-      'Mayo Clinic',
-      'UCLA',
-      'Cleveland Clinic',
-      'Yale Medical School',
-      'University of Pennsylvania'
+      'MIT Picower Institute',
+      'University of Tokyo',
+      'Institute of Subtropical Agriculture, Japan'
     ].length,
-    averageEfficacy: 82.4, // Calculated from clinical trials
-    averageParticipants: Math.round(totalParticipants / frequencies.filter(f => f.clinical_trials?.length).length)
+    averageParticipants: totalParticipants > 0 ? Math.round(totalParticipants / Math.max(frequencies.filter(f => f.clinical_trials?.length).length, 1)) : 0
   }
 }
 
@@ -1155,7 +971,7 @@ export const getFrequencyResearch = (frequencyId: string) => {
     trials: frequency.clinical_trials || [],
     mechanism: frequency.mechanism || 'Mechanism of action under investigation',
     contraindications: frequency.contraindications || [],
-    dosage: frequency.dosage || 'Standard therapeutic dosing protocols apply',
+    dosage: frequency.dosage || 'Standard wellness protocols apply',
     scientific_backing: frequency.scientific_backing,
     benefits: frequency.benefits,
     tier: frequency.tier
@@ -1174,8 +990,8 @@ export const getCompetitorComparison = () => {
       peer_reviewed: true,
       ai_personalization: true,
       biometric_integration: true,
-      medical_grade: true,
-      fda_compliant: true,
+      medical_grade: false,
+      fda_compliant: false,
       price_annual: 39.99,
       participants_studied: stats.totalParticipants,
       institutions: stats.institutionsInvolved,
@@ -1251,15 +1067,15 @@ export const getCompetitorComparison = () => {
 
 export const getMedicalDisclaimer = () => {
   return {
-    disclaimer: "FreqTherapy is designed for wellness and research purposes. This technology is not intended to diagnose, treat, cure, or prevent any disease.",
+    disclaimer: "FreqTherapy is designed for wellness and relaxation purposes. This technology is not intended to diagnose, treat, cure, or prevent any disease. It is a wellness tool, not a medical device.",
     contraindications: [
-      "Not recommended for individuals with epilepsy or seizure disorders",
-      "Pacemaker users should consult physician before use", 
+      "Consult your healthcare provider if you have epilepsy or seizure disorders",
+      "Pacemaker users should consult their physician before use", 
       "Not suitable for severe psychiatric conditions without medical supervision",
       "Pregnancy use requires medical consultation",
       "Recent surgery patients should seek medical approval"
     ],
-    professional_use: "Clinical-grade protocols should be administered under medical supervision. Always consult healthcare providers before beginning frequency therapy.",
-    fda_statement: "These statements have not been evaluated by the FDA. Results may vary between individuals based on health conditions and usage patterns."
+    professional_use: "Always consult healthcare providers before beginning any new wellness practice, especially if you have existing medical conditions.",
+    fda_statement: "These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Results may vary between individuals."
   }
 }
