@@ -25,7 +25,7 @@ interface LibraryFiltersProps {
 
 const categories = [
   { id: 'all', name: 'All Categories', icon: '🎵', count: 20 },
-  { id: 'dna_repair', name: 'DNA Repair', icon: '🧬', count: 1 },
+  { id: 'dna_repair', name: 'Love Frequency', icon: '🧬', count: 1 },
   { id: 'anxiety_relief', name: 'Anxiety Relief', icon: '😌', count: 2 },
   { id: 'cognitive_enhancement', name: 'Focus & Cognition', icon: '🧠', count: 2 },
   { id: 'sleep_optimization', name: 'Sleep & Recovery', icon: '😴', count: 2 },

@@ -49,7 +49,7 @@ export const FREQUENCY_CONNECTIONS: FrequencyConnection[] = [
 
   // 741 Hz Neural Repair
   { fromSlug: 'neural-repair-frequency', toSlug: 'gamma-focus-enhancement', toName: 'Gamma Focus', toHz: 40, relationship: 'Complementary', explanation: '741 Hz promotes neuroplasticity (new pathways). 40 Hz gamma strengthens those pathways through focused activation. Repair → reinforce.' },
-  { fromSlug: 'neural-repair-frequency', toSlug: 'epigenetic-optimization', toName: 'Epigenetic Optimization', toHz: 852, relationship: 'Sequential', explanation: 'Solfeggio progression: 741 Hz (cleansing) → 852 Hz (awakening). Clear toxins first, then activate gene expression.', protocol: 'detox' },
+  { fromSlug: 'neural-repair-frequency', toSlug: 'epigenetic-optimization', toName: 'Epigenetic Optimization', toHz: 852, relationship: 'Sequential', explanation: 'Solfeggio progression: 741 Hz (cleansing) → 852 Hz (awakening). Clear toxins first, then support inner harmony.', protocol: 'detox' },
 
   // 14 Hz Dopamine
   { fromSlug: 'dopamine-elevation', toSlug: 'gamma-focus-enhancement', toName: 'Gamma Focus', toHz: 40, relationship: 'Synergistic', explanation: 'Dopamine (14 Hz) = motivation + reward. Gamma (40 Hz) = sustained attention. Together: the neurochemical cocktail of flow state.', protocol: 'focus' },

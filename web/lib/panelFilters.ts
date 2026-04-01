@@ -255,7 +255,7 @@ export const getTierUpgradeSuggestions = (
 // Utility functions
 const getCategoryDisplayName = (categoryId: string): string => {
   const categoryNames: Record<string, string> = {
-    dna_repair: 'DNA Repair',
+    dna_repair: 'Love Frequency',
     anxiety_relief: 'Anxiety Relief',
     cognitive_enhancement: 'Focus & Cognition',
     sleep_optimization: 'Sleep & Recovery',

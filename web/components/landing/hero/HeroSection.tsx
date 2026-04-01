@@ -222,7 +222,7 @@ export default function HeroSection({
             <div className="grid grid-cols-2 md:grid-cols-6 gap-6 items-center">
               {[
                 { name: "Stanford Medicine", subtitle: "Clinical Partner" },
-                { name: "Mayo Clinic", subtitle: "Research Collaborator" },
+                { name: "Published Research", subtitle: "Peer-Reviewed Studies" },
                 { name: "MIT", subtitle: "Technology Advisor" },
                 { name: "Harvard Medical", subtitle: "Scientific Advisory" },
                 { name: "Johns Hopkins", subtitle: "Clinical Validation" },

@@ -110,7 +110,7 @@ function Nav() {
           <ThemeToggle />
           {user ? (
             <div className="relative">
-              <button onClick={() => setMenuOpen(!menuOpen)} className="p-1.5">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2.5">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-600 dark:text-white/50">
                   {menuOpen
                     ? <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>

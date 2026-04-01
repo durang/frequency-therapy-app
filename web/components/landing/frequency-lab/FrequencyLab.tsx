@@ -188,7 +188,7 @@ export default function FrequencyLab({
             {/* Show sample frequencies in a grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               {[
-                { name: "DNA Repair", hz: 528, studies: 23, efficacy: 98.4 },
+                { name: "Love Frequency", hz: 528, studies: 5, efficacy: 0 },
                 { name: "Anxiety Relief", hz: 432, studies: 18, efficacy: 94.7 },
                 { name: "Neural Boost", hz: 40, studies: 31, efficacy: 89.2 },
                 { name: "Deep Sleep", hz: 1.5, studies: 27, efficacy: 96.1 },

@@ -434,7 +434,7 @@ export default function AdvancedFrequencyPlayer({
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 Waveform Type
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {['sine', 'square', 'triangle', 'sawtooth'].map((waveform) => (
                   <Button
                     key={waveform}
@@ -505,7 +505,7 @@ export default function AdvancedFrequencyPlayer({
               {audioConfig.spatialAudio?.enabled && (
                 <div>
                   <span className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">Movement Pattern:</span>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {['static', 'circular', 'pendulum', 'spiral'].map((movement) => (
                       <Button
                         key={movement}

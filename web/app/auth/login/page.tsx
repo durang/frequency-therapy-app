@@ -34,7 +34,10 @@ export default function LoginPage() {
       if (error) toast.error(error.message || 'Failed to sign in')
       else if (data?.user) {
         toast.success('Welcome back!')
-        window.location.href = '/frequencies'
+        // Redirect to where user came from, or /frequencies as default
+        const params = new URLSearchParams(window.location.search)
+        const from = params.get('from')
+        window.location.href = from ? `/${from}` : '/frequencies'
       }
     } catch { toast.error('An unexpected error occurred') }
     finally { setLoading(false) }

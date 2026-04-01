@@ -16,7 +16,7 @@ import Link from 'next/link'
 
 // ─── Category labels ───────────────────────────────────────────────────
 const categoryLabels: Record<string, string> = {
-  dna_repair: 'DNA Repair', anxiety_relief: 'Anxiety Relief', cognitive_enhancement: 'Focus & Cognition',
+  dna_repair: 'Love Frequency', anxiety_relief: 'Anxiety Relief', cognitive_enhancement: 'Focus & Cognition',
   sleep_optimization: 'Sleep', grounding: 'Grounding', pain_management: 'Pain Relief',
   cardiovascular: 'Heart & Circulation', neurotransmitter_optimization: 'Neurotransmitters',
   mood_enhancement: 'Mood', relaxation: 'Relaxation', neural_repair: 'Neural Repair',

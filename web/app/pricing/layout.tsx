@@ -28,7 +28,7 @@ export default function PricingLayout({ children }: { children: React.ReactNode 
     faqSchema([
       {
         q: 'Can I try FreqTherapy for free?',
-        a: 'Yes. 2 frequencies (432 Hz Anxiety Liberation and 528 Hz DNA Repair) are available completely free with 5-minute sessions. No account or credit card required.',
+        a: 'Yes. 2 frequencies (432 Hz Anxiety Liberation and 528 Hz Love Frequency) are available completely free with 5-minute sessions. No account or credit card required.',
       },
       {
         q: 'How much does FreqTherapy cost?',

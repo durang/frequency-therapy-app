@@ -59,7 +59,7 @@ export default function ProtocolsPage() {
 
       {/* How it works */}
       <div className="max-w-4xl mx-auto px-6 mb-16">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { num: '1', label: 'Choose your protocol', desc: 'Ask the AI or browse below' },
             { num: '2', label: 'Follow daily sessions', desc: '2-3 sessions per day, 15-40 minutes each' },
