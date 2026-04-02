@@ -204,9 +204,9 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
             )}
           </div>
 
-          {/* Mobile: Big centered play button before session starts */}
+          {/* Mobile: Big centered play button before session starts — positioned below teleprompter text zone */}
           {!isPlaying && (
-            <div className="sm:hidden fixed inset-0 z-20 flex items-center justify-center pointer-events-none">
+            <div className="sm:hidden fixed bottom-28 left-0 right-0 z-20 flex justify-center pointer-events-none">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -215,13 +215,13 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
               >
                 <button
                   onClick={startAudio}
-                  className="w-20 h-20 rounded-full bg-white/[0.08] border border-white/[0.12] backdrop-blur-sm flex items-center justify-center hover:bg-white/[0.14] hover:border-white/[0.2] transition-all duration-500 mb-4 mx-auto"
+                  className="w-16 h-16 rounded-full bg-white/[0.1] border border-white/[0.15] backdrop-blur-sm flex items-center justify-center hover:bg-white/[0.18] hover:border-white/[0.25] transition-all duration-500 mb-2 mx-auto"
                 >
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="text-white/70 ml-1">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="text-white/80 ml-0.5">
                     <polygon points="5,3 19,12 5,21" />
                   </svg>
                 </button>
-                <p className="text-[10px] tracking-[0.25em] uppercase text-white/25">Begin Session</p>
+                <p className="text-[9px] tracking-[0.25em] uppercase text-white/20">Begin Session</p>
               </motion.div>
             </div>
           )}
