@@ -7,6 +7,7 @@ type AudioState = {
   isPlaying: boolean
   frequencyName: string
   hzValue: number
+  volume: number
 }
 
 type Listener = (state: AudioState) => void
@@ -17,9 +18,10 @@ class GlobalAudioManager {
   private harmonic: OscillatorNode | null = null
   private gain: GainNode | null = null
   private harmonicGain: GainNode | null = null
-  private _state: AudioState = { isPlaying: false, frequencyName: '', hzValue: 0 }
+  private _state: AudioState = { isPlaying: false, frequencyName: '', hzValue: 0, volume: 1 }
   private listeners: Set<Listener> = new Set()
   private boundVisibilityHandler: (() => void) | null = null
+  private baseVolume: number = 0.14 // stored per-frequency base volume
 
   get state() { return this._state }
 
@@ -102,12 +104,13 @@ class GlobalAudioManager {
       }
 
       const volume = hz < 50 ? 0.40 : hz < 200 ? 0.22 : 0.14
+      this.baseVolume = volume
       gain.gain.setValueAtTime(0, ctx.currentTime)
-      gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 5)
+      gain.gain.linearRampToValueAtTime(volume * this._state.volume, ctx.currentTime + 5)
       gain.connect(ctx.destination)
       this.gain = gain
 
-      this._state = { isPlaying: true, frequencyName: name, hzValue: hz }
+      this._state = { isPlaying: true, frequencyName: name, hzValue: hz, volume: this._state.volume }
       this.notify()
       this.setupVisibilityHandler()
       console.log(`🎵 Audio: Playing ${name} at ${hz}Hz`)
@@ -152,10 +155,32 @@ class GlobalAudioManager {
       }, 600)
     }
 
-    this._state = { isPlaying: false, frequencyName: '', hzValue: 0 }
+    this._state = { isPlaying: false, frequencyName: '', hzValue: 0, volume: this._state.volume }
     this.notify()
     this.removeVisibilityHandler()
     console.log('🔇 Audio: Stopped')
+  }
+
+  /** Set volume 0–1. Applies immediately with a short ramp to avoid clicks. */
+  setVolume(vol: number) {
+    const v = Math.max(0, Math.min(1, vol))
+    this._state = { ...this._state, volume: v }
+    this.notify()
+
+    const ctx = this.ctx
+    const gain = this.gain
+    const hGain = this.harmonicGain
+    if (!ctx || !gain) return
+
+    const target = this.baseVolume * v
+    try {
+      gain.gain.cancelScheduledValues(ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(Math.max(target, 0.001), ctx.currentTime + 0.1)
+      if (hGain) {
+        hGain.gain.cancelScheduledValues(ctx.currentTime)
+        hGain.gain.linearRampToValueAtTime(Math.max(0.15 * v, 0.001), ctx.currentTime + 0.1)
+      }
+    } catch {}
   }
 
   /** Gracefully fade audio to silence over `durationSeconds` (default 2s), then fully stop. */

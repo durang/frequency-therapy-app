@@ -19,6 +19,7 @@ interface ImmersiveExperienceProps {
 
 export default function ImmersiveExperience({ frequency, onExit, isFreeUser = false }: ImmersiveExperienceProps) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [volume, setVolume] = useState(1)
   const [isExiting, setIsExiting] = useState(false)
   const [breathingActive, setBreathingActive] = useState(true)
   const [breathingSettingsOpen, setBreathingSettingsOpen] = useState(false)
@@ -82,7 +83,10 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
   // Subscribe to global audio state
   useEffect(() => {
     if (!audioManager) return
-    return audioManager.subscribe(state => setIsPlaying(state.isPlaying))
+    return audioManager.subscribe(state => {
+      setIsPlaying(state.isPlaying)
+      setVolume(state.volume)
+    })
   }, [])
 
   // Graceful audio fade on unmount (browser back, navigation away)
@@ -194,6 +198,29 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
 
           {/* Bottom controls */}
           <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3">
+            {/* Volume slider */}
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-white/[0.06] bg-white/[0.02]">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+                className={`flex-shrink-0 ${volume === 0 ? 'text-red-400/60' : 'text-white/30'}`}>
+                {volume === 0 ? (
+                  <><path d="M11 5L6 9H2v6h4l5 4V5z" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></>
+                ) : (
+                  <><path d="M11 5L6 9H2v6h4l5 4V5z" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" opacity={volume > 0.5 ? 1 : 0.3} /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></>
+                )}
+              </svg>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={Math.round(volume * 100)}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value) / 100
+                  setVolume(v)
+                  audioManager?.setVolume(v)
+                }}
+                className="w-16 sm:w-20 h-1 appearance-none bg-white/10 rounded-full outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/60 [&::-webkit-slider-thumb]:hover:bg-white/80 [&::-webkit-slider-thumb]:transition-colors"
+              />
+            </div>
             <button onClick={() => setBreathingActive(!breathingActive)}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border text-[10px] sm:text-xs tracking-widest uppercase transition-all duration-300 ${
                 breathingActive ? 'border-cyan-500/20 text-cyan-400/60 bg-cyan-500/5' : 'border-white/[0.06] text-white/20 bg-white/[0.02]'
