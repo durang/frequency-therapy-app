@@ -204,7 +204,7 @@ export default function HeroSection({
                 <ArrowRight className="w-6 h-6 ml-3" />
               </Button>
             </Link>
-            <Link href="/therapy?demo=true">
+            <Link href="/frequencies">
               <Button 
                 variant="outline" 
                 size="lg" 
