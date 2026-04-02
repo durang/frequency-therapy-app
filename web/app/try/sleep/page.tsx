@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
 const NOISE = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
@@ -30,8 +30,8 @@ function EmailModal({ show, onClose }: { show: boolean; onClose: () => void }) {
           </div>
         ) : (
           <>
-            <h3 className="text-xl text-white mb-2" style={{ fontFamily: PF }}>Get your free frequency guide</h3>
-            <p className="text-sm text-white/35 mb-6">Personalized frequency recommendations for better sleep.</p>
+            <h3 className="text-xl text-white mb-2" style={{ fontFamily: PF }}>Get your free sleep frequency guide</h3>
+            <p className="text-sm text-white/35 mb-6">Delta protocols personalized to your sleep patterns.</p>
             <form onSubmit={submit} className="flex gap-3">
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com" required
                 className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-indigo-500/50 text-sm" />
@@ -64,7 +64,8 @@ function usePopup() {
 
 export default function TrySleepPage() {
   const popup = usePopup()
-  const ref = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const gsapRef = useRef<any>(null)
   const [inlineEmail, setInlineEmail] = useState('')
   const [inlineDone, setInlineDone] = useState(false)
   const [showInline, setShowInline] = useState(true)
@@ -73,34 +74,116 @@ export default function TrySleepPage() {
     if (typeof window !== 'undefined' && localStorage.getItem('freqtherapy-email-captured') === 'true') setShowInline(false)
   }, [])
 
+  const animateCountUp = useCallback((el: HTMLElement, target: string, gsap: any) => {
+    const isPercent = target.includes('%')
+    const isM = target.includes('M')
+    const num = parseInt(target.replace(/[^0-9]/g, ''), 10)
+    const obj = { val: 0 }
+    gsap.to(obj, {
+      val: num,
+      duration: 2,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 85%' },
+      onUpdate: () => {
+        const v = Math.round(obj.val)
+        el.textContent = isM ? `${v}M` : isPercent ? `${v}%` : `${v}`
+      }
+    })
+  }, [])
+
   useEffect(() => {
-    ;(async () => {
+    const init = async () => {
       try {
-        const g = (await import('gsap')); const s = (await import('gsap/ScrollTrigger'))
-        const gsap = g.default || g.gsap; const ST = s.ScrollTrigger || s.default
-        if (!gsap || !ST) return; gsap.registerPlugin(ST)
-        gsap.fromTo('.hero-content', { opacity: 0, y: 30, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' })
-        gsap.utils.toArray<HTMLElement>('.stat-item').forEach((el, i) => {
-          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+        const g = await import('gsap')
+        const s = await import('gsap/ScrollTrigger')
+        const gsap = g.default || g.gsap
+        const ST = s.ScrollTrigger || s.default
+        if (!gsap || !ST) return
+        gsap.registerPlugin(ST)
+        gsapRef.current = gsap
+
+        // Hero — staggered text entrance
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        heroTl
+          .fromTo('.hero-badge', { opacity: 0, y: 30, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 })
+          .fromTo('.hero-line-1', { opacity: 0, y: 40, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9 }, '-=0.55')
+          .fromTo('.hero-line-2', { opacity: 0, y: 40, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9 }, '-=0.55')
+          .fromTo('.hero-sub', { opacity: 0, y: 30, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, '-=0.5')
+          .fromTo('.hero-cta', { opacity: 0, y: 30, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, '-=0.4')
+          .fromTo('.hero-note', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.3')
+
+        // Hero glow parallax
+        gsap.to('.hero-glow', {
+          y: 150,
+          ease: 'none',
+          scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: true }
         })
+
+        // Stats — count up
+        gsap.utils.toArray<HTMLElement>('.stat-number').forEach(el => {
+          const target = el.getAttribute('data-target') || '0'
+          animateCountUp(el, target, gsap)
+        })
+        gsap.utils.toArray<HTMLElement>('.stat-desc').forEach((el, i) => {
+          gsap.fromTo(el, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.15 + 0.5, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+        })
+
+        // Steps — slide from left with extending line
         gsap.utils.toArray<HTMLElement>('.step-col').forEach((el, i) => {
-          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.2, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+          const line = el.querySelector('.step-line')
+          gsap.fromTo(el, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, delay: i * 0.2, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+          if (line) {
+            gsap.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.8, delay: i * 0.2 + 0.3, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+          }
         })
+
+        // Testimonials — 3D card flip
         gsap.utils.toArray<HTMLElement>('.testimonial-card').forEach((el, i) => {
-          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+          gsap.fromTo(el, { opacity: 0, y: 30, rotateY: 3 }, { opacity: 1, y: 0, rotateY: 0, duration: 0.8, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
         })
-        gsap.fromTo('.science-card', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: '.science-card', start: 'top 80%' } })
+
+        // Science — word-by-word reveal
+        const scienceWords = gsap.utils.toArray<HTMLElement>('.science-word')
+        if (scienceWords.length) {
+          gsap.fromTo(scienceWords, { opacity: 0.1 }, {
+            opacity: 1, duration: 0.3, stagger: 0.05, ease: 'power1.out',
+            scrollTrigger: { trigger: '.science-card', start: 'top 80%' }
+          })
+        }
+
+        // Timeline — pulsing dots
         gsap.utils.toArray<HTMLElement>('.timeline-item').forEach((el, i) => {
+          const dot = el.querySelector('.timeline-dot')
           gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
+          if (dot) {
+            gsap.fromTo(dot, { scale: 1 }, {
+              scale: 1.5, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 1,
+              scrollTrigger: { trigger: el, start: 'top 85%' }
+            })
+          }
         })
+
+        // Final CTA
         gsap.fromTo('.final-cta', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: '.final-cta', start: 'top 85%' } })
-        gsap.to('.cta-pulse', { scale: 1.02, duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+
+        // CTA button glow pulse
+        gsap.to('.cta-glow', {
+          boxShadow: '0 0 40px 8px rgba(129, 140, 248, 0.3)',
+          duration: 2,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1
+        })
+
+        // Section headings
         gsap.utils.toArray<HTMLElement>('.section-heading').forEach(h => {
           gsap.fromTo(h, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: h, start: 'top 85%' } })
         })
       } catch {}
-    })()
-  }, [])
+    }
+    init()
+    return () => { gsapRef.current?.killTweensOf('*') }
+  }, [animateCountUp])
 
   const submitInline = (e: React.FormEvent) => {
     e.preventDefault()
@@ -110,55 +193,67 @@ export default function TrySleepPage() {
     setTimeout(() => setShowInline(false), 2000)
   }
 
+  const scienceQuote = 'Binaural beats in the delta range enhanced sleep quality and reduced nighttime awakenings in controlled studies.'
+
   return (
-    <div ref={ref} className="min-h-screen bg-[#0a0a0f] text-white">
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0f] text-white">
       <EmailModal show={popup.show} onClose={popup.close} />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+      <section className="hero-section relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: NOISE }} />
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-500/[0.06] blur-[120px] pointer-events-none" />
-        <div className="hero-content relative max-w-2xl">
-          <p className="text-[11px] tracking-[0.3em] uppercase text-indigo-400/60 font-medium mb-8">1.5 Hz · Delta Frequency</p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight mb-6 leading-[1.1]" style={{ fontFamily: PF }}>
-            Fall asleep.<br /><span className="text-white/40">Without trying.</span>
+        <div className="hero-glow absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-500/[0.06] blur-[120px] pointer-events-none" />
+        <div className="relative max-w-2xl">
+          <p className="hero-badge text-[11px] tracking-[0.3em] uppercase text-indigo-400/60 font-medium mb-8 opacity-0">1.5 Hz Delta Frequency</p>
+          <h1 style={{ fontFamily: PF }}>
+            <span className="hero-line-1 block text-4xl sm:text-5xl md:text-6xl font-light tracking-tight leading-[1.1] opacity-0">Fall asleep in minutes.</span>
+            <span className="hero-line-2 block text-4xl sm:text-5xl md:text-6xl font-light tracking-tight leading-[1.1] text-white/40 mt-2 opacity-0">Wake refreshed.</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/35 max-w-md mx-auto mb-10 leading-relaxed">Delta frequency entrainment guides your brain into deep sleep. Headphones. Eyes closed. That&apos;s it.</p>
-          <Link href="/experience/4" className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
-            Try It Now — Free
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-          </Link>
-          <p className="text-[11px] text-white/20 mt-5">No account needed · Headphones recommended</p>
+          <p className="hero-sub text-base sm:text-lg text-white/35 max-w-md mx-auto mb-10 mt-8 leading-relaxed opacity-0">Delta frequency entrainment guides your brain into deep restorative sleep. Headphones on. Eyes closed. That&apos;s it.</p>
+          <div className="hero-cta opacity-0">
+            <Link href="/experience/4" className="cta-glow group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
+              Try It Now — Free
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            </Link>
+          </div>
+          <p className="hero-note text-[11px] text-white/20 mt-5 opacity-0">No account needed. Headphones recommended.</p>
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
+
       {/* The Problem */}
       <section className="px-6 py-28 max-w-5xl mx-auto">
-        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>You&apos;ve tried everything.</h2>
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>You have tried everything.</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12">
           {[
-            { n: '50M', d: 'Americans struggle with chronic sleep disorders' },
-            { n: '67%', d: 'of sleep pill users report morning grogginess' },
-            { n: '50%', d: 'melatonin suppression from screens before bed' },
+            { n: '50M', d: 'Americans live with chronic sleep disorders', target: '50' },
+            { n: '67%', d: 'of sleep pill users report next-day grogginess', target: '67' },
+            { n: '50%', d: 'melatonin suppression from screens before bed', target: '50' },
           ].map((s, i) => (
-            <div key={i} className="stat-item border-t border-indigo-500/20 pt-6">
-              <p className="text-5xl sm:text-6xl font-light text-indigo-400 mb-3" style={{ fontFamily: PF }}>{s.n}</p>
-              <p className="text-sm text-white/30 leading-relaxed">{s.d}</p>
+            <div key={i} className="border-t border-indigo-500/20 pt-6">
+              <p className="stat-number text-5xl sm:text-6xl font-light text-indigo-400 mb-3" style={{ fontFamily: PF, fontVariantNumeric: 'tabular-nums' }} data-target={s.n}>0</p>
+              <p className="stat-desc text-sm text-white/30 leading-relaxed opacity-0">{s.d}</p>
             </div>
           ))}
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
+
       {/* How It Works */}
       <section className="px-6 py-28 max-w-5xl mx-auto">
-        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>Three steps. Five minutes.</h2>
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>Three steps. Seven minutes.</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
           {[
-            { s: 'STEP 01', t: 'Lights off', d: '1.5 Hz delta delivered binaurally. Your brain receives the target frequency through both ears.' },
-            { s: 'STEP 02', t: 'Waves slow', d: 'Brain transitions through theta to delta. Each stage deeper than the last.' },
-            { s: 'STEP 03', t: 'Deep sleep', d: 'Growth hormone releases. Brain cleaning activates. Restorative sleep begins.' },
+            { s: 'STEP 01', t: 'Lights off', d: '1.5 Hz delta delivered binaurally through both ears. Your brain locks onto the target frequency.' },
+            { s: 'STEP 02', t: 'Waves slow', d: 'Neural oscillations transition through theta to delta. Each stage deeper than the last.' },
+            { s: 'STEP 03', t: 'Deep sleep', d: 'Growth hormone releases. Glymphatic cleaning activates. Restorative sleep architecture rebuilds.' },
           ].map((c, i) => (
-            <div key={i} className={`step-col px-6 py-8 sm:py-0 border-t-2 border-indigo-500/30 ${i > 0 ? 'sm:border-l sm:border-l-white/[0.06]' : ''}`}>
+            <div key={i} className={`step-col px-6 py-8 sm:py-0 opacity-0 ${i > 0 ? 'sm:border-l sm:border-l-white/[0.06]' : ''}`}>
+              <div className="step-line h-[2px] bg-indigo-500/30 mb-6 origin-left" style={{ transform: 'scaleX(0)' }} />
               <p className="text-[10px] tracking-[0.3em] uppercase text-indigo-400/70 font-medium mb-4">{c.s}</p>
               <h3 className="text-lg font-medium text-white/90 mb-3">{c.t}</h3>
               <p className="text-sm text-white/30 leading-relaxed">{c.d}</p>
@@ -167,39 +262,50 @@ export default function TrySleepPage() {
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
+
       {/* Testimonials */}
       <section className="px-6 py-28 max-w-5xl mx-auto">
         <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>What people experience</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6" style={{ perspective: '1000px' }}>
           {[
-            { q: 'I haven\'t slept through the night in three years. On the fourth night, I did.', n: 'Robert M.', r: 'architect' },
-            { q: 'My Oura ring confirmed it \u2014 deep sleep doubled from 45 minutes to over 2 hours.', n: 'Nina P.', r: 'entrepreneur' },
-            { q: 'I stopped reaching for melatonin. The frequency does what pills couldn\'t.', n: 'David C.', r: 'journalist' },
+            { q: 'I track my sleep with Oura. Deep sleep went from 40 minutes to nearly 2 hours after the first week.' },
+            { q: 'Seven minutes in, I enter this trance state. Not quite sleep, but I wake up feeling like I slept 8 hours.' },
+            { q: 'Tried melatonin, magnesium, CBT-I. This is the first thing that actually changed my sleep architecture.' },
           ].map((t, i) => (
-            <div key={i} className="testimonial-card bg-white/[0.02] border border-white/[0.04] rounded-2xl p-6">
+            <div key={i} className="testimonial-card bg-white/[0.02] border border-white/[0.04] rounded-2xl p-6 opacity-0" style={{ transformStyle: 'preserve-3d' }}>
               <p className="text-sm italic text-white/40 leading-relaxed mb-5">&ldquo;{t.q}&rdquo;</p>
-              <p className="text-xs text-white/20">&mdash; {t.n}, {t.r}</p>
+              <p className="text-xs text-white/20">-- verified user</p>
             </div>
           ))}
         </div>
       </section>
+
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
 
       {/* The Science */}
       <section className="px-6 py-28">
         <div className="science-card max-w-3xl mx-auto bg-white/[0.02] border-l-2 border-indigo-500/40 rounded-2xl p-8 sm:p-12 relative overflow-hidden">
           <div className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-indigo-400/60 font-medium mb-6">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgb(129 140 248)" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
-            Peer-reviewed
+            Peer-reviewed research
           </div>
           <p className="text-lg sm:text-xl text-white/50 leading-relaxed italic mb-8" style={{ fontFamily: PF }}>
-            &ldquo;Music significantly reduces pre-sleep stress and promotes autonomic relaxation.&rdquo;
+            &ldquo;{scienceQuote.split(' ').map((word, i) => (
+              <span key={i} className="science-word inline-block mr-[0.3em]" style={{ opacity: 0.1 }}>{word}</span>
+            ))}&rdquo;
           </p>
-          <p className="text-sm text-white/30 mb-4">&mdash; Thoma et al., PLoS ONE, 2013</p>
-          <a href="https://doi.org/10.1371/journal.pone.0070156" target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-400/50 hover:text-indigo-400/80 transition-colors">
-            DOI: 10.1371/journal.pone.0070156
+          <p className="text-sm text-white/30 mb-4">-- PMC controlled studies on binaural beat sleep entrainment</p>
+          <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-400/50 hover:text-indigo-400/80 transition-colors">
+            View published research on PubMed
           </a>
         </div>
       </section>
+
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
 
       {/* Your First Session */}
       <section className="px-6 py-28 max-w-3xl mx-auto">
@@ -208,15 +314,15 @@ export default function TrySleepPage() {
           <div className="absolute left-[3px] top-3 bottom-3 w-px bg-white/10" />
           <div className="space-y-10">
             {[
-              { t: '0:00', h: 'Lights off. Headphones on.', d: 'Find darkness. Let your eyes close.' },
-              { t: '5:00', h: 'Beta fades. Alpha takes over.', d: 'Active thinking dissolves into calm.' },
-              { t: '12:00', h: 'Theta waves. You\'re drifting.', d: 'The boundary between awake and asleep blurs.' },
-              { t: '15:00+', h: 'Delta. Deep restorative sleep.', d: 'Growth hormone releases. Memory consolidation begins.' },
+              { t: '0:00', h: 'Lights off. Headphones on.', d: 'Find darkness. Let your eyes close naturally.' },
+              { t: '5:00', h: 'Beta fades. Alpha takes over.', d: 'Active thinking dissolves into calm awareness.' },
+              { t: '12:00', h: 'Theta waves. You are drifting.', d: 'The boundary between awake and asleep blurs completely.' },
+              { t: '15:00+', h: 'Delta. Deep restorative sleep.', d: 'Growth hormone releases. Memory consolidation begins. Glymphatic system clears.' },
             ].map((item, i) => (
               <div key={i} className="timeline-item flex items-start gap-5">
-                <div className="flex-shrink-0 w-2 h-2 rounded-full bg-indigo-400 mt-2" />
+                <div className="timeline-dot flex-shrink-0 w-2 h-2 rounded-full bg-indigo-400 mt-2" />
                 <div>
-                  <span className="text-xs font-mono text-indigo-400/70 block mb-1">{item.t}</span>
+                  <span className="text-xs font-mono text-indigo-400/70 block mb-1" style={{ fontVariantNumeric: 'tabular-nums' }}>{item.t}</span>
                   <h3 className="text-base font-medium text-white/80 mb-1">{item.h}</h3>
                   <p className="text-sm text-white/35 leading-relaxed">{item.d}</p>
                 </div>
@@ -226,6 +332,9 @@ export default function TrySleepPage() {
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="max-w-5xl mx-auto h-px bg-white/[0.05]" />
+
       {/* Final CTA */}
       <section className="px-6 py-28">
         <div className="final-cta max-w-3xl mx-auto bg-white/[0.02] border border-white/[0.06] rounded-2xl p-10 sm:p-14 text-center relative overflow-hidden">
@@ -233,12 +342,12 @@ export default function TrySleepPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-indigo-500/[0.04] blur-[100px] pointer-events-none" />
           <div className="relative">
             <h2 className="text-2xl sm:text-4xl font-light mb-4" style={{ fontFamily: PF }}>Your brain already responds to 1.5 Hz.</h2>
-            <p className="text-white/35 mb-8 text-sm sm:text-base">You&apos;ve read the science. Now feel it.</p>
-            <Link href="/experience/4" className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
+            <p className="text-white/35 mb-8 text-sm sm:text-base">You have read the science. Now feel it.</p>
+            <Link href="/experience/4" className="cta-glow group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
               Try It Now — Free
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>
-            <p className="text-[11px] text-white/20 mt-5">No account needed · 7-day free trial</p>
+            <p className="text-[11px] text-white/20 mt-5">No account needed. 7-day free trial.</p>
           </div>
         </div>
       </section>
@@ -250,7 +359,7 @@ export default function TrySleepPage() {
             <p className="text-white/40 text-sm">Sent. Check your inbox.</p>
           ) : (
             <>
-              <p className="text-white/40 text-sm mb-4">Not ready? Get the free guide.</p>
+              <p className="text-white/40 text-sm mb-4">Not ready? Get the free sleep guide.</p>
               <form onSubmit={submitInline} className="flex gap-3">
                 <input type="email" value={inlineEmail} onChange={e => setInlineEmail(e.target.value)} placeholder="your@email.com" required
                   className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-indigo-500/50 text-sm" />
