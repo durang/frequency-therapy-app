@@ -257,6 +257,7 @@ interface LibraryChatProps {
 export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: LibraryChatProps) {
   const [input, setInput] = useState('')
   const [hasStarted, setHasStarted] = useState(false)
+  const [instantResults, setInstantResults] = useState<any[]>([])
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -269,13 +270,28 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
   const { messages, sendMessage, status } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
 
+  // Instant frequency match — runs locally, no AI needed
+  const findInstantMatches = useCallback((text: string) => {
+    try {
+      const { getRecommendedFrequencies, searchFrequencies } = require('@/lib/frequencies')
+      let results = getRecommendedFrequencies(text)
+      if (results.length === 0) results = searchFrequencies(text)
+      return results.slice(0, 4)
+    } catch { return [] }
+  }, [])
+
   // Send initial message if provided
   useEffect(() => {
     if (initialMessage && !hasStarted) {
       setHasStarted(true)
-      sendMessage({ text: initialMessage })
+      const matches = findInstantMatches(initialMessage)
+      if (matches.length > 0) setInstantResults(matches)
+      const enriched = matches.length > 0
+        ? `${initialMessage}\n\n[SYSTEM: Matching frequencies already found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally with brief explanations of WHY each one helps. Do NOT search — you already have the results. Do NOT output markdown links — the cards are rendered by the frontend.]`
+        : initialMessage
+      sendMessage({ text: enriched })
     }
-  }, [initialMessage, hasStarted, sendMessage])
+  }, [initialMessage, hasStarted, sendMessage, findInstantMatches])
 
   // Auto-scroll WITHIN the chat container (not the page)
   useEffect(() => {
@@ -326,14 +342,29 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
     if (!text || isLoading) return
     setInput('')
     setHasStarted(true)
-    sendMessage({ text })
-  }, [input, isLoading, sendMessage])
+
+    // Instant match
+    const matches = findInstantMatches(text)
+    if (matches.length > 0) setInstantResults(matches)
+
+    const enriched = matches.length > 0
+      ? `${text}\n\n[SYSTEM: Matching frequencies found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally. Do NOT search — results are already shown as cards. Do NOT use markdown links.]`
+      : text
+    sendMessage({ text: enriched })
+  }, [input, isLoading, sendMessage, findInstantMatches])
 
   const handleSuggestion = useCallback((prompt: string) => {
     if (isLoading) return
     setHasStarted(true)
-    sendMessage({ text: prompt })
-  }, [isLoading, sendMessage])
+
+    const matches = findInstantMatches(prompt)
+    if (matches.length > 0) setInstantResults(matches)
+
+    const enriched = matches.length > 0
+      ? `${prompt}\n\n[SYSTEM: Matching frequencies found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally. Do NOT search — results are already shown as cards. Do NOT use markdown links.]`
+      : prompt
+    sendMessage({ text: enriched })
+  }, [isLoading, sendMessage, findInstantMatches])
 
   return (
     <motion.div
@@ -389,6 +420,36 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Instant match cards — appear immediately, before AI responds */}
+              {instantResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-2 mb-4"
+                >
+                  <p className="text-[10px] text-cyan-600 dark:text-cyan-400/60 uppercase tracking-wider font-medium">Recommended for you</p>
+                  {instantResults.map((freq: any) => (
+                    <div key={freq.id} className="flex items-center gap-3 p-3 rounded-xl border border-cyan-200/50 dark:border-cyan-500/10 bg-cyan-50/50 dark:bg-cyan-500/[0.04]">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-[10px] font-mono font-medium tabular-nums">{freq.hz_value}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white/80 truncate">{freq.name}</p>
+                        <p className="text-[10px] text-gray-500 dark:text-white/30 truncate">{freq.description?.substring(0, 60)}…</p>
+                      </div>
+                      <Link
+                        href={`/experience/${freq.id}`}
+                        className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        ▶ Start
+                      </Link>
+                    </div>
+                  ))}
+                </motion.div>
+              )}
+
               {messages.map((message: UIMessage) => (
                 <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[90%] ${
