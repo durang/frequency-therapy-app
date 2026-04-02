@@ -62,8 +62,11 @@ function usePopup() {
   return { show, close: () => { setShow(false); localStorage.setItem('freqtherapy-popup-shown', 'true') } }
 }
 
+// Force dark mode on this page
+function useForceDark() { useEffect(() => { document.documentElement.classList.add("dark"); return () => {} }, []) }
 export default function TryAnxietyPage() {
   const popup = usePopup()
+  useForceDark()
   const containerRef = useRef<HTMLDivElement>(null)
   const gsapRef = useRef<any>(null)
   const [inlineEmail, setInlineEmail] = useState('')
