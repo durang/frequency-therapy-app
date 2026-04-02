@@ -84,13 +84,15 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
     return audioManager.subscribe(state => setIsPlaying(state.isPlaying))
   }, [])
 
-  // CRITICAL: Stop audio and save real duration when component unmounts unexpectedly
-  // (e.g. browser back button — handleExit already does graceful fade for normal exit)
+  // Graceful audio fade on unmount (browser back, navigation away)
+  // handleExit already does a 3s fade for normal X/Escape exit.
+  // This catches unexpected unmounts (back button, link click, etc.)
   useEffect(() => {
     return () => {
-      // Only hard-stop if audio is still playing (handleExit wasn't called)
       if (audioManager?.state.isPlaying) {
-        audioManager.fadeOutAndStop(0.5)
+        // 3-second fade — audioManager is a singleton outside React,
+        // so the fade continues even after the component unmounts
+        audioManager.fadeOutAndStop(3)
       }
       saveRealDuration()
     }
@@ -109,7 +111,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
     saveRealDuration()
     // Graceful 2s audio fade-out, then navigate away
     if (audioManager) {
-      audioManager.fadeOutAndStop(2).then(() => onExit())
+      audioManager.fadeOutAndStop(3).then(() => onExit())
     } else {
       setTimeout(onExit, 800)
     }

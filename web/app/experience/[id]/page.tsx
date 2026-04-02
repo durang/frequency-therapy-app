@@ -31,7 +31,7 @@ export default function ExperiencePage() {
     }
   }, [params.id, router])
 
-  if (!frequency || isLoading) {
+  if (!frequency) {
     return (
       <div className="min-h-screen bg-[#fafaf9] dark:bg-[#0a0a0f] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
@@ -39,9 +39,11 @@ export default function ExperiencePage() {
     )
   }
 
-  // Admin and subscribers get full access
+  // Admin and subscribers get full access — don't wait for subscription loading
   const hasFullAccess = isSubscribed || isDemoMode || isSuperadmin
-  const isFreeUser = !hasFullAccess
+  // While subscription is loading, treat as having access (prevents white screen)
+  // Once loaded, if not subscribed and not free tier, RedirectToPricing handles it
+  const isFreeUser = isLoading ? false : !hasFullAccess
 
   // If free user tries to access a non-free frequency, redirect
   if (isFreeUser && frequency.tier !== 'free') {
