@@ -180,8 +180,8 @@ function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/frequencies" className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-base hover:bg-gray-700 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-gray-900/10 dark:shadow-white/5">
-              Start Free Session
+            <Link href="/experience/2" className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium text-base hover:bg-gray-700 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-gray-900/10 dark:shadow-white/5">
+              Try It Now — Free
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
@@ -539,7 +539,7 @@ function PricingSection() {
             <button onClick={() => setBilling('annual')}
               className={`px-5 py-2 rounded-full text-sm transition-all flex items-center gap-2 ${billing === 'annual' ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium' : 'text-gray-500 dark:text-white/30'}`}>
               Annual
-              <span className="text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 font-medium">Save 47%</span>
+              <span className="text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 font-medium">Save 70%</span>
             </button>
           </div>
 
@@ -550,7 +550,7 @@ function PricingSection() {
               <p className="text-3xl font-light text-gray-900 dark:text-white mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>$0</p>
               <p className="text-xs text-gray-400 dark:text-white/20 mb-5">2 frequencies · 5 min sessions</p>
               <Link href="/frequencies" className="block w-full text-center py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] text-sm text-gray-600 dark:text-white/40 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/15 transition-all">
-                Get Started
+                Try Free
               </Link>
             </div>
 
@@ -568,21 +568,21 @@ function PricingSection() {
                       <p className="text-3xl font-light text-gray-900 dark:text-white mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
                         $19<span className="text-base text-gray-400 dark:text-white/30">/mo</span>
                       </p>
-                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">Billed monthly · Cancel anytime</p>
+                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">7-day free trial · Then billed monthly</p>
                     </>
                   ) : (
                     <>
                       <p className="text-3xl font-light text-gray-900 dark:text-white mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                        $10<span className="text-base text-gray-400 dark:text-white/30">/mo</span>
+                        $5.75<span className="text-base text-gray-400 dark:text-white/30">/mo</span>
                       </p>
-                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">$120/year · saves $108 vs monthly</p>
+                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">7-day free trial · Then $69/year</p>
                     </>
                   )}
                 </motion.div>
               </AnimatePresence>
 
               <Link href="/pricing" className="block w-full text-center py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all">
-                Subscribe
+                Start 7-Day Free Trial
               </Link>
             </div>
           </div>

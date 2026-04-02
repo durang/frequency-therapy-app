@@ -22,7 +22,7 @@ const categoryLabels: Record<string, string> = {
   mood_enhancement: 'Mood', relaxation: 'Relaxation', neural_repair: 'Neural Repair',
   anti_aging: 'Anti-Aging', immune_enhancement: 'Immune', hormonal_balance: 'Hormones',
   cellular_energy: 'Cellular Energy', regenerative_medicine: 'Regenerative', vascular_health: 'Vascular',
-  epigenetic_therapy: 'Epigenetic', quantum_medicine: 'Quantum', metabolic_enhancement: 'Metabolic',
+  epigenetic_therapy: 'Mindfulness', quantum_medicine: 'Advanced Wellness', metabolic_enhancement: 'Metabolic',
   detox: 'Detox & Cleansing', tissue_repair: 'Tissue Repair', universal_healing: 'Universal Healing',
 }
 

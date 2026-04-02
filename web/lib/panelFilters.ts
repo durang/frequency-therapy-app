@@ -274,7 +274,7 @@ const getCategoryDisplayName = (categoryId: string): string => {
     hormonal_balance: 'Hormone Balance',
     regenerative_medicine: 'Regenerative Medicine',
     epigenetic_therapy: 'Genetic Therapy',
-    quantum_medicine: 'Quantum Medicine'
+    quantum_medicine: 'Advanced Wellness'
   }
   
   return categoryNames[categoryId] || categoryId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())

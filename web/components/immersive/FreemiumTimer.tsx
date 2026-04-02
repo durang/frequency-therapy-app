@@ -113,7 +113,7 @@ export default function FreemiumTimer({ isActive, limitSeconds = 300, onExpired 
               </div>
 
               <p className="text-[10px] text-white/15 mt-8">
-                Starting at $19/mo · $10/mo billed annually
+                7-day free trial · Then $5.75/mo billed annually
               </p>
             </motion.div>
           </motion.div>
