@@ -65,7 +65,7 @@ export const signInWithMagicLink = async (email: string) => {
 }
 
 // Traditional Auth helpers (updated for real Supabase)
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (email: string, password: string, metadata?: Record<string, unknown>) => {
   try {
     console.log('👤 Sign up attempt for:', email)
     
@@ -73,7 +73,8 @@ export const signUp = async (email: string, password: string) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        ...(metadata ? { data: metadata } : {})
       }
     })
 
