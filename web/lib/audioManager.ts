@@ -74,7 +74,22 @@ class GlobalAudioManager {
       const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
       this.ctx = ctx
 
-      if (ctx.state === 'suspended') await ctx.resume()
+      // iOS Safari requires resume() inside a user gesture handler.
+      // Retry up to 3 times with small delays if still suspended.
+      if (ctx.state === 'suspended') {
+        await ctx.resume()
+        // If still suspended after resume (iOS), try again
+        if (ctx.state === 'suspended') {
+          await new Promise(r => setTimeout(r, 100))
+          await ctx.resume()
+        }
+      }
+
+      // Final check — if context is still not running, log and continue
+      // (some browsers need the first oscillator.start() to trigger audio)
+      if (ctx.state !== 'running') {
+        console.warn('[Audio] Context state:', ctx.state, '— attempting to play anyway')
+      }
 
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()

@@ -78,8 +78,11 @@ export default function RootLayout({
       lang="en" 
       className={`scroll-smooth ${inter.variable} ${playfairDisplay.variable} ${instrumentSerif.variable}`}
       suppressHydrationWarning
+      style={{ backgroundColor: '#0a0a0f' }}
     >
       <head>
+        {/* Prevent white flash — set dark class before paint */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches)||document.location.pathname.startsWith('/try/')){document.documentElement.classList.add('dark')}}catch(e){}` }} />
         {/* Structured Data — Organization + WebApplication + FAQ */}
         <script
           type="application/ld+json"
