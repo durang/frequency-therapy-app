@@ -149,35 +149,82 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
             zIndex: 1,
           }} />
 
+          {/* Progress bar — ultra thin line at top, fills as session progresses */}
+          {isPlaying && (
+            <div className="fixed top-0 left-0 right-0 z-30 h-[2px] bg-white/[0.04]">
+              <motion.div
+                className="h-full bg-gradient-to-r from-cyan-500/60 to-teal-500/40"
+                initial={{ width: '0%' }}
+                animate={{ width: `${Math.min((elapsedDisplay / (frequency.duration_minutes * 60)) * 100, 100)}%` }}
+                transition={{ duration: 0.5, ease: 'linear' }}
+              />
+            </div>
+          )}
+
           {/* Top bar */}
           <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5">
             <button onClick={handleExit} className="group flex items-center gap-2 text-white/30 hover:text-white/70 transition-colors duration-500" aria-label="Exit">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:rotate-90 transition-transform duration-500">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-              <span className="text-xs tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500">Exit</span>
+              <span className="text-xs tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden sm:inline">Exit</span>
             </button>
 
-            {!isPlaying ? (
-              <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }}
-                onClick={startAudio}
-                className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/90 transition-all duration-500 backdrop-blur-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg>
-                <span className="text-xs tracking-widest uppercase">Begin Session</span>
-              </motion.button>
-            ) : (
-              <button onClick={stopAudio} className="flex items-center gap-2 text-white/20 hover:text-white/50 transition-colors">
+            {/* Desktop: play/pause in top bar (as before) */}
+            <div className="hidden sm:block">
+              {!isPlaying ? (
+                <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }}
+                  onClick={startAudio}
+                  className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/90 transition-all duration-500 backdrop-blur-sm">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg>
+                  <span className="text-xs tracking-widest uppercase">Begin Session</span>
+                </motion.button>
+              ) : (
+                <button onClick={stopAudio} className="flex items-center gap-2 text-white/20 hover:text-white/50 transition-colors">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/60 animate-pulse" />
+                  <span className="text-xs tracking-widest uppercase">Playing</span>
+                  <span className="text-xs text-white/15 tabular-nums ml-1">
+                    {Math.floor(elapsedDisplay / 60)}:{String(elapsedDisplay % 60).padStart(2, '0')}
+                  </span>
+                </button>
+              )}
+            </div>
+
+            {/* Mobile: when playing, small pause button in top bar */}
+            {isPlaying && (
+              <button onClick={stopAudio} className="sm:hidden flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] text-white/40 hover:text-white/70 transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/60 animate-pulse" />
-                <span className="text-xs tracking-widest uppercase">Playing</span>
-                <span className="text-xs text-white/15 tabular-nums ml-1">
+                <span className="text-[10px] tracking-widest uppercase tabular-nums">
                   {Math.floor(elapsedDisplay / 60)}:{String(elapsedDisplay % 60).padStart(2, '0')}
                 </span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="ml-1 opacity-0 hover:opacity-100">
-                  <rect x="6" y="6" width="12" height="12" rx="1" />
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-white/30">
+                  <rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" />
                 </svg>
               </button>
             )}
           </div>
+
+          {/* Mobile: Big centered play button before session starts */}
+          {!isPlaying && (
+            <div className="sm:hidden fixed inset-0 z-20 flex items-center justify-center pointer-events-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.5, duration: 1, ease: 'easeOut' }}
+                className="pointer-events-auto text-center"
+              >
+                <button
+                  onClick={startAudio}
+                  className="w-20 h-20 rounded-full bg-white/[0.08] border border-white/[0.12] backdrop-blur-sm flex items-center justify-center hover:bg-white/[0.14] hover:border-white/[0.2] transition-all duration-500 mb-4 mx-auto"
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="text-white/70 ml-1">
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
+                </button>
+                <p className="text-[10px] tracking-[0.25em] uppercase text-white/25">Begin Session</p>
+              </motion.div>
+            </div>
+          )}
 
           {/* Teleprompter */}
           <Teleprompter sections={teleprompterSections} frequencyName={frequency.name} hzValue={frequency.hz_value} dimmed={dimmed} />
