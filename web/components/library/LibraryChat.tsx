@@ -447,6 +447,12 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
                       </Link>
                     </div>
                   ))}
+                  <p className="text-xs text-gray-500 dark:text-white/30 mt-2 leading-relaxed">
+                    {instantResults.length === 1
+                      ? `${instantResults[0].name} (${instantResults[0].hz_value} Hz) is the best match. Tap Start to begin.`
+                      : `Start with ${instantResults[0]?.name} (${instantResults[0]?.hz_value} Hz)${instantResults.length > 1 ? ` — or try ${instantResults[1]?.name} for a complementary effect.` : '.'}`
+                    }
+                  </p>
                 </motion.div>
               )}
 

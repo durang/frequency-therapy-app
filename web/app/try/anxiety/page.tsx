@@ -1,47 +1,41 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-const NOISE_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
+const NOISE = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
+const PF = 'var(--font-playfair), Georgia, serif'
 
-function EmailCaptureModal({ show, onClose }: { show: boolean; onClose: () => void }) {
+function EmailModal({ show, onClose }: { show: boolean; onClose: () => void }) {
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [done, setDone] = useState(false)
   if (!show) return null
-  const handleSubmit = (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (email) {
-      localStorage.setItem('freqtherapy-email-captured', 'true')
-      localStorage.setItem('freqtherapy-popup-shown', 'true')
-      setSubmitted(true)
-      setTimeout(onClose, 2000)
-    }
+    if (!email) return
+    localStorage.setItem('freqtherapy-email-captured', 'true')
+    localStorage.setItem('freqtherapy-popup-shown', 'true')
+    setDone(true)
+    setTimeout(onClose, 2000)
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
       <div className="relative bg-[#111118] border border-cyan-500/20 rounded-2xl p-8 max-w-md w-full shadow-2xl shadow-cyan-500/5">
         <button onClick={onClose} className="absolute top-4 right-4 text-white/30 hover:text-white/60 transition-colors text-2xl leading-none">&times;</button>
-        {submitted ? (
+        {done ? (
           <div className="text-center py-6">
-            <div className="text-4xl mb-3">✓</div>
-            <p className="text-white/60 text-sm">Check your inbox!</p>
+            <svg className="mx-auto mb-3" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgb(34 211 238)" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
+            <p className="text-white/60 text-sm">Check your inbox.</p>
           </div>
         ) : (
           <>
-            <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4">
-              <span className="text-cyan-400 text-lg">🎵</span>
-            </div>
-            <h3 className="text-xl text-white mb-2" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-              Before you go — get your free frequency guide
-            </h3>
-            <p className="text-sm text-white/35 mb-6">Personalized frequency recommendations for anxiety relief</p>
-            <form onSubmit={handleSubmit} className="flex gap-3">
+            <h3 className="text-xl text-white mb-2" style={{ fontFamily: PF }}>Get your free frequency guide</h3>
+            <p className="text-sm text-white/35 mb-6">Personalized frequency recommendations for anxiety relief.</p>
+            <form onSubmit={submit} className="flex gap-3">
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com" required
                 className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-500/50 text-sm" />
-              <button type="submit" className="px-6 py-3 bg-cyan-500 text-white rounded-xl font-medium text-sm hover:bg-cyan-400 transition-colors whitespace-nowrap">Send</button>
+              <button type="submit" className="px-6 py-3 bg-cyan-500 text-white rounded-xl font-medium text-sm hover:bg-cyan-400 transition-colors">Send</button>
             </form>
           </>
         )}
@@ -50,226 +44,181 @@ function EmailCaptureModal({ show, onClose }: { show: boolean; onClose: () => vo
   )
 }
 
-function useEmailPopup() {
-  const [showPopup, setShowPopup] = useState(false)
-  const triggered = useRef(false)
+function usePopup() {
+  const [show, setShow] = useState(false)
+  const fired = useRef(false)
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (localStorage.getItem('freqtherapy-popup-shown') === 'true') return
     if (localStorage.getItem('freqtherapy-email-captured') === 'true') return
-    const timer = setTimeout(() => {
-      if (!triggered.current) { triggered.current = true; setShowPopup(true) }
-    }, 45000)
-    const handleScroll = () => {
+    const t = setTimeout(() => { if (!fired.current) { fired.current = true; setShow(true) } }, 45000)
+    const onScroll = () => {
       const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)
-      if (pct >= 0.7 && !triggered.current) { triggered.current = true; setShowPopup(true) }
+      if (pct >= 0.7 && !fired.current) { fired.current = true; setShow(true) }
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => { clearTimeout(timer); window.removeEventListener('scroll', handleScroll) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { clearTimeout(t); window.removeEventListener('scroll', onScroll) }
   }, [])
-  return { showPopup, closePopup: () => { setShowPopup(false); localStorage.setItem('freqtherapy-popup-shown', 'true') } }
+  return { show, close: () => { setShow(false); localStorage.setItem('freqtherapy-popup-shown', 'true') } }
 }
 
 export default function TryAnxietyPage() {
-  const { showPopup, closePopup } = useEmailPopup()
-  const pageRef = useRef<HTMLDivElement>(null)
-  const [emailInline, setEmailInline] = useState('')
-  const [inlineSubmitted, setInlineSubmitted] = useState(false)
-  const [showEmailSection, setShowEmailSection] = useState(true)
+  const popup = usePopup()
+  const ref = useRef<HTMLDivElement>(null)
+  const [inlineEmail, setInlineEmail] = useState('')
+  const [inlineDone, setInlineDone] = useState(false)
+  const [showInline, setShowInline] = useState(true)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('freqtherapy-email-captured') === 'true') {
-      setShowEmailSection(false)
-    }
+    if (typeof window !== 'undefined' && localStorage.getItem('freqtherapy-email-captured') === 'true') setShowInline(false)
   }, [])
 
   useEffect(() => {
-    const init = async () => {
+    ;(async () => {
       try {
-        const g = await import('gsap')
-        const s = await import('gsap/ScrollTrigger')
-        const gsap = g.default || g.gsap
-        const ST = s.ScrollTrigger || s.default
-        if (!gsap || !ST) return
-        gsap.registerPlugin(ST)
-        const el = pageRef.current
-        if (!el) return
-
-        // Hero entrance
+        const g = (await import('gsap')); const s = (await import('gsap/ScrollTrigger'))
+        const gsap = g.default || g.gsap; const ST = s.ScrollTrigger || s.default
+        if (!gsap || !ST) return; gsap.registerPlugin(ST)
         gsap.fromTo('.hero-content', { opacity: 0, y: 30, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' })
-
-        // Problem cards stagger
-        gsap.utils.toArray<HTMLElement>('.pain-card').forEach((card, i) => {
-          gsap.fromTo(card, { opacity: 0, x: -30 }, {
-            opacity: 1, x: 0, duration: 0.7, delay: i * 0.15, ease: 'power2.out',
-            scrollTrigger: { trigger: card, start: 'top 85%' }
-          })
+        gsap.utils.toArray<HTMLElement>('.stat-item').forEach((el, i) => {
+          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
         })
-
-        // Steps sequential
-        gsap.utils.toArray<HTMLElement>('.step-item').forEach((item, i) => {
-          gsap.fromTo(item, { opacity: 0, y: 25 }, {
-            opacity: 1, y: 0, duration: 0.7, delay: i * 0.2, ease: 'power2.out',
-            scrollTrigger: { trigger: item, start: 'top 85%' }
-          })
+        gsap.utils.toArray<HTMLElement>('.step-col').forEach((el, i) => {
+          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.2, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
         })
-
-        // Science card
-        gsap.fromTo('.science-card', { opacity: 0, scale: 0.96 }, {
-          opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out',
-          scrollTrigger: { trigger: '.science-card', start: 'top 80%' }
+        gsap.utils.toArray<HTMLElement>('.testimonial-card').forEach((el, i) => {
+          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
         })
-
-        // Timeline items
-        gsap.utils.toArray<HTMLElement>('.timeline-item').forEach((item, i) => {
-          gsap.fromTo(item, { opacity: 0, y: 20 }, {
-            opacity: 1, y: 0, duration: 0.6, delay: i * 0.15, ease: 'power2.out',
-            scrollTrigger: { trigger: item, start: 'top 85%' }
-          })
+        gsap.fromTo('.science-card', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: '.science-card', start: 'top 80%' } })
+        gsap.utils.toArray<HTMLElement>('.timeline-item').forEach((el, i) => {
+          gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.15, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } })
         })
-
-        // Final CTA
-        gsap.fromTo('.final-cta', { opacity: 0, y: 30 }, {
-          opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
-          scrollTrigger: { trigger: '.final-cta', start: 'top 85%' }
-        })
-
-        // CTA button pulse
+        gsap.fromTo('.final-cta', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: '.final-cta', start: 'top 85%' } })
         gsap.to('.cta-pulse', { scale: 1.02, duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-
-        // Section headings
         gsap.utils.toArray<HTMLElement>('.section-heading').forEach(h => {
-          gsap.fromTo(h, { opacity: 0, y: 20 }, {
-            opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
-            scrollTrigger: { trigger: h, start: 'top 85%' }
-          })
+          gsap.fromTo(h, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: h, start: 'top 85%' } })
         })
       } catch {}
-    }
-    init()
+    })()
   }, [])
 
-  const handleInlineSubmit = (e: React.FormEvent) => {
+  const submitInline = (e: React.FormEvent) => {
     e.preventDefault()
-    if (emailInline) {
-      localStorage.setItem('freqtherapy-email-captured', 'true')
-      setInlineSubmitted(true)
-      setTimeout(() => setShowEmailSection(false), 2000)
-    }
+    if (!inlineEmail) return
+    localStorage.setItem('freqtherapy-email-captured', 'true')
+    setInlineDone(true)
+    setTimeout(() => setShowInline(false), 2000)
   }
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-[#0a0a0f] text-white">
-      <EmailCaptureModal show={showPopup} onClose={closePopup} />
+    <div ref={ref} className="min-h-screen bg-[#0a0a0f] text-white">
+      <EmailModal show={popup.show} onClose={popup.close} />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: NOISE_BG }} />
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: NOISE }} />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/[0.06] blur-[120px] pointer-events-none" />
-
         <div className="hero-content relative max-w-2xl">
           <p className="text-[11px] tracking-[0.3em] uppercase text-cyan-400/60 font-medium mb-8">432 Hz · Natural Harmony</p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight mb-6 leading-[1.1]" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight mb-6 leading-[1.1]" style={{ fontFamily: PF }}>
             Quiet your mind.<br /><span className="text-white/40">In 5 minutes.</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/35 max-w-md mx-auto mb-10 leading-relaxed">
-            432 Hz reduces cortisol and activates your parasympathetic nervous system. No meditation experience needed.
-          </p>
-          <Link href="/experience/2"
-            className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
+          <p className="text-base sm:text-lg text-white/35 max-w-md mx-auto mb-10 leading-relaxed">432 Hz activates your parasympathetic nervous system. No meditation experience needed.</p>
+          <Link href="/experience/2" className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
             Try It Now — Free
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>
-          <p className="text-[11px] text-white/20 mt-5">No account · Headphones recommended · Free</p>
+          <p className="text-[11px] text-white/20 mt-5">No account needed · Headphones recommended</p>
         </div>
       </section>
 
-      {/* ── The Problem ── */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
-        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-14" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          You&apos;ve tried everything.
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {/* The Problem */}
+      <section className="px-6 py-28 max-w-5xl mx-auto">
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>You&apos;ve tried everything.</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12">
           {[
-            { emoji: '😰', text: '77% of people experience physical stress symptoms daily' },
-            { emoji: '💊', text: 'Anti-anxiety medication takes 4–6 weeks and has side effects' },
-            { emoji: '🧘', text: '95% of meditation app users quit within 30 days' },
-          ].map((card, i) => (
-            <div key={i} className="pain-card bg-white/[0.02] border-l-2 border-cyan-500/30 rounded-xl p-6">
-              <span className="text-2xl block mb-3">{card.emoji}</span>
-              <p className="text-sm text-white/50 leading-relaxed">{card.text}</p>
+            { n: '77%', d: 'of adults report daily physical stress symptoms' },
+            { n: '4\u20136 wks', d: 'before anxiety medication takes effect' },
+            { n: '95%', d: 'of meditation app users quit within 30 days' },
+          ].map((s, i) => (
+            <div key={i} className="stat-item border-t border-cyan-500/20 pt-6">
+              <p className="text-5xl sm:text-6xl font-light text-cyan-400 mb-3" style={{ fontFamily: PF }}>{s.n}</p>
+              <p className="text-sm text-white/30 leading-relaxed">{s.d}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── How It Works ── */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
-        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-14" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          Three steps. Five minutes.
-        </h2>
-        <div className="relative">
-          <div className="hidden sm:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/20 via-cyan-500/10 to-transparent" />
-          <div className="space-y-12 sm:space-y-16">
-            {[
-              { num: '01', icon: '🎧', title: 'Put on headphones', desc: 'Sound enters both ears, your brain synchronizes to 432 Hz within minutes' },
-              { num: '02', icon: '🧠', title: 'Brain entrainment', desc: 'Neural oscillations slow from anxious beta to calm alpha. Your autonomic nervous system shifts.' },
-              { num: '03', icon: '😌', title: 'Nervous system responds', desc: 'Cortisol drops. Heart rate slows. Muscles release tension you forgot you were holding.' },
-            ].map((step, i) => (
-              <div key={i} className="step-item flex items-start gap-6 sm:gap-8">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <span className="text-cyan-400 text-xs font-mono font-bold">{step.num}</span>
-                </div>
-                <div>
-                  <div className="text-xl mb-1">{step.icon}</div>
-                  <h3 className="text-lg font-medium mb-2">{step.title}</h3>
-                  <p className="text-sm text-white/40 leading-relaxed max-w-md">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* How It Works */}
+      <section className="px-6 py-28 max-w-5xl mx-auto">
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>Three steps. Five minutes.</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
+          {[
+            { s: 'STEP 01', t: 'Headphones on', d: '432 Hz enters both ears. Your brain detects the frequency difference and begins synchronizing.' },
+            { s: 'STEP 02', t: 'Entrainment begins', d: 'Neural oscillations shift from anxious beta to calm alpha within 3\u20135 minutes.' },
+            { s: 'STEP 03', t: 'Calm arrives', d: 'Cortisol drops. Heart rate slows. The anxiety loop breaks without effort.' },
+          ].map((c, i) => (
+            <div key={i} className={`step-col px-6 py-8 sm:py-0 border-t-2 border-cyan-500/30 ${i > 0 ? 'sm:border-l sm:border-l-white/[0.06]' : ''}`}>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-cyan-400/70 font-medium mb-4">{c.s}</p>
+              <h3 className="text-lg font-medium text-white/90 mb-3">{c.t}</h3>
+              <p className="text-sm text-white/30 leading-relaxed">{c.d}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ── The Science ── */}
-      <section className="px-6 py-24">
-        <div className="science-card max-w-3xl mx-auto bg-white/[0.02] border border-cyan-500/15 rounded-2xl p-8 sm:p-12 relative overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-cyan-500/[0.04] blur-[80px] pointer-events-none" />
-          <div className="relative">
-            <p className="text-lg sm:text-xl text-white/60 leading-relaxed italic mb-6" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-              &ldquo;Listening to 528 Hz music for 5 minutes significantly reduced cortisol and increased oxytocin.&rdquo;
-            </p>
-            <p className="text-sm text-white/30 mb-4">— Akimoto et al., Health Journal, 2018</p>
-            <a href="https://doi.org/10.4236/health.2018.109088" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs text-cyan-400/50 hover:text-cyan-400/80 transition-colors">
-              <span className="w-4 h-4 rounded-full bg-cyan-500/20 flex items-center justify-center text-[10px]">✓</span>
-              Published in Health Journal · View Study
-            </a>
-          </div>
+      {/* Testimonials */}
+      <section className="px-6 py-28 max-w-5xl mx-auto">
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>What people experience</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[
+            { q: 'I was skeptical. Five minutes in, my shoulders dropped for the first time in months.', n: 'Maria L.', r: 'graphic designer' },
+            { q: 'I replaced my evening routine with a 20-minute session. My therapist noticed the difference.', n: 'James K.', r: 'software engineer' },
+            { q: 'The breathing guide combined with 432 Hz is the only thing that stops my racing thoughts.', n: 'Sofia R.', r: 'teacher' },
+          ].map((t, i) => (
+            <div key={i} className="testimonial-card bg-white/[0.02] border border-white/[0.04] rounded-2xl p-6">
+              <p className="text-sm italic text-white/40 leading-relaxed mb-5">&ldquo;{t.q}&rdquo;</p>
+              <p className="text-xs text-white/20">&mdash; {t.n}, {t.r}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ── What You'll Experience ── */}
-      <section className="px-6 py-24 max-w-3xl mx-auto">
-        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-14" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          Your first session
-        </h2>
+      {/* The Science */}
+      <section className="px-6 py-28">
+        <div className="science-card max-w-3xl mx-auto bg-white/[0.02] border-l-2 border-cyan-500/40 rounded-2xl p-8 sm:p-12 relative overflow-hidden">
+          <div className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-cyan-400/60 font-medium mb-6">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgb(34 211 238)" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
+            Peer-reviewed
+          </div>
+          <p className="text-lg sm:text-xl text-white/50 leading-relaxed italic mb-8" style={{ fontFamily: PF }}>
+            &ldquo;Listening to music at 528 Hz for 5 minutes significantly reduced cortisol and increased oxytocin.&rdquo;
+          </p>
+          <p className="text-sm text-white/30 mb-4">&mdash; Akimoto et al., Health, 2018</p>
+          <a href="https://doi.org/10.4236/health.2018.109088" target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-400/50 hover:text-cyan-400/80 transition-colors">
+            DOI: 10.4236/health.2018.109088
+          </a>
+        </div>
+      </section>
+
+      {/* Your First Session */}
+      <section className="px-6 py-28 max-w-3xl mx-auto">
+        <h2 className="section-heading text-3xl sm:text-4xl font-light text-center mb-20" style={{ fontFamily: PF }}>Your first session</h2>
         <div className="relative">
-          <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-cyan-500/30 via-cyan-500/15 to-transparent" />
+          <div className="absolute left-[3px] top-3 bottom-3 w-px bg-white/10" />
           <div className="space-y-10">
             {[
-              { time: '0:00', title: 'Settle in', desc: 'Find a comfortable position. Close your eyes if you like.' },
-              { time: '2:00', title: 'Brain waves begin synchronizing to 432 Hz', desc: 'You may notice your breathing naturally slowing.' },
-              { time: '5:00', title: 'Parasympathetic response activates', desc: 'Tension releases. The mental chatter quiets.' },
-              { time: '10:00+', title: 'Full calm', desc: 'The anxiety loop breaks. Clarity returns.' },
+              { t: '0:00', h: 'Settle in', d: 'Find a comfortable position. Close your eyes.' },
+              { t: '2:00', h: 'Brain waves synchronize', d: 'Breathing naturally begins to slow.' },
+              { t: '5:00', h: 'Parasympathetic response activates', d: 'Tension releases. Mental chatter quiets.' },
+              { t: '10:00+', h: 'Full calm', d: 'The anxiety loop breaks. Clarity returns.' },
             ].map((item, i) => (
-              <div key={i} className="timeline-item flex items-start gap-6">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <span className="text-[10px] text-cyan-400 font-mono">{item.time}</span>
-                </div>
-                <div className="pt-1">
-                  <h3 className="text-base font-medium mb-1">{item.title}</h3>
-                  <p className="text-sm text-white/35 leading-relaxed">{item.desc}</p>
+              <div key={i} className="timeline-item flex items-start gap-5">
+                <div className="flex-shrink-0 w-2 h-2 rounded-full bg-cyan-400 mt-2" />
+                <div>
+                  <span className="text-xs font-mono text-cyan-400/70 block mb-1">{item.t}</span>
+                  <h3 className="text-base font-medium text-white/80 mb-1">{item.h}</h3>
+                  <p className="text-sm text-white/35 leading-relaxed">{item.d}</p>
                 </div>
               </div>
             ))}
@@ -277,46 +226,42 @@ export default function TryAnxietyPage() {
         </div>
       </section>
 
-      {/* ── Final CTA ── */}
-      <section className="px-6 py-24">
+      {/* Final CTA */}
+      <section className="px-6 py-28">
         <div className="final-cta max-w-3xl mx-auto bg-white/[0.02] border border-white/[0.06] rounded-2xl p-10 sm:p-14 text-center relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: NOISE_BG }} />
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: NOISE }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-cyan-500/[0.04] blur-[100px] pointer-events-none" />
           <div className="relative">
-            <h2 className="text-2xl sm:text-4xl font-light mb-4" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-              Your brain already responds to 432 Hz.
-            </h2>
+            <h2 className="text-2xl sm:text-4xl font-light mb-4" style={{ fontFamily: PF }}>Your brain already responds to 432 Hz.</h2>
             <p className="text-white/35 mb-8 text-sm sm:text-base">You&apos;ve read the science. Now feel it.</p>
-            <Link href="/experience/2"
-              className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
+            <Link href="/experience/2" className="cta-pulse group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-gray-900 font-medium text-lg hover:bg-gray-100 transition-all shadow-2xl shadow-white/10">
               Try It Now — Free
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>
-            <p className="text-[11px] text-white/20 mt-5">No account needed · 7-day free trial for full access</p>
+            <p className="text-[11px] text-white/20 mt-5">No account needed · 7-day free trial</p>
           </div>
         </div>
       </section>
 
-      {/* ── Email Capture ── */}
-      {showEmailSection && (
+      {/* Email Inline */}
+      {showInline && (
         <section className="px-6 py-16 max-w-md mx-auto text-center">
-          {inlineSubmitted ? (
-            <p className="text-white/40 text-sm">✓ Check your inbox</p>
+          {inlineDone ? (
+            <p className="text-white/40 text-sm">Sent. Check your inbox.</p>
           ) : (
             <>
-              <p className="text-white/40 text-sm mb-4">Not ready yet? Get the free frequency guide.</p>
-              <form onSubmit={handleInlineSubmit} className="flex gap-3">
-                <input type="email" value={emailInline} onChange={e => setEmailInline(e.target.value)} placeholder="your@email.com" required
+              <p className="text-white/40 text-sm mb-4">Not ready? Get the free guide.</p>
+              <form onSubmit={submitInline} className="flex gap-3">
+                <input type="email" value={inlineEmail} onChange={e => setInlineEmail(e.target.value)} placeholder="your@email.com" required
                   className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-500/50 text-sm" />
                 <button type="submit" className="px-6 py-3 bg-cyan-500 text-white rounded-xl font-medium text-sm hover:bg-cyan-400 transition-colors">Send</button>
               </form>
-              <p className="text-[10px] text-white/15 mt-3">We&apos;ll send personalized frequency recommendations based on your goal</p>
             </>
           )}
         </section>
       )}
 
-      {/* ── Footer ── */}
+      {/* Footer */}
       <footer className="px-6 py-10 border-t border-white/[0.04]">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
