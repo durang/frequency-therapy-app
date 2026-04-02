@@ -35,16 +35,16 @@ export default function AffirmationWhisper({ frequencySlug, isActive }: Affirmat
       setCurrentIndex(idx)
       setVisible(true)
 
-      // After 8 seconds, fade out
+      // After 16 seconds, fade out
       timerRef.current = setTimeout(() => {
         setVisible(false)
 
-        // After 3 seconds of gap, show next
+        // After 4 seconds of gap, show next
         timerRef.current = setTimeout(() => {
           idx = (idx + 1) % affirmations.length
           showNext()
-        }, 3000)
-      }, 8000)
+        }, 4000)
+      }, 16000)
     }
 
     // Start after 12 seconds (let the user settle in first)
@@ -58,22 +58,25 @@ export default function AffirmationWhisper({ frequencySlug, isActive }: Affirmat
   if (currentIndex < 0 || !isActive) return null
 
   return (
-    <div className="fixed top-[18%] sm:top-[22%] left-0 right-0 z-10 flex justify-center pointer-events-none px-8 sm:px-12">
-      <AnimatePresence mode="wait">
-        {visible && (
-          <motion.p
-            key={currentIndex}
-            initial={{ opacity: 0, y: 8, filter: 'blur(4px)' }}
-            animate={{ opacity: 0.35, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
-            transition={{ duration: 2, ease: 'easeOut' }}
-            className="text-center text-sm sm:text-base md:text-lg font-light text-white/60 max-w-md leading-relaxed tracking-wide"
-            style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
-          >
-            {affirmations[currentIndex]}
-          </motion.p>
-        )}
-      </AnimatePresence>
+    <div className="flex justify-center pointer-events-none px-8 sm:px-12">
+      {/* Fixed 2-line height container — prevents layout shift */}
+      <div className="h-[3.5rem] sm:h-[4rem] flex items-center justify-center w-full max-w-md">
+        <AnimatePresence mode="wait">
+          {visible && (
+            <motion.p
+              key={currentIndex}
+              initial={{ opacity: 0, x: 40, filter: 'blur(4px)' }}
+              animate={{ opacity: 0.35, x: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, x: -40, filter: 'blur(4px)' }}
+              transition={{ duration: 2.5, ease: 'easeOut' }}
+              className="text-center text-xs sm:text-sm md:text-base font-light text-white/50 leading-relaxed tracking-wide line-clamp-2"
+              style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+            >
+              {affirmations[currentIndex]}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

@@ -136,7 +136,6 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
           className="fixed inset-0 bg-[#0a0a0f] z-50 overflow-hidden"
         >
           <AmbientCanvas frequency={frequency.hz_value} isPlaying={isPlaying} />
-          <AffirmationWhisper frequencySlug={frequency.slug} isActive={isPlaying} />
 
           <FreemiumTimer isActive={isFreeUser && isPlaying} limitSeconds={300} onExpired={() => audioManager?.fadeOutAndStop(2)} />
 
@@ -183,11 +182,13 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
           {breathingActive && isPlaying && (
             <div className="fixed bottom-36 sm:bottom-44 left-1/2 -translate-x-1/2 z-20 scale-75 sm:scale-100">
               <BreathingGuide isActive={true} recommendedConfig={frequency.breathing} />
-              {frequency.breathing?.reason && (
-                <p className="text-center text-[10px] text-white/20 mt-2 max-w-[280px] mx-auto leading-relaxed">
-                  {frequency.breathing.reason}
-                </p>
-              )}
+            </div>
+          )}
+
+          {/* Affirmation whispers — below breathing guide, above controls */}
+          {isPlaying && (
+            <div className="fixed bottom-24 sm:bottom-32 left-0 right-0 z-10">
+              <AffirmationWhisper frequencySlug={frequency.slug} isActive={isPlaying} />
             </div>
           )}
 

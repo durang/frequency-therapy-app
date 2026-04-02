@@ -251,6 +251,7 @@ export function ProtocolChat() {
   const [input, setInput] = useState('')
   const [hasStarted, setHasStarted] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [instantMatch, setInstantMatch] = useState<any>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -269,6 +270,48 @@ export function ProtocolChat() {
     }
   }, [messages, isLoading])
 
+  // Instant protocol match — runs locally, no AI needed
+  const findInstantMatch = useCallback((text: string) => {
+    const lower = text.toLowerCase()
+    const keywords: Record<string, string[]> = {
+      sleep: ['sleep', 'insomnia', 'dormir', 'sueño', 'rest', 'tired', 'cansado', 'fatigue', 'exhausted'],
+      anxiety: ['anxiety', 'stress', 'anxious', 'ansiedad', 'nervous', 'panic', 'calm', 'relax', 'tension', 'worry'],
+      focus: ['focus', 'concentration', 'brain', 'enfoque', 'memory', 'attention', 'ADHD', 'productivity', 'study', 'work', 'cognitive'],
+      pain: ['pain', 'hurt', 'ache', 'injury', 'dolor', 'inflammation', 'arthritis', 'surgery', 'chronic', 'back', 'recovery'],
+      detox: ['detox', 'cleanse', 'toxin', 'clean', 'desintoxicar', 'limpiar', 'purify', 'hangover'],
+      healing: ['heal', 'wellness', 'immune', 'health', 'general', 'overall', 'energy', 'vitality'],
+      'sexual-wellness': ['sexual', 'libido', 'intimacy', 'performance', 'erectile', 'desire', 'testosterone', 'pareja', 'rendimiento'],
+    }
+
+    // Import protocols dynamically to avoid circular deps
+    try {
+      const { protocols } = require('@/lib/protocols')
+      let bestMatch: any = null
+      let bestScore = 0
+
+      for (const p of protocols) {
+        let score = 0
+        const kwList = keywords[p.id] || keywords.healing || []
+        for (const kw of kwList) {
+          if (lower.includes(kw)) score += 10
+        }
+        // Fuzzy match against protocol text
+        const searchText = `${p.name} ${p.description} ${p.condition}`.toLowerCase()
+        for (const word of lower.split(/\s+/)) {
+          if (word.length > 2 && searchText.includes(word)) score += 3
+        }
+        if (score > bestScore) {
+          bestScore = score
+          bestMatch = p
+        }
+      }
+
+      return bestMatch
+    } catch {
+      return null
+    }
+  }, [])
+
   const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault()
     const text = input.trim()
@@ -276,15 +319,33 @@ export function ProtocolChat() {
     setInput('')
     setHasStarted(true)
     setIsExpanded(true)
-    sendMessage({ text })
-  }, [input, isLoading, sendMessage])
+
+    // Step 1: Instant match (< 10ms)
+    const match = findInstantMatch(text)
+    if (match) {
+      setInstantMatch(match)
+    }
+
+    // Step 2: Send to AI for conversational depth (with pre-matched context)
+    const enrichedText = match
+      ? `${text}\n\n[SYSTEM: The best matching protocol is "${match.name}" (${match.id}). Present this protocol enthusiastically with its benefits and ask a personalization follow-up. Do NOT search — you already have the answer.]`
+      : text
+    sendMessage({ text: enrichedText })
+  }, [input, isLoading, sendMessage, findInstantMatch])
 
   const handleSuggestion = useCallback((prompt: string) => {
     if (isLoading) return
     setHasStarted(true)
     setIsExpanded(true)
-    sendMessage({ text: prompt })
-  }, [isLoading, sendMessage])
+
+    const match = findInstantMatch(prompt)
+    if (match) setInstantMatch(match)
+
+    const enrichedText = match
+      ? `${prompt}\n\n[SYSTEM: The best matching protocol is "${match.name}" (${match.id}). Present this protocol enthusiastically with its benefits and ask a personalization follow-up. Do NOT search — you already have the answer.]`
+      : prompt
+    sendMessage({ text: enrichedText })
+  }, [isLoading, sendMessage, findInstantMatch])
 
   return (
     <motion.div
@@ -362,6 +423,36 @@ export function ProtocolChat() {
           >
             <div ref={scrollContainerRef} className="border-t border-gray-100 dark:border-white/[0.04] max-h-[600px] overflow-y-auto px-5 py-4 scroll-smooth">
               <div className="space-y-4 max-w-2xl mx-auto">
+                {/* Instant match card — appears immediately, before AI responds */}
+                {instantMatch && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mb-4"
+                  >
+                    <ProtocolRecommendationCard protocol={{
+                      id: instantMatch.id,
+                      name: instantMatch.name,
+                      slug: instantMatch.slug,
+                      icon: instantMatch.icon,
+                      description: instantMatch.description,
+                      condition: instantMatch.condition,
+                      duration_days: instantMatch.duration_days || instantMatch.duration,
+                      difficulty: instantMatch.difficulty,
+                      expectedOutcomes: instantMatch.expectedOutcomes || [],
+                      phases: (instantMatch.phases || []).map((p: any) => ({
+                        name: p.name,
+                        days: p.days,
+                        description: p.description,
+                        frequencyCount: p.sessions?.length || 0,
+                      })),
+                      science: instantMatch.science,
+                      relevanceScore: 1,
+                    }} isPrimary={true} />
+                  </motion.div>
+                )}
+
                 {messages.map((message: UIMessage) => (
                   <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[90%] ${
