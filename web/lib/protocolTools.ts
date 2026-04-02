@@ -38,14 +38,15 @@ export const protocolTools = {
           ...p.tips,
         ].join(' ').toLowerCase()
 
-        // Direct keyword matches
+        // Direct keyword matches — expanded with creative mappings
         const keywords: Record<string, string[]> = {
-          sleep: ['sleep', 'insomnia', 'dormir', 'sueño', 'rest', 'descanso', 'tired', 'cansado'],
-          anxiety: ['anxiety', 'stress', 'anxious', 'ansiedad', 'estrés', 'nervous', 'nervioso', 'panic', 'calm', 'relax'],
-          focus: ['focus', 'concentration', 'cognitive', 'brain', 'enfoque', 'concentración', 'memory', 'attention', 'ADHD', 'brain fog'],
-          pain: ['pain', 'hurt', 'ache', 'injury', 'recovery', 'dolor', 'inflammation', 'arthritis', 'surgery'],
-          detox: ['detox', 'cleanse', 'toxin', 'clean', 'desintoxicar', 'limpiar', 'purify'],
-          healing: ['heal', 'wellness', 'immune', 'health', 'sanar', 'curar', 'recovery', 'general', 'overall'],
+          sleep: ['sleep', 'insomnia', 'dormir', 'sueño', 'rest', 'descanso', 'tired', 'cansado', 'fatigue', 'exhausted'],
+          anxiety: ['anxiety', 'stress', 'anxious', 'ansiedad', 'estrés', 'nervous', 'nervioso', 'panic', 'calm', 'relax', 'tension', 'worry', 'overwhelm'],
+          focus: ['focus', 'concentration', 'cognitive', 'brain', 'enfoque', 'concentración', 'memory', 'attention', 'ADHD', 'brain fog', 'productivity', 'study', 'work'],
+          pain: ['pain', 'hurt', 'ache', 'injury', 'recovery', 'dolor', 'inflammation', 'arthritis', 'surgery', 'chronic', 'back', 'neck', 'joint'],
+          detox: ['detox', 'cleanse', 'toxin', 'clean', 'desintoxicar', 'limpiar', 'purify', 'hangover', 'alcohol', 'drug'],
+          healing: ['heal', 'wellness', 'immune', 'health', 'sanar', 'curar', 'recovery', 'general', 'overall', 'energy', 'vitality', 'sexual', 'libido', 'performance', 'hormones', 'hormone', 'testosterone', 'weight', 'metabolism'],
+          'sexual-wellness': ['sexual', 'libido', 'intimacy', 'performance', 'erectile', 'desire', 'testosterone', 'hormones', 'pareja', 'rendimiento'],
         }
 
         const matchingKeywords = keywords[p.id] || []

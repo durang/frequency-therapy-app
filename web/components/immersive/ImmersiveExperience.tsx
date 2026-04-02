@@ -7,6 +7,7 @@ import { audioManager } from '@/lib/audioManager'
 import AmbientCanvas from './AmbientCanvas'
 import Teleprompter from './Teleprompter'
 import BreathingGuide from './BreathingGuide'
+import AffirmationWhisper from './AffirmationWhisper'
 import BreathingSettings from './BreathingSettings'
 import FreemiumTimer from './FreemiumTimer'
 
@@ -135,6 +136,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
           className="fixed inset-0 bg-[#0a0a0f] z-50 overflow-hidden"
         >
           <AmbientCanvas frequency={frequency.hz_value} isPlaying={isPlaying} />
+          <AffirmationWhisper frequencySlug={frequency.slug} isActive={isPlaying} />
 
           <FreemiumTimer isActive={isFreeUser && isPlaying} limitSeconds={300} onExpired={() => audioManager?.fadeOutAndStop(2)} />
 
