@@ -45,13 +45,13 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
   const currentSection = currentIndex >= 0 ? sections[currentIndex] : null
 
   return (
-    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-6 pt-20 pb-40 sm:pb-60 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
+    <div className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-6 pt-20 pb-56 sm:pb-60 transition-opacity duration-1000 ${dimmed ? 'opacity-20' : 'opacity-100'}`}>
       {/* Frequency title — always visible, moves up when content appears */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: currentSection ? -40 : 0 }}
+        animate={{ opacity: 1, y: currentSection ? -20 : 0 }}
         transition={{ duration: 2, ease: 'easeOut' }}
-        className="text-center mb-8"
+        className="text-center mb-6 sm:mb-8"
       >
         <p className="text-sm tracking-[0.3em] uppercase text-cyan-400/70 font-medium mb-4"
            style={{ fontFamily: 'var(--font-instrument), Georgia, serif' }}>
@@ -71,8 +71,8 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
         />
       </motion.div>
 
-      {/* Current section — only ONE visible at a time, fades in/out */}
-      <div className="max-w-xl mx-auto text-center min-h-[6rem] sm:h-32 flex items-center justify-center">
+      {/* Current section — fixed height zone prevents layout shift */}
+      <div className="max-w-xl mx-auto text-center h-28 sm:h-32 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           {currentSection && (
             <motion.div
@@ -89,7 +89,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
                   {currentSection.label}
                 </p>
               )}
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-white/50 font-light"
+              <p className="text-sm sm:text-base md:text-xl leading-relaxed text-white/50 font-light line-clamp-3"
                  style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
                 {currentSection.text}
               </p>
@@ -100,7 +100,7 @@ export default function Teleprompter({ sections, frequencyName, hzValue, dimmed 
 
       {/* Section indicator dots */}
       {sections.length > 0 && (
-        <div className="flex items-center gap-1.5 mt-8">
+        <div className="flex items-center gap-1.5 mt-4 sm:mt-8">
           {sections.map((_, i) => (
             <div
               key={i}

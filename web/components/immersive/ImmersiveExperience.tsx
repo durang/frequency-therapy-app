@@ -229,24 +229,24 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
           {/* Teleprompter */}
           <Teleprompter sections={teleprompterSections} frequencyName={frequency.name} hzValue={frequency.hz_value} dimmed={dimmed} />
 
-          {/* Breathing guide */}
+          {/* Breathing guide — reserved zone: bottom 140px-220px on mobile, 176px-280px on desktop */}
           {breathingActive && isPlaying && (
-            <div className="fixed bottom-36 sm:bottom-44 left-1/2 -translate-x-1/2 z-20 scale-75 sm:scale-100">
+            <div className="fixed bottom-[140px] sm:bottom-[176px] left-1/2 -translate-x-1/2 z-20 scale-[0.65] sm:scale-100">
               <BreathingGuide isActive={true} recommendedConfig={frequency.breathing} />
             </div>
           )}
 
-          {/* Affirmation whispers — below breathing guide, above controls */}
+          {/* Affirmation whispers — reserved zone: bottom 100px-140px on mobile */}
           {isPlaying && (
-            <div className="fixed bottom-24 sm:bottom-32 left-0 right-0 z-10">
+            <div className="fixed bottom-[100px] sm:bottom-[136px] left-0 right-0 z-10">
               <AffirmationWhisper frequencySlug={frequency.slug} isActive={isPlaying} />
             </div>
           )}
 
-          {/* Bottom controls */}
-          <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3">
+          {/* Bottom controls — reserved zone: bottom 0-80px mobile, 0-56px desktop */}
+          <div className="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-3">
             {/* Volume slider */}
-            <div className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-white/[0.06] bg-white/[0.02]">
+            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border border-white/[0.06] bg-white/[0.02]">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
                 className={`flex-shrink-0 ${volume === 0 ? 'text-red-400/60' : 'text-white/30'}`}>
                 {volume === 0 ? (
@@ -265,7 +265,7 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
                   setVolume(v)
                   audioManager?.setVolume(v)
                 }}
-                className="w-16 sm:w-20 h-1 appearance-none bg-white/10 rounded-full outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/60 [&::-webkit-slider-thumb]:hover:bg-white/80 [&::-webkit-slider-thumb]:transition-colors"
+                className="w-14 sm:w-20 h-1 appearance-none bg-white/10 rounded-full outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/60 [&::-webkit-slider-thumb]:hover:bg-white/80 [&::-webkit-slider-thumb]:transition-colors"
               />
             </div>
             <button onClick={() => setBreathingActive(!breathingActive)}
