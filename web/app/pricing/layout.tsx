@@ -3,7 +3,7 @@ import { productSchema, faqSchema, breadcrumbSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Pricing — FreqTherapy Plans & Free Trial',
-  description: 'FreqTherapy pricing: 2 free frequencies, unlimited premium access from $10/month (annual) or $19/month. All 23 therapeutic frequencies, unlimited sessions, healing protocols, and breathing guides. Cancel anytime.',
+  description: 'FreqTherapy pricing: 2 free frequencies, unlimited premium access from $5.75/month (annual) or $19/month. All 23 therapeutic frequencies, unlimited sessions, healing protocols, and breathing guides. Cancel anytime.',
   keywords: [
     'frequency therapy app price',
     'binaural beats app subscription',
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Simple, Honest Pricing — FreqTherapy',
-    description: 'Full access to 23 frequencies & healing protocols. From $10/month. Try free, no account needed.',
+    description: 'Full access to 23 frequencies & healing protocols. From $5.75/month. Try free, no account needed.',
     url: 'https://freqtherapy.com/pricing',
     type: 'website',
   },
@@ -32,7 +32,7 @@ export default function PricingLayout({ children }: { children: React.ReactNode 
       },
       {
         q: 'How much does FreqTherapy cost?',
-        a: 'FreqTherapy offers two plans: $19/month (monthly, cancel anytime) or $120/year ($10/month, save 47%). Both plans include full access to all 23 frequencies, unlimited session length, healing protocols, and breathing guides.',
+        a: 'FreqTherapy offers two plans: $19/month (monthly, cancel anytime) or $69/year ($5.75/month, save 70%). Both plans include full access to all 23 frequencies, unlimited session length, healing protocols, and breathing guides.',
       },
       {
         q: 'What payment methods does FreqTherapy accept?',

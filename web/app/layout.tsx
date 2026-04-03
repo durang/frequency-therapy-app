@@ -69,7 +69,7 @@ export default function RootLayout({
     },
     {
       q: 'Is FreqTherapy free?',
-      a: 'FreqTherapy offers 2 frequencies free with 5-minute sessions, no account needed. Full access to all 23 frequencies starts at $10/month with the annual plan.',
+      a: 'FreqTherapy offers 2 frequencies free with 5-minute sessions, no account needed. Full access to all 23 frequencies starts at $5.75/month with the annual plan.',
     },
   ])
 
