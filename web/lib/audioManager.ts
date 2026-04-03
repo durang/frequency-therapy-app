@@ -156,9 +156,12 @@ class GlobalAudioManager {
 
     if (gain && ctx) {
       try {
-        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.5)
+        // Anchor current gain value before ramping — required for linearRamp to interpolate
+        gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime)
+        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.5)
         if (hGain) {
-          hGain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.5)
+          hGain.gain.setValueAtTime(hGain.gain.value, ctx.currentTime)
+          hGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.5)
         }
       } catch {}
 
@@ -217,9 +220,12 @@ class GlobalAudioManager {
       }
 
       try {
-        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + durationSeconds)
+        // Anchor current gain value — required for linearRamp to actually interpolate
+        gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime)
+        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + durationSeconds)
         if (hGain) {
-          hGain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + durationSeconds)
+          hGain.gain.setValueAtTime(hGain.gain.value, ctx.currentTime)
+          hGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + durationSeconds)
         }
       } catch {
         this.stop()
