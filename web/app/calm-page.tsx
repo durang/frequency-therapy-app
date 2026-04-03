@@ -10,16 +10,13 @@ import { youtubeTestimonials } from '@/lib/testimonials'
 import { useAuth } from '@/lib/authState'
 import ScienceBlog from '@/components/landing/ScienceBlog'
 
-const featured = [
-  ...frequencies.filter(f => f.tier === 'free').slice(0, 2),
-  frequencies.find(f => f.tier === 'basic') || frequencies[2],
-].filter(Boolean).slice(0, 3)
+const featured = frequencies.filter(f => f.tier === 'free').slice(0, 2)
 
 const BREATHING_PRESETS = [
-  { name: 'Relaxing', pattern: '4-4-6', inhale: 4, hold: 4, exhale: 6, desc: 'Extended exhale calms the nervous system and activates the parasympathetic response', science: 'Prolonged exhalation stimulates the vagus nerve, reducing cortisol by up to 30% within 5 minutes. This triggers the "rest and digest" response, slowing heart rate and lowering blood pressure.', link: '/frequencies/anxiety-liberation' },
-  { name: 'Box Breathing', pattern: '4-4-4', inhale: 4, hold: 4, exhale: 4, desc: 'Equal phases create balanced focus — used by Navy SEALs and first responders', science: 'Equal inhale-hold-exhale phases synchronize the autonomic nervous system. US Navy SEALs use this technique to maintain composure under extreme stress. Studies show it can reduce anxiety scores by 37% within a single session.', link: '/frequencies/gamma-focus' },
-  { name: '4-7-8 Sleep', pattern: '4-7-8', inhale: 4, hold: 7, exhale: 8, desc: 'Dr. Andrew Weil\'s technique — the extended hold and exhale induce deep sleep', science: 'Developed by Dr. Andrew Weil based on pranayama yoga breathing. The 7-second hold saturates the blood with oxygen while the 8-second exhale maximally engages the parasympathetic system. Clinical studies show 62% of users fall asleep within 20 minutes.', link: '/frequencies/deep-sleep-delta' },
-  { name: 'Energizing', pattern: '6-2-4', inhale: 6, hold: 2, exhale: 4, desc: 'Longer inhale activates sympathetic response for alertness and energy', science: 'The extended inhale-to-exhale ratio (3:2) activates the sympathetic nervous system, increasing norepinephrine release by up to 25%. This mimics the body\'s natural "wake up" response without caffeine\'s adenosine receptor interference.', link: '/frequencies/dopamine-elevation' },
+  { name: 'Relaxing', pattern: '4-4-6', inhale: 4, hold: 4, exhale: 6, desc: 'Extended exhale calms the nervous system and activates the parasympathetic response', science: 'Prolonged exhalation stimulates the vagus nerve, reducing cortisol levels. This triggers the "rest and digest" response, slowing heart rate and lowering blood pressure.', link: '/frequencies/anxiety-liberation' },
+  { name: 'Box Breathing', pattern: '4-4-4', inhale: 4, hold: 4, exhale: 4, desc: 'Equal phases create balanced focus — used by Navy SEALs and first responders', science: 'Equal inhale-hold-exhale phases synchronize the autonomic nervous system. US Navy SEALs use this technique to maintain composure under extreme stress. Studies suggest it can significantly reduce anxiety within a single session.', link: '/frequencies/gamma-focus' },
+  { name: '4-7-8 Sleep', pattern: '4-7-8', inhale: 4, hold: 7, exhale: 8, desc: 'Dr. Andrew Weil\'s technique — the extended hold and exhale induce deep sleep', science: 'Developed by Dr. Andrew Weil based on pranayama yoga breathing. The 7-second hold saturates the blood with oxygen while the 8-second exhale maximally engages the parasympathetic system. Many practitioners report falling asleep within 20 minutes.', link: '/frequencies/deep-sleep-delta' },
+  { name: 'Energizing', pattern: '6-2-4', inhale: 6, hold: 2, exhale: 4, desc: 'Longer inhale activates sympathetic response for alertness and energy', science: 'The extended inhale-to-exhale ratio (3:2) activates the sympathetic nervous system, stimulating norepinephrine release. This mimics the body\'s natural "wake up" response without caffeine\'s adenosine receptor interference.', link: '/frequencies/dopamine-elevation' },
 ]
 
 export default function LandingPage() {

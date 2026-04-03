@@ -232,7 +232,7 @@ export default function ScienceBlog() {
                       )}
                       {freq.clinical_trials && freq.clinical_trials.length > 0 && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-400/20">
-                          {freq.clinical_trials.length} trials
+                          {freq.clinical_trials.length} {freq.clinical_trials.length === 1 ? 'trial' : 'trials'}
                         </span>
                       )}
                     </div>
