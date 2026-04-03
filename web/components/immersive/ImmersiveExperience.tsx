@@ -104,7 +104,20 @@ export default function ImmersiveExperience({ frequency, onExit, isFreeUser = fa
   }, [saveRealDuration])
 
   const startAudio = useCallback(() => {
-    audioManager?.play(frequency.name, frequency.hz_value)
+    // iOS: create and resume AudioContext synchronously in the click handler
+    // BEFORE any async work, to preserve the user gesture context
+    if (audioManager) {
+      // Pre-warm the audio context synchronously
+      try {
+        const warmCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+        warmCtx.resume()
+        // Pass the pre-warmed context to play
+        audioManager.playWithContext(frequency.name, frequency.hz_value, warmCtx)
+      } catch {
+        // Fallback to regular play
+        audioManager.play(frequency.name, frequency.hz_value)
+      }
+    }
   }, [frequency])
 
   const stopAudio = useCallback(() => {

@@ -67,29 +67,34 @@ class GlobalAudioManager {
   }
 
   async play(name: string, hz: number) {
+    return this.playWithContext(name, hz)
+  }
+
+  async playWithContext(name: string, hz: number, prewarmedCtx?: AudioContext) {
     // Stop any existing audio first
     this.stop()
 
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const ctx = prewarmedCtx || new (window.AudioContext || (window as any).webkitAudioContext)()
       this.ctx = ctx
 
-      // iOS Safari requires resume() inside a user gesture handler.
-      // Retry up to 3 times with small delays if still suspended.
-      if (ctx.state === 'suspended') {
-        await ctx.resume()
-        // If still suspended after resume (iOS), try again
-        if (ctx.state === 'suspended') {
-          await new Promise(r => setTimeout(r, 100))
-          await ctx.resume()
+      // iOS Safari: resume() MUST happen synchronously in the user gesture call stack.
+      // Do NOT await anything before this call.
+      const resumePromise = ctx.resume()
+
+      // Set up statechange listener for iOS — sometimes resume() resolves
+      // but the state doesn't change until the first audio node starts
+      ctx.onstatechange = () => {
+        if (ctx.state === 'running') {
+          console.log('🎵 Audio: Context now running')
         }
       }
 
-      // Final check — if context is still not running, log and continue
-      // (some browsers need the first oscillator.start() to trigger audio)
-      if (ctx.state !== 'running') {
-        console.warn('[Audio] Context state:', ctx.state, '— attempting to play anyway')
-      }
+      // Wait for resume to complete (or timeout after 500ms)
+      await Promise.race([
+        resumePromise,
+        new Promise(r => setTimeout(r, 500))
+      ])
 
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
