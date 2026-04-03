@@ -274,12 +274,12 @@ export function ProtocolChat() {
   const findInstantMatch = useCallback((text: string) => {
     const lower = text.toLowerCase()
     const keywords: Record<string, string[]> = {
-      sleep: ['sleep', 'insomnia', 'dormir', 'sueño', 'rest', 'tired', 'cansado', 'fatigue', 'exhausted'],
-      anxiety: ['anxiety', 'stress', 'anxious', 'ansiedad', 'nervous', 'panic', 'calm', 'relax', 'tension', 'worry'],
-      focus: ['focus', 'concentration', 'brain', 'enfoque', 'memory', 'attention', 'ADHD', 'productivity', 'study', 'work', 'cognitive'],
-      pain: ['pain', 'hurt', 'ache', 'injury', 'dolor', 'inflammation', 'arthritis', 'surgery', 'chronic', 'back', 'recovery'],
+      sleep: ['sleep', 'insomnia', 'dormir', 'sueño', 'rest', 'tired', 'cansado', 'fatigue', 'exhausted', 'descansar', 'descanso', 'insomnio', 'cant sleep', 'no puedo dormir'],
+      anxiety: ['anxiety', 'stress', 'anxious', 'ansiedad', 'nervous', 'panic', 'calm', 'relax', 'tension', 'worry', 'estresado', 'estres', 'estrés', 'nervioso', 'preocupado', 'tenso', 'ansioso', 'overwhelmed', 'relajar', 'triste', 'deprimido', 'angustia'],
+      focus: ['focus', 'concentration', 'brain', 'enfoque', 'memory', 'attention', 'ADHD', 'productivity', 'study', 'work', 'cognitive', 'concentrar', 'concentración', 'estudiar', 'trabajar', 'inteligente', 'memoria', 'productivo', 'brain fog', 'distracted'],
+      pain: ['pain', 'hurt', 'ache', 'injury', 'dolor', 'inflammation', 'arthritis', 'surgery', 'chronic', 'back', 'recovery', 'sore', 'hurting'],
       detox: ['detox', 'cleanse', 'toxin', 'clean', 'desintoxicar', 'limpiar', 'purify', 'hangover'],
-      healing: ['heal', 'wellness', 'immune', 'health', 'general', 'overall', 'energy', 'vitality'],
+      healing: ['heal', 'wellness', 'immune', 'health', 'general', 'overall', 'energy', 'vitality', 'energía', 'agotado', 'cansancio', 'motivación', 'ánimo', 'unmotivated'],
       'sexual-wellness': ['sexual', 'libido', 'intimacy', 'performance', 'erectile', 'desire', 'testosterone', 'pareja', 'rendimiento'],
     }
 

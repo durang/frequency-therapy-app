@@ -273,9 +273,56 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
   // Instant frequency match — runs locally, no AI needed
   const findInstantMatches = useCallback((text: string) => {
     try {
-      const { getRecommendedFrequencies, searchFrequencies } = require('@/lib/frequencies')
-      let results = getRecommendedFrequencies(text)
-      if (results.length === 0) results = searchFrequencies(text)
+      const { getRecommendedFrequencies, searchFrequencies, frequencies: allFreqs } = require('@/lib/frequencies')
+      const lower = text.toLowerCase()
+
+      // Natural language keyword map (English + Spanish + emotional phrases)
+      const keywordMap: Record<string, string> = {
+        // Spanish
+        'estresado': 'stress', 'estres': 'stress', 'estrés': 'stress', 'ansiedad': 'stress',
+        'ansioso': 'stress', 'nervioso': 'stress', 'preocupado': 'stress', 'tenso': 'stress',
+        'dormir': 'sleep', 'sueño': 'sleep', 'insomnio': 'sleep', 'descansar': 'sleep',
+        'cansado': 'energy', 'cansancio': 'energy', 'energía': 'energy', 'agotado': 'energy', 'fatiga': 'energy',
+        'concentrar': 'focus', 'concentración': 'focus', 'enfoque': 'focus', 'estudiar': 'focus', 'trabajar': 'focus',
+        'dolor': 'pain', 'relajar': 'stress', 'relajación': 'stress', 'calma': 'stress', 'tranquilo': 'stress',
+        'triste': 'stress', 'deprimido': 'stress', 'motivación': 'energy', 'ánimo': 'energy',
+        'inteligente': 'focus', 'memoria': 'focus', 'productivo': 'focus', 'rendimiento': 'focus',
+        // English emotional
+        'stressed': 'stress', 'anxious': 'stress', 'nervous': 'stress', 'worried': 'stress',
+        'overwhelmed': 'stress', 'tense': 'stress', 'panic': 'stress', 'restless': 'stress',
+        'cant sleep': 'sleep', 'insomnia': 'sleep', 'tired': 'energy', 'exhausted': 'energy',
+        'fatigue': 'energy', 'brain fog': 'focus', 'distracted': 'focus', 'procrastinating': 'focus',
+        'unmotivated': 'energy', 'depressed': 'stress', 'sad': 'stress', 'angry': 'stress',
+        'hurting': 'pain', 'aching': 'pain', 'sore': 'pain',
+      }
+
+      // Extract goal from natural language
+      let matchedGoal = ''
+      for (const [keyword, goal] of Object.entries(keywordMap)) {
+        if (lower.includes(keyword)) { matchedGoal = goal; break }
+      }
+
+      // Also try individual words against the goal mappings
+      if (!matchedGoal) {
+        const words = lower.split(/\s+/)
+        for (const word of words) {
+          if (word.length > 3) {
+            const tryGoal = getRecommendedFrequencies(word)
+            if (tryGoal.length > 0) { return tryGoal.slice(0, 4) }
+          }
+        }
+      }
+
+      // Use matched goal or fall back to full text search
+      let results = matchedGoal ? getRecommendedFrequencies(matchedGoal) : getRecommendedFrequencies(text)
+      if (results.length === 0) {
+        // Try each word individually in search
+        const words = lower.split(/\s+/).filter((w: string) => w.length > 3)
+        for (const word of words) {
+          results = searchFrequencies(word)
+          if (results.length > 0) break
+        }
+      }
       return results.slice(0, 4)
     } catch { return [] }
   }, [])
