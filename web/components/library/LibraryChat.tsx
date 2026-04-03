@@ -438,13 +438,22 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
                         <p className="text-sm font-medium text-gray-900 dark:text-white/80 truncate">{freq.name}</p>
                         <p className="text-[10px] text-gray-500 dark:text-white/30 truncate">{freq.description?.substring(0, 60)}…</p>
                       </div>
-                      <Link
-                        href={`/experience/${freq.id}`}
-                        className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        ▶ Start
-                      </Link>
+                      <div className="flex flex-col gap-1 flex-shrink-0">
+                        <Link
+                          href={`/experience/${freq.id}`}
+                          className="px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-all text-center"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          ▶ Start
+                        </Link>
+                        <Link
+                          href={`/frequencies/${freq.slug}`}
+                          className="px-3 py-1 rounded-lg border border-gray-200 dark:border-white/[0.08] text-[10px] text-gray-500 dark:text-white/30 hover:text-gray-900 dark:hover:text-white/60 transition-all text-center"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Read more
+                        </Link>
+                      </div>
                     </div>
                   ))}
                   <p className="text-xs text-gray-500 dark:text-white/30 mt-2 leading-relaxed">
@@ -465,9 +474,12 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
                   }`}>
                     {message.parts.map((part, idx) => {
                       if (part.type === 'text') {
+                        // Strip [SYSTEM: ...] instructions from displayed text
+                        const cleanText = part.text.replace(/\n*\[SYSTEM:[\s\S]*?\]/g, '').trim()
+                        if (!cleanText) return null
                         return (
                           <div key={idx}>
-                            {renderMarkdown(part.text)}
+                            {renderMarkdown(cleanText)}
                           </div>
                         )
                       }

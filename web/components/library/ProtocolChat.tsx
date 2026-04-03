@@ -462,7 +462,9 @@ export function ProtocolChat() {
                     }`}>
                       {message.parts.map((part, idx) => {
                         if (part.type === 'text') {
-                          return <div key={idx}>{renderSimpleMarkdown(part.text)}</div>
+                          const cleanText = part.text.replace(/\n*\[SYSTEM:[\s\S]*?\]/g, '').trim()
+                          if (!cleanText) return null
+                          return <div key={idx}>{renderSimpleMarkdown(cleanText)}</div>
                         }
                         if (isToolUIPart(part) && part.state === 'output-available') {
                           return <ProtocolToolResult key={idx} toolName={getToolName(part)} output={part.output} />
