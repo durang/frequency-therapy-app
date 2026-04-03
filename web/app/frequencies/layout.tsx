@@ -54,7 +54,7 @@ export default function FrequenciesLayout({ children }: { children: React.ReactN
       },
       {
         q: 'Are frequency therapy sessions free?',
-        a: 'FreqTherapy offers 2 frequencies completely free with 5-minute preview sessions. No account required. Full access to all 23 frequencies with unlimited session length starts at $5.75/month (annual plan).',
+        a: 'FreqTherapy offers 2 frequencies completely free with 5-minute preview sessions. No account required. Full access to all 23 frequencies with unlimited session length starts at $10/month (annual plan).',
       },
     ]),
   ]

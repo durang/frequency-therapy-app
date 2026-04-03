@@ -539,7 +539,7 @@ function PricingSection() {
             <button onClick={() => setBilling('annual')}
               className={`px-5 py-2 rounded-full text-sm transition-all flex items-center gap-2 ${billing === 'annual' ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium' : 'text-gray-500 dark:text-white/30'}`}>
               Annual
-              <span className="text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 font-medium">Save 70%</span>
+              <span className="text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 font-medium">Save 47%</span>
             </button>
           </div>
 
@@ -573,9 +573,9 @@ function PricingSection() {
                   ) : (
                     <>
                       <p className="text-3xl font-light text-gray-900 dark:text-white mb-1" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                        $5.75<span className="text-base text-gray-400 dark:text-white/30">/mo</span>
+                        $10<span className="text-base text-gray-400 dark:text-white/30">/mo</span>
                       </p>
-                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">7-day free trial · Then $69/year</p>
+                      <p className="text-xs text-gray-400 dark:text-white/20 mb-5">7-day free trial · Then $120/year</p>
                     </>
                   )}
                 </motion.div>

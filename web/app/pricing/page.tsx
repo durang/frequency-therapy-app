@@ -90,7 +90,7 @@ export default function PricingPage() {
           >
             Annual
             <span className="text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 font-medium">
-              {plan.badge || 'Save 70%'}
+              {plan.badge || 'Save 47%'}
             </span>
           </button>
         </div>
@@ -129,13 +129,13 @@ export default function PricingPage() {
             {/* Price */}
             <div className="flex items-end gap-2 mb-1">
               <span className="text-4xl sm:text-5xl font-light tabular-nums" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                ${billing === 'monthly' ? '19' : '5.75'}
+                ${billing === 'monthly' ? '19' : '10'}
               </span>
               <span className="text-gray-400 dark:text-white/25 text-base mb-1.5">/month</span>
             </div>
             {billing === 'annual' ? (
               <p className="text-xs text-gray-400 dark:text-white/20 mb-6">
-                $69/year · saves $159 vs monthly
+                $120/year · saves $108 vs monthly
               </p>
             ) : (
               <p className="text-xs text-gray-400 dark:text-white/20 mb-6">

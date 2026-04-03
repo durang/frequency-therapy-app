@@ -1,7 +1,7 @@
 /**
  * Lemon Squeezy checkout configuration.
  *
- * Two plans: Monthly ($19/mo) and Annual ($69/yr — $5.75/mo).
+ * Two plans: Monthly ($19/mo) and Annual ($120/yr — $10/mo).
  * Both include a 7-day free trial (card required).
  * Checkout URLs point to Lemon Squeezy hosted pages.
  */
@@ -38,11 +38,11 @@ export const PLANS: Record<'monthly' | 'annual', Plan> = {
   annual: {
     id: 'annual',
     name: 'Annual',
-    price: 69,
+    price: 120,
     period: 'year',
-    pricePerMonth: 5.75,
+    pricePerMonth: 10,
     checkoutUrl: CHECKOUT_URLS.annual,
-    badge: 'Save 70%',
+    badge: 'Save 47%',
     trialDays: FREE_TRIAL_DAYS,
   },
 } as const

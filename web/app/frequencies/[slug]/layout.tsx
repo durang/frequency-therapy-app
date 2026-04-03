@@ -65,7 +65,7 @@ export default async function FrequencyArticleLayout({
         q: `Can I listen to ${freq.hz_value} Hz for free?`,
         a: freq.tier === 'free'
           ? `Yes! ${freq.hz_value} Hz ${freq.name} is available free on FreqTherapy with 5-minute preview sessions. No account required.`
-          : `${freq.hz_value} Hz ${freq.name} is a premium frequency. FreqTherapy offers 2 free frequencies to try, with full access starting at $5.75/month (annual plan).`,
+          : `${freq.hz_value} Hz ${freq.name} is a premium frequency. FreqTherapy offers 2 free frequencies to try, with full access starting at $10/month (annual plan).`,
       },
     ]
     schemas.push(faqSchema(faqs))
