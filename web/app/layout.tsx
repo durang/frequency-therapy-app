@@ -97,15 +97,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFaq) }}
         />
         
-        {/* Preload critical resources */}
-        <link
-          rel="preload"
-          href="/fonts/inter-var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        
         {/* Security Headers via Meta Tags (backup for server headers) */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />

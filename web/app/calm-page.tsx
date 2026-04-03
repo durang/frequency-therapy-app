@@ -192,11 +192,11 @@ function Hero() {
           </div>
 
           <div className="flex items-center justify-center gap-6 mt-14 text-xs text-gray-400 dark:text-white/20">
-            <span>127K+ users</span>
+            <span>Free to try</span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
             <span>Research-backed</span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
-            <span>47 studies cited</span>
+            <span>Peer-reviewed studies</span>
           </div>
         </motion.div>
       </div>
@@ -941,7 +941,7 @@ function Footer() {
         <div className="pt-8 border-t border-gray-100 dark:border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-400 dark:text-white/15">© 2026 FreqTherapy. Not intended to diagnose, treat, cure, or prevent any disease.</p>
           <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-white/15">
-            <span>127K+ users</span><span>·</span><span>47 studies</span>
+            <span>Free to try</span><span>·</span><span>Peer-reviewed</span>
           </div>
         </div>
       </div>

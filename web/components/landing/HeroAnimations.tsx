@@ -363,7 +363,7 @@ export default function HeroAnimations({
               whileHover={{ scale: 1.05 }}
             >
               <Star className="w-4 h-4 text-yellow-500" />
-              <span>127K+ users</span>
+              <span>Free to try</span>
             </motion.div>
             <motion.div 
               className="flex items-center space-x-2"
