@@ -270,15 +270,14 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
   const { messages, sendMessage, status, error } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
 
-  // Instant frequency match — runs locally, no AI needed
+  // Instant frequency match — runs locally as a bonus, AI always responds too
   const findInstantMatches = useCallback((text: string) => {
     try {
-      const { getRecommendedFrequencies, searchFrequencies, frequencies: allFreqs } = require('@/lib/frequencies')
+      const { getRecommendedFrequencies, searchFrequencies } = require('@/lib/frequencies')
       // Normalize: lowercase + strip accents
       const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
-      // Natural language keyword map (English + Spanish + emotional phrases)
-      // Keys are accent-stripped for matching
+      // Fuzzy match: find closest keyword even with typos
       const keywordMap: Record<string, string> = {
         // Spanish (accent-stripped)
         'estresado': 'stress', 'estres': 'stress', 'ansiedad': 'stress',
@@ -291,13 +290,13 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
         'triste': 'stress', 'deprimido': 'stress', 'motivacion': 'energy', 'animo': 'energy',
         'memoria': 'focus', 'productivo': 'focus', 'rendimiento': 'focus', 'aprender': 'focus', 'leer': 'focus',
         'creatividad': 'focus', 'creativo': 'focus', 'inspiracion': 'focus',
-        'sanar': 'healing', 'curar': 'healing', 'salud': 'healing', 'inmune': 'immune',
+        'sanar': 'healing', 'curar': 'healing', 'salud': 'healing', 'inmune': 'healing',
         'meditar': 'meditation', 'meditacion': 'meditation', 'paz': 'meditation',
-        // English emotional
+        // English
         'stressed': 'stress', 'anxious': 'stress', 'nervous': 'stress', 'worried': 'stress',
         'overwhelmed': 'stress', 'tense': 'stress', 'panic': 'stress', 'restless': 'stress',
-        'cant sleep': 'sleep', 'insomnia': 'sleep', 'tired': 'energy', 'exhausted': 'energy',
-        'fatigue': 'energy', 'brain fog': 'focus', 'distracted': 'focus', 'procrastinating': 'focus',
+        'insomnia': 'sleep', 'tired': 'energy', 'exhausted': 'energy',
+        'fatigue': 'energy', 'distracted': 'focus', 'procrastinating': 'focus',
         'unmotivated': 'energy', 'depressed': 'stress', 'sad': 'stress', 'angry': 'stress',
         'hurting': 'pain', 'aching': 'pain', 'sore': 'pain',
         'focus': 'focus', 'concentrate': 'focus', 'intelligence': 'focus', 'smart': 'focus',
@@ -305,29 +304,59 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
         'relax': 'stress', 'calm': 'stress', 'heal': 'healing', 'meditate': 'meditation',
       }
 
-      // Extract goal from natural language
-      let matchedGoal = ''
-      for (const [keyword, goal] of Object.entries(keywordMap)) {
-        if (lower.includes(keyword)) { matchedGoal = goal; break }
-      }
-
-      // Also try individual words against the goal mappings
-      if (!matchedGoal) {
-        const words = lower.split(/\s+/)
-        for (const word of words) {
-          if (word.length > 3) {
-            const tryGoal = getRecommendedFrequencies(word)
-            if (tryGoal.length > 0) { return tryGoal.slice(0, 4) }
+      // Simple Levenshtein distance for fuzzy matching
+      const levenshtein = (a: string, b: string): number => {
+        if (a.length === 0) return b.length
+        if (b.length === 0) return a.length
+        const matrix: number[][] = []
+        for (let i = 0; i <= b.length; i++) matrix[i] = [i]
+        for (let j = 0; j <= a.length; j++) matrix[0][j] = j
+        for (let i = 1; i <= b.length; i++) {
+          for (let j = 1; j <= a.length; j++) {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j - 1] + (b[i - 1] === a[j - 1] ? 0 : 1)
+            )
           }
         }
+        return matrix[b.length][a.length]
       }
 
-      // Use matched goal or fall back to full text search
-      let results = matchedGoal ? getRecommendedFrequencies(matchedGoal) : getRecommendedFrequencies(text)
+      // Try exact keyword match first, then fuzzy
+      const findGoal = (input: string): string => {
+        // Exact substring match
+        for (const [keyword, goal] of Object.entries(keywordMap)) {
+          if (input.includes(keyword)) return goal
+        }
+        // Fuzzy: check each word against keywords (allow ~30% typo tolerance)
+        const words = input.split(/\s+/).filter(w => w.length > 3)
+        for (const word of words) {
+          let bestMatch = ''
+          let bestDist = Infinity
+          for (const [keyword, goal] of Object.entries(keywordMap)) {
+            if (keyword.length < 4) continue // skip short keywords for fuzzy
+            const dist = levenshtein(word, keyword)
+            const threshold = Math.floor(keyword.length * 0.35) // 35% tolerance
+            if (dist <= threshold && dist < bestDist) {
+              bestDist = dist
+              bestMatch = goal
+            }
+          }
+          if (bestMatch) return bestMatch
+        }
+        return ''
+      }
+
+      const matchedGoal = findGoal(lower)
+
+      let results = matchedGoal ? getRecommendedFrequencies(matchedGoal) : []
       if (results.length === 0) {
-        // Try each word individually in search
+        // Try each word individually
         const words = lower.split(/\s+/).filter((w: string) => w.length > 3)
         for (const word of words) {
+          results = getRecommendedFrequencies(word)
+          if (results.length > 0) break
           results = searchFrequencies(word)
           if (results.length > 0) break
         }
@@ -344,7 +373,7 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
       if (matches.length > 0) setInstantResults(matches)
       const enriched = matches.length > 0
         ? `${initialMessage}\n\n[SYSTEM: Matching frequencies already found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally with brief explanations of WHY each one helps. Do NOT search — you already have the results. Do NOT output markdown links — the cards are rendered by the frontend.]`
-        : initialMessage
+        : `${initialMessage}\n\n[SYSTEM: No instant match found. Interpret the user's intent and recommend frequencies. Use recommend_frequency tool. Always respond helpfully.]`
       sendMessage({ text: enriched })
     }
   }, [initialMessage, hasStarted, sendMessage, findInstantMatches])
@@ -405,7 +434,7 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
 
     const enriched = matches.length > 0
       ? `${text}\n\n[SYSTEM: Matching frequencies found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally. Do NOT search — results are already shown as cards. Do NOT use markdown links.]`
-      : text
+      : `${text}\n\n[SYSTEM: No instant match found. Interpret the user's intent — they may have typos or be describing symptoms. Recommend 1-3 frequencies from the library that best fit. Use recommend_frequency tool. Always respond helpfully.]`
     sendMessage({ text: enriched })
   }, [input, isLoading, sendMessage, findInstantMatches])
 
@@ -418,7 +447,7 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
 
     const enriched = matches.length > 0
       ? `${prompt}\n\n[SYSTEM: Matching frequencies found: ${matches.map((f: any) => `${f.name} (${f.hz_value} Hz)`).join(', ')}. Present these conversationally. Do NOT search — results are already shown as cards. Do NOT use markdown links.]`
-      : prompt
+      : `${prompt}\n\n[SYSTEM: No instant match found. Interpret the user's intent and recommend frequencies. Use recommend_frequency tool. Always respond helpfully.]`
     sendMessage({ text: enriched })
   }, [isLoading, sendMessage, findInstantMatches])
 
