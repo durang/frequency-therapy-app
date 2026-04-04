@@ -267,26 +267,32 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
   const { isActive: hasSubscription } = useSubscription()
   const canUseChat = hasSubscription || isSuperadmin
 
-  const { messages, sendMessage, status } = useChat()
+  const { messages, sendMessage, status, error } = useChat()
   const isLoading = status === 'streaming' || status === 'submitted'
 
   // Instant frequency match — runs locally, no AI needed
   const findInstantMatches = useCallback((text: string) => {
     try {
       const { getRecommendedFrequencies, searchFrequencies, frequencies: allFreqs } = require('@/lib/frequencies')
-      const lower = text.toLowerCase()
+      // Normalize: lowercase + strip accents
+      const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
       // Natural language keyword map (English + Spanish + emotional phrases)
+      // Keys are accent-stripped for matching
       const keywordMap: Record<string, string> = {
-        // Spanish
-        'estresado': 'stress', 'estres': 'stress', 'estrés': 'stress', 'ansiedad': 'stress',
+        // Spanish (accent-stripped)
+        'estresado': 'stress', 'estres': 'stress', 'ansiedad': 'stress',
         'ansioso': 'stress', 'nervioso': 'stress', 'preocupado': 'stress', 'tenso': 'stress',
-        'dormir': 'sleep', 'sueño': 'sleep', 'insomnio': 'sleep', 'descansar': 'sleep',
-        'cansado': 'energy', 'cansancio': 'energy', 'energía': 'energy', 'agotado': 'energy', 'fatiga': 'energy',
-        'concentrar': 'focus', 'concentración': 'focus', 'enfoque': 'focus', 'estudiar': 'focus', 'trabajar': 'focus',
-        'dolor': 'pain', 'relajar': 'stress', 'relajación': 'stress', 'calma': 'stress', 'tranquilo': 'stress',
-        'triste': 'stress', 'deprimido': 'stress', 'motivación': 'energy', 'ánimo': 'energy',
-        'inteligente': 'focus', 'memoria': 'focus', 'productivo': 'focus', 'rendimiento': 'focus',
+        'dormir': 'sleep', 'sueno': 'sleep', 'insomnio': 'sleep', 'descansar': 'sleep',
+        'cansado': 'energy', 'cansancio': 'energy', 'energia': 'energy', 'agotado': 'energy', 'fatiga': 'energy',
+        'concentrar': 'focus', 'concentracion': 'focus', 'enfoque': 'focus', 'estudiar': 'focus', 'trabajar': 'focus',
+        'inteligencia': 'focus', 'inteligente': 'focus', 'cerebro': 'focus', 'mental': 'focus', 'pensar': 'focus',
+        'dolor': 'pain', 'relajar': 'stress', 'relajacion': 'stress', 'calma': 'stress', 'tranquilo': 'stress',
+        'triste': 'stress', 'deprimido': 'stress', 'motivacion': 'energy', 'animo': 'energy',
+        'memoria': 'focus', 'productivo': 'focus', 'rendimiento': 'focus', 'aprender': 'focus', 'leer': 'focus',
+        'creatividad': 'focus', 'creativo': 'focus', 'inspiracion': 'focus',
+        'sanar': 'healing', 'curar': 'healing', 'salud': 'healing', 'inmune': 'immune',
+        'meditar': 'meditation', 'meditacion': 'meditation', 'paz': 'meditation',
         // English emotional
         'stressed': 'stress', 'anxious': 'stress', 'nervous': 'stress', 'worried': 'stress',
         'overwhelmed': 'stress', 'tense': 'stress', 'panic': 'stress', 'restless': 'stress',
@@ -294,6 +300,9 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
         'fatigue': 'energy', 'brain fog': 'focus', 'distracted': 'focus', 'procrastinating': 'focus',
         'unmotivated': 'energy', 'depressed': 'stress', 'sad': 'stress', 'angry': 'stress',
         'hurting': 'pain', 'aching': 'pain', 'sore': 'pain',
+        'focus': 'focus', 'concentrate': 'focus', 'intelligence': 'focus', 'smart': 'focus',
+        'sleep': 'sleep', 'stress': 'stress', 'pain': 'pain', 'energy': 'energy',
+        'relax': 'stress', 'calm': 'stress', 'heal': 'healing', 'meditate': 'meditation',
       }
 
       // Extract goal from natural language
@@ -549,6 +558,14 @@ export function LibraryChat({ onSelectFrequency, onClose, initialMessage }: Libr
               {isLoading && (
                 <div className="flex justify-start">
                   <StreamingDots />
+                </div>
+              )}
+
+              {error && !isLoading && (
+                <div className="flex justify-start">
+                  <div className="text-xs text-red-400/60 bg-red-500/5 border border-red-500/10 rounded-xl px-4 py-2.5">
+                    Couldn't get a response. Try again.
+                  </div>
                 </div>
               )}
 
