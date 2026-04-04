@@ -12,7 +12,7 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 // Determine if we're in a non-runtime environment (test, build-time SSG)
 const isTestEnv = process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined
-const isBuildTime = !supabaseUrl || !supabaseServiceRoleKey
+const isBuildTime = !supabaseUrl || !supabaseServiceRoleKey || supabaseUrl.includes("placeholder") || supabaseServiceRoleKey.includes("placeholder")
 
 // Validate at runtime only — not during test or build-time static generation
 if (!isTestEnv && !isBuildTime) {
